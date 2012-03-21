@@ -1,6 +1,5 @@
 
 import pygame
-from constants import RepLocation
 
 class Pixel():
     def __init__(self):
@@ -33,9 +32,9 @@ class Pixel():
     
     def drawRepresentation(self, window, x, y, pixelSize):
         if not self.isNull():
-            window.fill(self.getColor(), (x+RepLocation[0], y+RepLocation[1], pixelSize[0], pixelSize[1]))
+            window.fill(self.getColor(), (x+545, y+270, pixelSize[0], pixelSize[1]))
         else:
             nullPixel = pygame.Surface(pixelSize)
             nullPixel.fill((255, 255, 255))
             pygame.draw.line(nullPixel, (150, 0, 0), (0, 0), pixelSize)
-            window.blit(nullPixel, (x+RepLocation[0], y+RepLocation[1]))
+            window.blit(nullPixel, (x+545, y+270))

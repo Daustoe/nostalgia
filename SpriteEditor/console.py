@@ -16,6 +16,8 @@ class Console(object):
         pygame.init()
         '''size is the size of our window'''
         self.size = (width, height)
+        self.isFullscreen = isFullscreen
+        self.activeElement = None
         
         '''this initializes our window with size whatever options the user has set.'''
         self.window = pygame.display.set_mode(self.size)
@@ -26,7 +28,8 @@ class Console(object):
     '''blits all of the consoles elements to the screen'''
     def drawElements(self):
         for each in self.elements:
-            each.render(self.window)
+            if hasattr(each, 'render'):
+                each.render(self.window)
         pygame.display.flip()
         
     '''for elements that have actions (i.e. buttons, sliders, things you can click
@@ -39,10 +42,13 @@ class Console(object):
         for each in self.elements:
             if hasattr(each, 'actionEvent'):
                 each.actionEvent(mousePress, mousePosition, mouseMovement)
-            
+                        
     '''adds an element to the consoles list of elements to draw.'''
     def addElement(self, element):
         self.elements.append(element)
+        
+    def setCaption(self, caption):
+        pygame.display.set_caption(caption)
         
     '''Removes element from the consoles, list of elements to draw.'''
     def removeElement(self, element):

@@ -3,19 +3,20 @@ Created on Mar 15, 2012
 
 @author: clayton
 
-need to add action variable to buttons! this is a method of code that is to 
-be run when button is clicked
 also make the button look like it was clicked when mouse is pressed on it.
 '''
 
 import element
 
 class Button(element.Element):
-    def __init__(self, position, (width, height), title, font, action, color=(200, 200, 200)):
+    def __init__(self, position, (width, height), title, font, action, fontColor=(100,0,0), color=(200, 200, 200)):
         super(Button, self).__init__(position, (width, height), color)
         self.font = font
         self.title = title
         self.action = action
+        self.fontColor = fontColor
+        self.clicked = False
+        self.titlePosition = ((self.position[0]+self.width/2)-self.font.size(self.title)[0]/2, (self.position[1]+self.height/2)-self.font.size(self.title)[1]/2)
         
     def changeColor(self, (r, g, b)):
         self.color = (r, g, b)
@@ -28,13 +29,11 @@ class Button(element.Element):
                     self.clicked = True
                     self.darken()
                     self.action()
-                    #perform action!
                     return True
         if not mousePress[0] and self.clicked: self.lighten()
         self.clicked = False
-        #if we get here do not perform action!
         return False
         
     def render(self, window):
         super(Button, self).render(window)
-        window.blit(self.font.render(self.title, True, (100, 0, 0)), (self.position[0]+12, self.position[1]))
+        window.blit(self.font.render(self.title, True, self.fontColor), self.titlePosition)

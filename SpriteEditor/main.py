@@ -33,20 +33,18 @@ Issue List:
     --ability to cycle through them
 
 '''
-import sys, pygame, shelve, sprite, slider, button, textBox, Image, math
+import sys, pygame, shelve, sprite, slider, button, textBox, math, console
 import Tkinter, tkFileDialog, string
-from constants import *
 
 leftMouseHeld = False
 rightMouseHeld = False
 controlHeld = False
 filename = None
 session = None
-pygame.init()
-font = pygame.font.SysFont('ubuntu', 18, bold=True)
-buttonFont = pygame.font.SysFont('dejavusans', 18, bold=True, italic=True)
-pygame.display.set_caption('Sprite Editor')
-window = pygame.display.set_mode((Width, Height))
+
+window = console.Console(835, 520)
+font = pygame.font.SysFont('dejavusans', 18, bold=True, italic=True)
+window.setCaption("Sprite Editor")
 root = Tkinter.Tk()
 root.withdraw()
 
@@ -66,22 +64,22 @@ importOptions['title'] = 'Import Browser'
 
 def convert((xPos, yPos)):
     global blockSize, currentSprite
-    if xPos < EditingPanelSize[0]:
+    if xPos < 540:
         return (xPos/currentSprite.blockSize[0], yPos/currentSprite.blockSize[1])
     
-def loadSprite(spriteName):
+def loadSprite():
     global currentSprite, session, filename
     filename = tkFileDialog.askopenfilename(**options)
     
     if not filename == '':
         session = shelve.open(filename)
-        if session.has_key(spriteName):
+        if session.has_key("testSprite"):
             currentSprite.pixelArray = session['array']
             currentSprite.pixelsInSprite = session['dimension']
             currentSprite.pixelSize = session['size']
         session.close()
         
-def saveSprite(spriteName):
+def saveSprite():
     global session, filename
     filename = tkFileDialog.asksaveasfilename(**options)
     if not filename == '':
@@ -126,14 +124,14 @@ def importSprite():
     filename = tkFileDialog.askopenfilename(**importOptions)
     if not filename == '':
         filename = string.split(filename, '/')[-1]
-        image = Image.open(filename)
+        image = open(filename)
         (width, height) = image.size
         chunkSize = checkRatio(float(width), float(height))
         '''
         if chunkSize is null, no even divisor. need to cut off a bit of the picture perhaps
         '''
         spriteDimension = (width/chunkSize, height/chunkSize)
-        tempSprite = sprite.Sprite(DefaultPixelSize, spriteDimension)
+        tempSprite = sprite.Sprite((2, 2), spriteDimension)
         pix = image.load()
         '''
         ~~Look into!
@@ -156,58 +154,12 @@ def importSprite():
                 tempSprite.setPixelColor(window, xchunk/chunkSize, ychunk/chunkSize, (red/chunkSquare, green/chunkSquare, blue/chunkSquare))
                 
         currentSprite = tempSprite
-        
-def getInput():
-    global mpress, mpos, mrel, leftMouseHeld, rightMouseHeld
-    global currentSprite, controlHeld, redSlider, greenSlider, blueSlider, r, g, b
-    mpress = pygame.mouse.get_pressed()
-    mpos = pygame.mouse.get_pos()
-    mrel = pygame.mouse.get_rel()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: 
-            sys.exit()
-        elif event.type == pygame.MOUSEBUTTONDOWN: 
-            if mpos[0] < RightPanelX:
-                xPixel, yPixel = convert(mpos)
-                if event.button == 1:
-                    if controlHeld:
-                        (r, g, b) = currentSprite.getPixelColor(xPixel, yPixel)
-                        redSlider.index = r
-                        greenSlider.index = g
-                        blueSlider.index = b
-                    else:
-                        leftMouseHeld = True
-                        currentSprite.setPixelColor(window, xPixel, yPixel, (r, g, b))
-                else:
-                    rightMouseHeld = True
-                    currentSprite.setPixelColor(window, xPixel, yPixel, (None, None, None))
-        elif event.type == pygame.MOUSEMOTION:
-            if mpos[0] < RightPanelX:
-                xPixel, yPixel = convert(mpos)
-                if leftMouseHeld == True:
-                    leftMouseHeld = True
-                    currentSprite.setPixelColor(window, xPixel, yPixel, (r, g, b))
-                elif rightMouseHeld == True:
-                    rightMouseHeld = True
-                    currentSprite.setPixelColor(window, xPixel, yPixel, (None, None, None))
-        elif event.type == pygame.MOUSEBUTTONUP:
-            leftMouseHeld = False
-            rightMouseHeld = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == 115: #key 's'
-                saveSprite("testSprite")
-            elif event.key == 108: #key 'l'
-                loadSprite("testSprite")
-            elif event.key == 306 or event.key == 305: #key 'Ctrl'
-                controlHeld = True
-        elif event.type == pygame.KEYUP:
-            if event.key == 306 or event.key == 305:
-                controlHeld = False
-                
+
+'''        
 def draw():
     global redSlider, blueSlider, greeSlider, loadButton, saveButton, importButton
     global currentSprite, pixelBox, spriteSizeBox, r, g, b
-    pygame.draw.rect(window, RightPanelColor, (RightPanelX, 0, Width, Height))
+    pygame.draw.rect(window, (237, 246, 193), (540, 0, 835, 520))
     redSlider.update(mpos, mpress, mrel)
     blueSlider.update(mpos, mpress, mrel)
     greenSlider.update(mpos, mpress, mrel)
@@ -224,16 +176,16 @@ def draw():
         currentSprite.drawSpriteMain(window)
         currentSprite.drawSpriteRepresentation(window)
     if saveButton.update(mpos, mpress):
-        saveSprite("testSprite")
+        saveSprite()
     if loadButton.update(mpos, mpress):
-        loadSprite("testSprite")
+        loadSprite()
     if importButton.update(mpos, mpress):
         importSprite()
     currentSprite.drawSpriteMain(window)
     r, g, b = redSlider.index, greenSlider.index, blueSlider.index
-    pygame.draw.rect(window, (r, g, b), (RightPanelX + 75, 10, 150, 150), 0)
-    window.blit(font.render("RGB: (%s, %s, %s)" % (r, g, b), True, (0, 0, 0)), (RightPanelX + 85, 160))
-    window.blit(font.render("Sprite Representation!!", True, (0, 0, 0)), (RightPanelX + 11, 245))
+    pygame.draw.rect(window, (r, g, b), (540 + 75, 10, 150, 150), 0)
+    window.blit(font.render("RGB: (%s, %s, %s)" % (r, g, b), True, (0, 0, 0)), (540 + 85, 160))
+    window.blit(font.render("Sprite Representation!!", True, (0, 0, 0)), (540 + 11, 245))
     currentSprite.drawSpriteRepresentation(window)
     pixelBox.drawBox(window, str(currentSprite.pixelSize[0]))
     spriteSizeBox.drawBox(window, str(currentSprite.pixelsInSprite))
@@ -244,26 +196,40 @@ def draw():
     loadButton.render(window)
     importButton.render(window)
     pygame.display.flip()
+    '''
 
 def main():
-    global redSlider, blueSlider, greenSlider, loadButton, saveButton, importButton
-    global currentSprite, pixelBox, spriteSizeBox
-    redSlider = slider.Slider((255, 0, 0))
-    greenSlider = slider.Slider((0, 255, 0))
-    blueSlider = slider.Slider((0, 0, 255))
-    saveButton = button.Button("Save", buttonFont, 350, 5, 1)
-    loadButton = button.Button("Load", buttonFont, 350, 5, 2)
-    importButton = button.Button("Import", buttonFont, 350, 5, 3)
-    currentSprite = sprite.Sprite(DefaultPixelSize, DefaultSpriteDimension)
-    pixelBox = textBox.TextBox("Pixel Size", RightPanelX + 10, 380)
-    spriteSizeBox = textBox.TextBox("PPS", RightPanelX + 10, 400)
+    currentSprite = sprite.Sprite((2, 2), (20, 20))
     while True:
-        while pygame.event.peek():
-            window.fill((255, 255, 255))
-            getInput()
-            draw()
+        window.drawElements()
+        window.handleElementActions()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+                break
+            elif event.type == pygame.USEREVENT:
+                event.object.becomeActive(window)
+            elif event.type == pygame.KEYDOWN: #hit any keystroke
+                if event.key == 115: #hit 's'
+                    window.toggleFullscreen()
     session.close()
         
+pixelBox = textBox.TextBox((550, 200), (270, 20), font, "Pixel Size")
+spriteSizeBox = textBox.TextBox((550, 250), (270, 20), font, "PPS")
+saveButton = button.Button((540, 300), (80, 20), "Save", font, saveSprite)
+redSlider = slider.Slider((540, 100), (270, 15), (255, 200, 200), (255, 0, 0))
+greenSlider = slider.Slider((540, 120), (270, 15), (200, 255, 200), (0, 255, 0))
+blueSlider = slider.Slider((540, 140), (270, 15), (200, 200, 255), (0, 0, 255))
+loadButton = button.Button((540, 400), (80, 20), "Load", font, loadSprite)
+importButton = button.Button((540, 350), (80, 20), "Import", font, importSprite)
+window.addElement(saveButton)
+window.addElement(loadButton)
+window.addElement(importButton)
+window.addElement(redSlider)
+window.addElement(greenSlider)
+window.addElement(blueSlider)
+window.addElement(pixelBox)
+window.addElement(spriteSizeBox)
 if __name__ == "__main__": main()
     
     

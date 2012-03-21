@@ -26,6 +26,7 @@ from pygame.locals import *
 
 def buttonAction():
     print "Button works"
+    
 
 window = console.Console(600, 600)
 font = pygame.font.SysFont('ubuntu', 18, bold=True)
