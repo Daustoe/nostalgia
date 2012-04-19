@@ -32,6 +32,12 @@ class Slider(element.Element):
         if self.index > self.width-20: 
             self.index = self.width-20
             self.value = 1.0
+            
+    def setIndex(self, index):
+        self.index = index
+        self.value = 1.0*self.index/(self.width-20)
+        if self.value > 1.0:
+            self.value = 1.0
         
     def render(self, window):
         super(Slider, self).render(window)

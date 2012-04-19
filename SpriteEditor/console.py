@@ -1,65 +1,80 @@
 '''
-Created on Mar 15, 2012
-
-@author: clayton
-
-Console object, built upon pygames console and modified just a bit.
+Console object, built upon pygames console and modified just a bit. Takes the width, 
+height, and isFullscreen boolean as arguments. 
+The main benefit of this object is that it is set up to automatically handle rendering
+and actionEvent handling of gui objects which inherit from the Element object.
 '''
 
 import pygame
 from pygame.locals import FULLSCREEN
 
 class Console(object):
-    
-    #Constructor method
     def __init__(self, width, height, isFullscreen=False):
         pygame.init()
-        '''size is the size of our window'''
         self.size = (width, height)
         self.isFullscreen = isFullscreen
         self.activeElement = None
-        
-        '''this initializes our window with size whatever options the user has set.'''
+        self.position = (0, 0)
         self.window = pygame.display.set_mode(self.size)
-        
-        '''elements is the list of GUI elements that are being drawn onto our window'''
         self.elements = []
     
-    '''blits all of the consoles elements to the screen'''
+    '''
+    Renders all of the consoles elements to the screen in the elements list to the
+    window
+    '''
     def drawElements(self):
         for each in self.elements:
             if hasattr(each, 'render'):
                 each.render(self.window)
-        pygame.display.flip()
         
-    '''for elements that have actions (i.e. buttons, sliders, things you can click
-    check mouse information to see if said element needs to perform its action!
     '''
-    def handleElementActions(self):
-        mousePress = pygame.mouse.get_pressed()
-        mousePosition = pygame.mouse.get_pos()
-        mouseMovement = pygame.mouse.get_rel()
-        for each in self.elements:
-            if hasattr(each, 'actionEvent'):
-                each.actionEvent(mousePress, mousePosition, mouseMovement)
+    For elements that have actions (i.e. buttons, sliders, things you can click)
+    call the actionEvent method (inherited from the Element object) on that object
+    and send it all current relevent mouse information.
+    '''
+    def handleElementActions(self):        
+        if pygame.event.peek():
+            mousePress = pygame.mouse.get_pressed()
+            mousePosition = pygame.mouse.get_pos()
+            mouseMovement = pygame.mouse.get_rel()
+            for each in self.elements:
+                if hasattr(each, 'actionEvent'):
+                    each.actionEvent(mousePress, mousePosition, mouseMovement)
                         
-    '''adds an element to the consoles list of elements to draw.'''
+    '''
+    Adds an element to the consoles list of elements to draw.
+    '''
     def addElement(self, element):
-        self.elements.append(element)
+        if element.__module__ == "messageBox":
+            self.messageBoxList.append(element)
+        else:
+            self.elements.append(element)
+        element.setMaster(self)
         
+    '''
+    Sets the caption of the window.
+    '''
     def setCaption(self, caption):
         pygame.display.set_caption(caption)
         
-    '''Removes element from the consoles, list of elements to draw.'''
+    '''
+    Removes element from the list of console elements to draw.
+    '''
     def removeElement(self, element):
         self.elements.remove(element)
+        element.setMaster(None)
         
-    '''changes the dimensions of the window'''
+    '''
+    Changes the dimensions of the window
+    '''
     def changeDimensions(self, width, height):
         self.size = (width, height)
         self.window = pygame.display.set_mode(self.size)
         
-    '''Set's the window to be fullscreen'''
+    '''
+    Toggles between fullscreen and windowed mode for our window, depending on how you set
+    up your gui, this has the potential to blow things around on the screen.
+    '''
     def toggleFullscreen(self):
         screen = pygame.display.get_surface()
         tmp = screen.convert()

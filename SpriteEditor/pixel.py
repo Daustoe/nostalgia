@@ -1,40 +1,56 @@
+'''
+Pixel object.
+'''
+import pygame, element
 
-import pygame
-
-class Pixel():
-    def __init__(self):
-        self.r, self.g, self.b = (None, None, None)
-        
-    def isNull(self):
-        if (self.r, self.g, self.b) == (None, None, None):
-            return True
+class Pixel(element.Element):
+    """
+    Some notes!!!
+    perhaps we want render() to draw the outline of each pixel, instead of relying on 
+    separatePixels() in our sprite object.
+    It would make it simpler to manage each 'pixel' of a sprite, and make it easier to see.
+    We are also going to want to add actionEvents for each pixel if it is clicked on, in order
+    to change the pixels mouse clicks
+    """
+    def __init__(self, (x, y), (width, height), color=(200, 200, 200)):
+        super(Pixel, self).__init__((x, y), (width, height), color)
+        self.surface.set_alpha(255)
+        self.nullPixel = pygame.Surface(self.size)
+        self.nullPixel.fill((255, 255, 255))
+        pygame.draw.line(self.nullPixel, (150, 0, 0), (0, 0), self.size, 2)
+        pygame.draw.line(self.nullPixel, (150, 0, 0), (self.width, 0), (0, self.height), 2)
+        self.clicked = False
+        if self.color == (200, 200, 200):
+            self.isNull = True
         else:
-            return False
+            self.isNull = False
+    
+    def saveColor(self):
+        if self.isNull:
+            return None
+        else:
+            return self.color
+                    
+    def changeColor(self, color):
+        if color == None:
+            self.isNull = True
+        else:
+            self.isNull = False
+            self.color = color
+            self.surface = pygame.Surface(self.size)
+            self.surface.fill(self.color)
         
-    def setColor(self, r, g, b):
-        self.r, self.g, self.b = (r, g, b)
+    def setMaster(self, master):
+        super(Pixel, self).setMaster(master)
+        
+    def updatePosition(self):
+        super(Pixel, self).updatePosition()
         
     def getColor(self):
-        if self.isNull():
-            return (0, 0, 0)
-        else:
-            return (self.r, self.g, self.b)
+        return self.color
     
-    def drawMain(self, window, x, y, blockSize):
-        if self.isNull():
-            nullPixel = pygame.Surface(blockSize)
-            nullPixel.fill((255, 255, 255))
-            pygame.draw.line(nullPixel, (150, 0, 0), (0, 0), blockSize, 2)
-            pygame.draw.line(nullPixel, (150, 0, 0), (blockSize[0], 0), (0, blockSize[1]), 2)
-            window.blit(nullPixel, (x*blockSize[0], y*blockSize[1]))
+    def render(self, window):
+        if self.isNull:
+            window.blit(self.nullPixel, self.position)
         else:
-            window.fill(self.getColor(), (x*blockSize[0], y*blockSize[1], blockSize[0], blockSize[1]))
-    
-    def drawRepresentation(self, window, x, y, pixelSize):
-        if not self.isNull():
-            window.fill(self.getColor(), (x+545, y+270, pixelSize[0], pixelSize[1]))
-        else:
-            nullPixel = pygame.Surface(pixelSize)
-            nullPixel.fill((255, 255, 255))
-            pygame.draw.line(nullPixel, (150, 0, 0), (0, 0), pixelSize)
-            window.blit(nullPixel, (x+545, y+270))
+            window.blit(self.surface, self.position)

@@ -23,16 +23,23 @@ class Button(element.Element):
         self.surface.fill(self.color)
         
     def actionEvent(self, mousePress, mousePosition, mouseMovement):
-        if mousePosition[0] > self.position[0] and mousePosition[0] < self.position[0] + self.size[0]:
-            if mousePosition[1] > self.position[1] and mousePosition[1] < self.position[1]+self.size[1]:
-                if mousePress[0] and not self.clicked:
+        if mousePress[0] and not self.clicked:
+            if mousePosition[0] > self.position[0] and mousePosition[0] < self.position[0] + self.size[0]:
+                if mousePosition[1] > self.position[1] and mousePosition[1] < self.position[1]+self.size[1]:
                     self.clicked = True
-                    self.darken()
+                    #self.darken()
                     self.action()
                     return True
-        if not mousePress[0] and self.clicked: self.lighten()
+        #if not mousePress[0] and self.clicked: self.lighten()
         self.clicked = False
         return False
+    
+    def setMaster(self, master):
+        super(Button, self).setMaster(master)
+    
+    def updatePosition(self):
+        super(Button, self).updatePosition()
+        self.titlePosition = ((self.position[0]+self.width/2)-self.font.size(self.title)[0]/2, (self.position[1]+self.height/2)-self.font.size(self.title)[1]/2)
         
     def render(self, window):
         super(Button, self).render(window)
