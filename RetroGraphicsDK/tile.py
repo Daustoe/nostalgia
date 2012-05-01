@@ -20,4 +20,4 @@ class Tile(gameObject.GameObject):
         self.surface.fill(self.color)
                 
     def isBlocked(self):
-        return self.blocked
+        return self.block

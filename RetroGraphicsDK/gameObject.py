@@ -15,7 +15,7 @@ class GameObject(object):
         self.position = (self.x, self.y) = (x, y)
         self.size = sprite.get_size()
         self.surface = sprite
-        self.blocks = block
+        self.block = block
         if blockSight is None: blockSight = block
         self.blockSight = blockSight
         

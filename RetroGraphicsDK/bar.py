@@ -14,8 +14,9 @@ class Bar(element.Element):
         super(Bar, self).__init__((x, y), (width, height), background)
         self.maximum = maxValue
         self.value = maxValue
+        self.percentage = 1.0
         self.fillColor = foreground
-        self.filledBar = pygame.Surface((self.value, self.height))
+        self.filledBar = pygame.Surface((self.width*self.percentage, self.height))
         self.filledBar.fill(self.fillColor)
         
     '''
@@ -36,6 +37,9 @@ class Bar(element.Element):
             self.value = self.maximum
         elif self.value < 0:
             self.value = 0;
+        self.percentage = self.value*1.0 / self.maximum
+        self.filledBar = pygame.Surface((self.width*self.percentage, self.height))
+        self.filledBar.fill(self.fillColor)
             
     '''
     Blits this object to the window. The super class render draws the background surface while
