@@ -23,7 +23,7 @@ class GameObject(object):
     The draw definition draws the sprite surface of this object to the given surface
     '''
     def render(self, surface):
-        surface.blit(self.surface, self.position)
+        surface.blit(self.surface, (self.position[0]*self.surface.get_width(), self.position[1]*self.surface.get_height()))
             
     '''
     Moves the object by adding changes in x and y.

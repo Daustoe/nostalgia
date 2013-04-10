@@ -1,6 +1,8 @@
 '''
 Issue List:
 
+--May want to think about moving the cursor after the window closes! would get rid
+    of the bug I'm having with the file browser i think.
 --Suggest adding a Label object to the development kit
 --want to display the sprite as it's actual size on the side.
     --only issue right now is that the actual pixelArray needs to also follow

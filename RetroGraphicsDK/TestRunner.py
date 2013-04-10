@@ -15,6 +15,7 @@ Issue List for whole of development kit
 --make gameCanvas (main display of game)
 '''
 import console, pygame, sys, button, messageBox, slider, menu, dungeonGenerator, pathfinder, panel, bar
+import gameObject
 from pygame.locals import *
 import random, time
 
@@ -27,9 +28,8 @@ font = pygame.font.SysFont('timesnewroman', 16, bold=True)
 firstButton = button.Button((10, 10), (80, 20), "Hello World", font, buttonAction)
 slider = slider.Slider((10, 300), (275, 15), (255, 200, 200), (255, 0, 0))
 menu = menu.Menu((10, 10), (580, 580), font, title="Test Menu")
-#window.addElement(firstButton)
-#window.addElement(slider)
 window.addElement(menu)
+player = gameObject.GameObject((0, 0), pygame.image.load("player.png"))
 bottomPanel = panel.Panel((0, 560), (1100, 180), (20, 20, 20))
 healthbar = bar.Bar((10, 20), (200, 10), 100, (200, 0, 0), (100, 20, 20))
 manabar = bar.Bar((10, 40), (200, 10), 100, (0, 0, 200), (20, 20, 100))
@@ -38,10 +38,15 @@ bottomPanel.addElement(healthbar)
 window.addElement(bottomPanel)
 
 
-mapmaker = dungeonGenerator.DungeonGenerator(30, 6, 10, 80, 43)
+mapmaker = dungeonGenerator.DungeonGenerator(30, 6, 13, 85, 40)
 
 myMap = mapmaker.makeMap()
 finder = pathfinder.PathFinder(myMap)
+
+while myMap[player.position[0]][player.position[1]].blockSight:
+    x = random.randint(0, 84)
+    y = random.randint(0, 39)
+    player.position = (x, y)
 
 menuOptions = []
 menuOptions.append("test1")
@@ -51,12 +56,12 @@ pauseOptions = ["Save Game", "Load Game", "Quit to Desktop"]
 
 lightWall = (130, 110, 50)
 lightGround = (200, 180, 50)
-tilesize = (8, 12)
+
 
 def colorMap():
     global myMap, lightWall, lightGround, tilesize
-    for y in range(43):
-        for x in range(80):
+    for y in range(40):
+        for x in range(85):
             wall = myMap[x][y].blockSight
             if wall:
                 myMap[x][y].setColor(lightWall)
@@ -68,9 +73,10 @@ colorMap()
 while not quit:
     window.drawElements()
     window.handleElementActions()
-    for y in range(43):
-        for x in range(80):  
+    for y in range(40):
+        for x in range(85):  
             myMap[x][y].render(window.window)
+    window.window.blit(player.surface, player.position)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit = True
@@ -94,7 +100,9 @@ while not quit:
                 myMap[endx][endy].render(window.window)
                 pygame.display.flip()
                 print finder.dijkstra((startx, starty), (endx, endy))
-            elif event.key == 114:
-                print menu.open(pauseOptions)
+            elif event.key == 27: #escape key hit
+                value = menu.open(pauseOptions)
+                if value == 2:
+                    sys.exit()
     pygame.display.flip()
     time.sleep(0.0001)
