@@ -50,7 +50,7 @@ class DungeonGenerator(object):
             self.map[x][y].blockSight = False
             
     def makeMap(self):
-        self.map = [[Tile((x, y), (10, 13), True)
+        self.map = [[Tile((x, y), (8, 12), True)
                 for y in range(self.height)]
                     for x in range(self.width) ]
         roomCount = 0

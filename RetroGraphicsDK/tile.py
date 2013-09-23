@@ -12,7 +12,7 @@ class Tile(gameObject.GameObject):
             self.color = color
             sprite.fill(self.color)
         self.size = sprite.get_size()
-        super(Tile, self).__init__((x*self.size[0], y*self.size[1]), sprite, block, blockSight)
+        super(Tile, self).__init__((x, y), sprite, block, blockSight)
         self.explored = False
         
     def setColor(self, (r,g,b)):

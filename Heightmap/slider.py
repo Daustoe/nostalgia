@@ -32,7 +32,6 @@ class Slider(element.Element):
         elif not mousePress[0]:
             self.clicked = False
         if self.clicked:
-            print "moving"
             self.index += mouseMovement[0]
             self.value = 1.0*self.index/(self.width-20)
         if self.index < 0: 
@@ -51,6 +50,14 @@ class Slider(element.Element):
         self.value = 1.0*self.index/(self.width-20)
         if self.value > 1.0:
             self.value = 1.0
+            
+    def setValue(self, value):
+        if value >= 1.0:
+            self.value = 1.0
+        elif value <= 0.0:
+            self.value = 0.0
+        else:
+            self.value = value
     
     '''
     The render method blits this object's surface to the window. The super class draws the background
