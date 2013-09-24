@@ -17,8 +17,19 @@ Issue List:
     --ability to cycle through them
 
 '''
-import sys, pygame, shelve, sprite, slider, button, pixel, console, panel, colorBox, Image
-import Tkinter, tkFileDialog
+import sys
+import pygame
+import shelve
+import sprite
+import slider
+import button
+import pixel
+import console
+import panel
+import colorBox
+import Image
+import Tkinter
+import tkFileDialog
 
 filename = None
 session = None
@@ -50,6 +61,7 @@ importOptions['initialdir'] = 'C:\\'
 importOptions['initialfile'] = 'default.jpg'
 importOptions['title'] = 'Import Browser'
 
+
 def loadSprite():
     global currentSprite, filename
     filename = tkFileDialog.askopenfilename(**options)
@@ -64,6 +76,7 @@ def loadSprite():
         currentSprite.generateSurface()
         pygame.event.pump()
 
+
 def saveSprite():
     global session, filename
     filename = tkFileDialog.asksaveasfilename(**options)
@@ -77,11 +90,13 @@ def saveSprite():
         session.close()
         pygame.event.pump()
 
+
 def exportSprite():
     filename = tkFileDialog.asksaveasfilename(**exportOptions)
     if not filename == '':
         pygame.image.save(currentSprite.makeImage(), filename)
     pygame.event.pump()
+
 
 def importSprite():
     global currentSprite
@@ -89,27 +104,28 @@ def importSprite():
     if not filename == '':
         image = Image.open(filename)
         (width, height) = image.size
-        chunkSize = (width/currentSprite.pixelsInSprite[0], height/currentSprite.pixelsInSprite[1])
+        chunkSize = (width / currentSprite.pixelsInSprite[0], height / currentSprite.pixelsInSprite[1])
         temparray = []
         pix = image.load()
         (red, green, blue) = (0, 0, 0)
         thisBlockSize = currentSprite.blockSize
         chunktotal = 0
-        for xchunk in range(0, width-1, chunkSize[0]):
+        for xchunk in range(0, width - 1, chunkSize[0]):
             temparray.append([])
-            for ychunk in range(0, height-1, chunkSize[1]):
-                (red, green, blue) =(0, 0, 0)
-                for x in range(xchunk, xchunk+chunkSize[0]):
-                    for y in range(ychunk, ychunk+chunkSize[1]):
+            for ychunk in range(0, height - 1, chunkSize[1]):
+                (red, green, blue) = (0, 0, 0)
+                for x in range(xchunk, xchunk + chunkSize[0]):
+                    for y in range(ychunk, ychunk + chunkSize[1]):
                         if x < width and y < height:
                             temp = pix[x, y]
-                            (red, green, blue) = (red+temp[0], green+temp[1], blue+temp[2])
+                            (red, green, blue) = (red + temp[0], green + temp[1], blue + temp[2])
                             chunktotal += 1
-                temparray[xchunk/chunkSize[0]].append(pixel.Pixel((xchunk/chunkSize[0]*thisBlockSize[0], ychunk/chunkSize[1]*thisBlockSize[1]), thisBlockSize, (red/chunktotal, green/chunktotal, blue/chunktotal)))
+                temparray[xchunk / chunkSize[0]].append(pixel.Pixel((xchunk / chunkSize[0] * thisBlockSize[0], ychunk / chunkSize[1] * thisBlockSize[1]), thisBlockSize, (red / chunktotal, green / chunktotal, blue / chunktotal)))
                 chunktotal = 0;
         currentSprite.pixelArray = temparray
         currentSprite.render(window.window)
         pygame.event.pump()
+
 
 def main():
     global currentSprite
@@ -190,5 +206,5 @@ infoPanel.addElement(redSlider)
 infoPanel.addElement(greenSlider)
 infoPanel.addElement(blueSlider)
 
-if __name__ == "__main__": main()
-
+if __name__ == "__main__":
+    main()

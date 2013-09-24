@@ -1,12 +1,14 @@
 '''
 Pixel object.
 '''
-import pygame, element
+import pygame
+import element
+
 
 class Pixel(element.Element):
     """
     Some notes!!!
-    perhaps we want render() to draw the outline of each pixel, instead of relying on 
+    perhaps we want render() to draw the outline of each pixel, instead of relying on
     separatePixels() in our sprite object.
     It would make it simpler to manage each 'pixel' of a sprite, and make it easier to see.
     We are also going to want to add actionEvents for each pixel if it is clicked on, in order
@@ -24,31 +26,31 @@ class Pixel(element.Element):
             self.isNull = True
         else:
             self.isNull = False
-    
+
     def saveColor(self):
         if self.isNull:
             return None
         else:
             return self.color
-                    
+
     def changeColor(self, color):
-        if color == None:
+        if color is None:
             self.isNull = True
         else:
             self.isNull = False
             self.color = color
             self.surface = pygame.Surface(self.size)
             self.surface.fill(self.color)
-        
+
     def setMaster(self, master):
         super(Pixel, self).setMaster(master)
-        
+
     def updatePosition(self):
         super(Pixel, self).updatePosition()
-        
+
     def getColor(self):
         return self.color
-    
+
     def render(self, window):
         if self.isNull:
             window.blit(self.nullPixel, self.position)

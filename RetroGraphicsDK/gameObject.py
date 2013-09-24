@@ -6,6 +6,7 @@ by one of the classes that inherit from this one.
 
 from math import sqrt
 
+
 class GameObject(object):
     '''
     Constructor takes position (x, y), a sprite image(pygame.Surface), a boolean on whether or not
@@ -16,25 +17,27 @@ class GameObject(object):
         self.size = sprite.get_size()
         self.surface = sprite
         self.block = block
-        if blockSight is None: blockSight = block
+        if blockSight is None:
+            blockSight = block
         self.blockSight = blockSight
-        
+
     '''
     The draw definition draws the sprite surface of this object to the given surface
     '''
     def render(self, surface):
-        surface.blit(self.surface, (self.position[0]*self.surface.get_width(), self.position[1]*self.surface.get_height()))
-            
+        surface.blit(self.surface, (self.position[0] * self.surface.get_width(), self.position[1]
+            * self.surface.get_height()))
+
     '''
     Moves the object by adding changes in x and y.
     '''
     def move(self, dx, dy):
         self.x += dx
         self.y += dy
-        
+
     '''
     Returns the distance from the (x, y) location to this objects location.
     this is all relative to the board blocks, not the pixel locations.
     '''
     def distance(self, x, y):
-        return sqrt((x-self.x)**2 + (y-self.y)**2)
+        return sqrt((x - self.x) ** 2 + (y - self.y) ** 2)

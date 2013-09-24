@@ -5,6 +5,9 @@ Created on Mar 15, 2012
 
 Issue List for whole of development kit
 
+--TOP::: add setup.py file and get it functional so we can add the development kit to python
+    environment.
+--some classes may need more inheritance(i.e. blockableGameObjects or something)
 --make mouseReporter (mouseover reporter for elements on our console)
 --make pathfinding algorithm
 --make field of view algorithm
@@ -14,10 +17,22 @@ Issue List for whole of development kit
 --heightmap stuff for above ground map generation
 --make gameCanvas (main display of game)
 '''
-import console, pygame, sys, button, messageBox, slider, menu, dungeonGenerator, pathfinder, panel, bar
+import gui.console as console
+import pygame
+import sys
+import gui.button as button
+# import messageBox
+import gui.slider as slider
+import menu
+import dungeonGenerator
+import pathfinder
+import gui.panel as panel
+import gui.bar as bar
 import gameObject
 from pygame.locals import *
-import random, time
+import random
+import time
+
 
 def buttonAction():
     print "Button works"
@@ -36,7 +51,6 @@ manabar = bar.Bar((10, 40), (200, 10), 100, (0, 0, 200), (20, 20, 100))
 bottomPanel.addElement(manabar)
 bottomPanel.addElement(healthbar)
 window.addElement(bottomPanel)
-
 
 mapmaker = dungeonGenerator.DungeonGenerator(30, 6, 13, 85, 40)
 
@@ -68,9 +82,9 @@ def colorMap():
             else:
                 myMap[x][y].setColor(lightGround)
 
-quit = False
+userQuit = False
 colorMap()
-while not quit:
+while not userQuit:
     window.drawElements()
     window.handleElementActions()
     for y in range(40):
@@ -79,19 +93,19 @@ while not quit:
     window.window.blit(player.surface, player.position)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            quit = True
+            userQuit = True
             sys.exit()
             break
         elif event.type == pygame.KEYDOWN:
-            if event.key == 115: #hit 's' testing out dijkstra's algorithm
+            if event.key == 115:  # hit 's' testing out dijkstra's algorithm
                 starty = random.randint(0, 42)
                 startx = random.randint(0, 79)
                 endy = random.randint(0, 42)
                 endx = random.randint(0, 79)
-                while myMap[startx][starty].blockSight == True:
+                while myMap[startx][starty].blockSight is True:
                     starty = random.randint(0, 42)
                     startx = random.randint(0, 79)
-                while myMap[endx][endy].blockSight == True:
+                while myMap[endx][endy].blockSight is True:
                     endy = random.randint(0, 42)
                     endx = random.randint(0, 79)
                 myMap[startx][starty].setColor((255, 0, 255))
@@ -100,7 +114,7 @@ while not quit:
                 myMap[endx][endy].render(window.window)
                 pygame.display.flip()
                 print finder.dijkstra((startx, starty), (endx, endy))
-            elif event.key == 27: #escape key hit
+            elif event.key == 27:  # escape key hit
                 value = menu.open(pauseOptions)
                 if value == 2:
                     sys.exit()
