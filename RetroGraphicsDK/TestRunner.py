@@ -21,7 +21,7 @@ import random, time
 
 def buttonAction():
     print "Button works"
-    
+
 
 window = console.Console(1100, 720)
 font = pygame.font.SysFont('timesnewroman', 16, bold=True)
@@ -67,14 +67,14 @@ def colorMap():
                 myMap[x][y].setColor(lightWall)
             else:
                 myMap[x][y].setColor(lightGround)
-            
+
 quit = False
 colorMap()
 while not quit:
     window.drawElements()
     window.handleElementActions()
     for y in range(40):
-        for x in range(85):  
+        for x in range(85):
             myMap[x][y].render(window.window)
     window.window.blit(player.surface, player.position)
     for event in pygame.event.get():
@@ -82,7 +82,7 @@ while not quit:
             quit = True
             sys.exit()
             break
-        elif event.type == pygame.KEYDOWN: 
+        elif event.type == pygame.KEYDOWN:
             if event.key == 115: #hit 's' testing out dijkstra's algorithm
                 starty = random.randint(0, 42)
                 startx = random.randint(0, 79)
@@ -94,7 +94,7 @@ while not quit:
                 while myMap[endx][endy].blockSight == True:
                     endy = random.randint(0, 42)
                     endx = random.randint(0, 79)
-                myMap[startx][starty].setColor((255, 0, 255))  
+                myMap[startx][starty].setColor((255, 0, 255))
                 myMap[endx][endy].setColor((0, 255, 0))
                 myMap[startx][starty].render(window.window)
                 myMap[endx][endy].render(window.window)

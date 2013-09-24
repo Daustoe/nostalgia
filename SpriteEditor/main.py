@@ -7,7 +7,7 @@ Issue List:
 --want to display the sprite as it's actual size on the side.
     --only issue right now is that the actual pixelArray needs to also follow
         the size of the sprite when the user changes it!!
-        
+
 --Still having some small problems with clicking the buttons:
     error when exporting and such, pygame reports mouse as being clicked when it isn't
     don't know if this is my problem or someone else's, suggest talking to Randy
@@ -49,7 +49,7 @@ importOptions['filetypes'] = [('jpeg files', '.jpg'), ('png files', '.png'), ('a
 importOptions['initialdir'] = 'C:\\'
 importOptions['initialfile'] = 'default.jpg'
 importOptions['title'] = 'Import Browser'
-    
+
 def loadSprite():
     global currentSprite, filename
     filename = tkFileDialog.askopenfilename(**options)
@@ -63,7 +63,7 @@ def loadSprite():
         session.close()
         currentSprite.generateSurface()
         pygame.event.pump()
-        
+
 def saveSprite():
     global session, filename
     filename = tkFileDialog.asksaveasfilename(**options)
@@ -76,13 +76,13 @@ def saveSprite():
                 session['%d %d' % (x, y)] = currentSprite.pixelArray[x][y].saveColor()
         session.close()
         pygame.event.pump()
-        
+
 def exportSprite():
     filename = tkFileDialog.asksaveasfilename(**exportOptions)
     if not filename == '':
         pygame.image.save(currentSprite.makeImage(), filename)
     pygame.event.pump()
-    
+
 def importSprite():
     global currentSprite
     filename = tkFileDialog.askopenfilename(**importOptions)
@@ -164,13 +164,13 @@ def main():
                         currentSprite.updatePixelCount(-1, 0)
                 elif event.key == 306:
                     control = False
-                
+
         chooserBox.updateColors((int(redSlider.value*255), int(greenSlider.value*255), int(blueSlider.value*255)))
         window.window.blit(font.render("RGB: (%s, %s, %s)" % chooserBox.color, True, (0, 0, 0)), (625, 355))
         window.window.blit(font.render("Sprite Dimensions: (%d,%d)" % (currentSprite.pixelsInSprite[0], currentSprite.pixelsInSprite[1]), True, (0, 0, 0)), (540+5, 400))
         window.window.blit(font.render("Pixel Dimension: (%d,%d)" % (currentSprite.pixelSize[0], currentSprite.pixelSize[1]), True, (0, 0, 0)), (540+5, 420))
         pygame.display.flip()
-        
+
 infoPanel = panel.Panel((540, 0), (295, 520), (255, 255, 255))
 redSlider = slider.Slider((10, 295), (270, 15), (255, 200, 200), (255, 0, 0))
 greenSlider = slider.Slider((10, 315), (270, 15), (200, 255, 200), (0, 255, 0))
@@ -191,5 +191,4 @@ infoPanel.addElement(greenSlider)
 infoPanel.addElement(blueSlider)
 
 if __name__ == "__main__": main()
-    
-    
+
