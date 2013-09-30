@@ -5,8 +5,8 @@ Created on Mar 15, 2012
 
 Issue List for whole of development kit
 
---TOP::: add setup.py file and get it functional so we can add the development kit to python
-    environment.
+--TOP::: add setup.py file and get it functional so we can add the development
+    kit to python environment.
 --some classes may need more inheritance(i.e. blockableGameObjects or something)
 --make mouseReporter (mouseover reporter for elements on our console)
 --make pathfinding algorithm
@@ -40,7 +40,7 @@ def buttonAction():
 
 window = console.Console(1100, 720)
 font = pygame.font.SysFont('timesnewroman', 16, bold=True)
-firstButton = button.Button((10, 10), (80, 20), "Hello World", font, buttonAction)
+firstButton = button.Button((10, 10), (80, 20), "Hello", font, buttonAction)
 slider = slider.Slider((10, 300), (275, 15), (255, 200, 200), (255, 0, 0))
 menu = menu.Menu((10, 10), (580, 580), font, title="Test Menu")
 window.addElement(menu)

@@ -1,22 +1,29 @@
 '''
-The Canvas object can be thought of as the actual game board that represents actual characters
-and the environment of your game. Inherits from the Element object.
+The Canvas object can be thought of as the actual game board that represents
+actual characters and the environment of your game. Inherits from the Element
+object.
 '''
 import element
 
+
 class Canvas(element.Element):
-    #Constructor takes position (x, y) and (width, height). (x, y) is the upper left-hand corner
-    #display is an array of items to be displayed on our canvas, it makes up the background. DisplayType
-    #holds onto if
-    def __init__(self, position, (width, height), (r,g,b)=(0,0,0), displayType=True, display=[]):
+    '''
+    Constructor takes position (x, y) and (width, height). (x, y) is the upper
+    left-hand corner display is an array of items to be displayed on our canvas,
+    it makes up the background. DisplayType holds onto if
+    '''
+    def __init__(self, position, (width, height), (r, g, b)=(0, 0, 0),
+            displayType=True, display=[]):
         super(Canvas, self).__init__(position, (width, height), (r, g, b))
         self.display = display
         self.displayType = displayType
-    
-    #render is used to display the canvas on the screen. Automated by the Console object. 
+
+    '''
+    render() is used to display the canvas on the screen. Automated by the
+    Console object.
+    '''
     def render(self, window):
         super(Canvas, self).render(window)
         for each in self.display:
             self.surface.blit(each.surface, each.position)
         window.blit(self.surface, self.position)
-        

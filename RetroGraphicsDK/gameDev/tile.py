@@ -8,7 +8,8 @@ import gameObject
 
 
 class Tile(gameObject.GameObject):
-    def __init__(self, (x, y), (width, height), block, color=(200, 200, 200), sprite=None, blockSight=None):
+    def __init__(self, (x, y), (width, height), block, color=(200, 200, 200),
+            sprite=None, blockSight=None):
         if sprite is None:
             sprite = pygame.Surface((width, height))
             self.color = color
