@@ -7,6 +7,7 @@ Issue List for whole of development kit
 
 --TOP::: add setup.py file and get it functional so we can add the development
     kit to python environment.
+--Look into PyQt4 to replace TkInter as the main gui board for our dev kit
 --some classes may need more inheritance(i.e. blockableGameObjects or something)
 --make mouseReporter (mouseover reporter for elements on our console)
 --make pathfinding algorithm
