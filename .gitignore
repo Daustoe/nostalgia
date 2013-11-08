@@ -3,3 +3,7 @@
 .pydevproject
 *.nja
 *.pyc
+*.xml
+*.iml
+.name
+
