@@ -11,8 +11,9 @@ from profile import Profile
 
 class Profiler(object):
 
-    def __init__(self):
+    def __init__(self, function):
         self.profiles = []
+        self.function = function
 
     def profile(self, name):
         #check to see if we have a profile in our list with that name, if we do
@@ -25,3 +26,6 @@ class Profiler(object):
                     #update info in profile
         #create new profile
         self.profiles.append(Profile(name))
+
+    def __call__(self, *args, **kwargs):
+        pass

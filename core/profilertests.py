@@ -1,32 +1,40 @@
-__author__ = 'Claymore'
-
+from time import sleep
 import unittest
-import profile
-import profiler
+from profile import profile
+import os
+import pstats
+
+
+@profile
+def runner():
+        sleep(1)
+
+
+@profile
+class ClassRunner(object):
+    def __init__(self):
+        self.runner()
+
+    def runner(self):
+        sleep(1)
 
 
 class ProfileTests(unittest.TestCase):
     def setUp(self):
-        self.profile = profile.Profile("test")
+        pass
 
-    def testName(self):
-        self.assertEqual(self.profile.name, "test")
+    def testFunctionDecoratorMakesProfile(self):
+        runner()
+        self.assertTrue(os.path.exists("profiles/runner.profile"))
 
-    def testStartTime(self):
-        print self.profile.start()
+    def testClassDecoratorMakesProfile(self):
+        ClassRunner()
+        self.assertTrue(os.path.exists("profiles/ClassRunner.profile"))
 
-    def testSomething(self):
-        self.assertEqual(True, False)
-
-
-class ProfilerTests(unittest.TestCase):
-    def setUp(self):
-        self.profiler = profiler.Profiler()
-
-    def testAddProfile(self):
-        self.profiler.profile("test")
-        self.assertEqual(self.profiler.profiles[0].name, "test")
-
+    def testMoreThanOneFile(self):
+        for name in os.listdir("profiles"):
+            print name
+        self.assertGreater(1, len([name for name in os.listdir('profiles') if os.path.isfile(name)]))
 
 if __name__ == '__main__':
     unittest.main()
