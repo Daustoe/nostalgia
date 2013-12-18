@@ -19,4 +19,4 @@ class Label(element.Element):
         window.blit(self.font.render(self.text, True, self.fontColor), self.titlePosition)
         
     def setMaster(self, master):
-        super(Label, self).setMaster(master)
+        super(Label, self).set_master(master)

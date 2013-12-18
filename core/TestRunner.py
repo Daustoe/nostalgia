@@ -23,8 +23,8 @@ import pygame
 import sys
 import gui.button as button
 # import messageBox
-import gui.slider as slider
-import menu
+import core.gui.slider as slider
+import core.gui.menu
 import dungeonGenerator
 import pathfinder
 import gui.panel as panel
@@ -44,14 +44,14 @@ font = pygame.font.SysFont('timesnewroman', 16, bold=True)
 firstButton = button.Button((10, 10), (80, 20), "Hello", font, buttonAction)
 slider = slider.Slider((10, 300), (275, 15), (255, 200, 200), (255, 0, 0))
 menu = menu.Menu((10, 10), (580, 580), font, title="Test Menu")
-window.addElement(menu)
+window.add_element(menu)
 player = gameObject.GameObject((0, 0), pygame.image.load("player.png"))
 bottomPanel = panel.Panel((0, 560), (1100, 180), (20, 20, 20))
 healthbar = bar.Bar((10, 20), (200, 10), 100, (200, 0, 0), (100, 20, 20))
 manabar = bar.Bar((10, 40), (200, 10), 100, (0, 0, 200), (20, 20, 100))
-bottomPanel.addElement(manabar)
-bottomPanel.addElement(healthbar)
-window.addElement(bottomPanel)
+bottomPanel.add_element(manabar)
+bottomPanel.add_element(healthbar)
+window.add_element(bottomPanel)
 
 mapmaker = dungeonGenerator.DungeonGenerator(30, 6, 13, 85, 40)
 
@@ -86,8 +86,8 @@ def colorMap():
 userQuit = False
 colorMap()
 while not userQuit:
-    window.drawElements()
-    window.handleElementActions()
+    window.draw_elements()
+    window.handle_element_actions()
     for y in range(40):
         for x in range(85):
             myMap[x][y].render(window.window)

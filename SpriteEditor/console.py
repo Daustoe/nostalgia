@@ -49,7 +49,7 @@ class Console(object):
             self.messageBoxList.append(element)
         else:
             self.elements.append(element)
-        element.setMaster(self)
+        element.set_master(self)
         
     '''
     Sets the caption of the window.
@@ -62,7 +62,7 @@ class Console(object):
     '''
     def removeElement(self, element):
         self.elements.remove(element)
-        element.setMaster(None)
+        element.set_master(None)
         
     '''
     Changes the dimensions of the window

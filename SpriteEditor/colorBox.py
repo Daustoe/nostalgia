@@ -15,7 +15,7 @@ class ColorBox(element.Element):
         self.surface.fill(self.color)
 
     def setMaster(self, master):
-        super(ColorBox, self).setMaster(master)
+        super(ColorBox, self).set_master(master)
 
     def render(self, window):
         super(ColorBox, self).render(window)

@@ -34,10 +34,10 @@ class Button(element.Element):
             self.clicked = False
     
     def setMaster(self, master):
-        super(Button, self).setMaster(master)
+        super(Button, self).set_master(master)
     
     def updatePosition(self):
-        super(Button, self).updatePosition()
+        super(Button, self).update_position()
         self.titlePosition = ((self.position[0]+self.width/2)-self.font.size(self.title)[0]/2, (self.position[1]+self.height/2)-self.font.size(self.title)[1]/2)
         
     def render(self, window):

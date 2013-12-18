@@ -36,7 +36,7 @@ session = None
 
 window = console.Console(835, 520)
 font = pygame.font.SysFont('timesnewroman', 16, bold=True)
-window.setCaption("Sprite Editor")
+window.set_caption("Sprite Editor")
 root = Tkinter.Tk()
 root.withdraw()
 
@@ -131,11 +131,11 @@ def main():
     global currentSprite
     currentSprite = sprite.Sprite((0, 0), (540, 520))
     currentSprite.setColorBox(chooserBox)
-    window.addElement(currentSprite)
+    window.add_element(currentSprite)
     control = False
     while True:
-        window.drawElements()
-        window.handleElementActions()
+        window.draw_elements()
+        window.handle_element_actions()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -196,15 +196,15 @@ loadButton = button.Button((75, 375), (65, 20), "Load", font, loadSprite)
 importButton = button.Button((145, 375), (65, 20), "Import", font, importSprite)
 exportButton = button.Button((215, 375), (65, 20), "Export", font, exportSprite)
 chooserBox = colorBox.ColorBox((10, 10), (275, 275))
-window.addElement(infoPanel)
-infoPanel.addElement(saveButton)
-infoPanel.addElement(loadButton)
-infoPanel.addElement(importButton)
-infoPanel.addElement(exportButton)
-infoPanel.addElement(chooserBox)
-infoPanel.addElement(redSlider)
-infoPanel.addElement(greenSlider)
-infoPanel.addElement(blueSlider)
+window.add_element(infoPanel)
+infoPanel.add_element(saveButton)
+infoPanel.add_element(loadButton)
+infoPanel.add_element(importButton)
+infoPanel.add_element(exportButton)
+infoPanel.add_element(chooserBox)
+infoPanel.add_element(redSlider)
+infoPanel.add_element(greenSlider)
+infoPanel.add_element(blueSlider)
 
 if __name__ == "__main__":
     main()

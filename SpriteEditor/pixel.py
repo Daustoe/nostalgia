@@ -43,10 +43,10 @@ class Pixel(element.Element):
             self.surface.fill(self.color)
 
     def setMaster(self, master):
-        super(Pixel, self).setMaster(master)
+        super(Pixel, self).set_master(master)
 
     def updatePosition(self):
-        super(Pixel, self).updatePosition()
+        super(Pixel, self).update_position()
 
     def getColor(self):
         return self.color

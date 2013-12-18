@@ -22,7 +22,7 @@ class Sprite(element.Element):
             for y in range(self.pixelsInSprite[1]):
                 self.pixelArray[x].append(Pixel((x * self.blockSize[0], y * self.blockSize[1]),
                     self.blockSize))
-                self.pixelArray[x][y].setMaster(self)
+                self.pixelArray[x][y].set_master(self)
         self.colorBox = None
 
     def updatePixelSize(self, dx, dy):
@@ -43,7 +43,7 @@ class Sprite(element.Element):
             for y in range(self.pixelsInSprite[1]):
                 self.pixelArray[x].append(Pixel((x * self.blockSize[0], y * self.blockSize[1]),
                     self.blockSize, temparray[x][y].getColor()))
-                self.pixelArray[x][y].setMaster(self)
+                self.pixelArray[x][y].set_master(self)
 
     def updatePixelCount(self, dx, dy):
         self.pixelsInSprite = (self.pixelsInSprite[0] + dx, self.pixelsInSprite[1] + dy)
@@ -83,10 +83,10 @@ class Sprite(element.Element):
         self.colorBox = colorBox
 
     def setMaster(self, master):
-        super(Sprite, self).setMaster(master)
+        super(Sprite, self).set_master(master)
         for row in self.pixelArray:
             for each in row:
-                each.setMaster(self)
+                each.set_master(self)
 
     def actionEvent(self, mousePress, mousePosition, mouseMovement):
         if self.colorBox is not None and mousePosition[0] > self.position[0] and mousePosition[0] < self.position[0] + self.size[0]:
@@ -105,7 +105,7 @@ class Sprite(element.Element):
         self.clicked = False
 
     def updatePosition(self):
-        super(Sprite, self).updatePosition()
+        super(Sprite, self).update_position()
 
     def getPixelColor(self, x, y):
         return self.pixelArray[x][y].getColor()

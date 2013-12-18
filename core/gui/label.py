@@ -21,4 +21,4 @@ class Label(element.Element):
              self.position)
 
     def setMaster(self, master):
-        super(Label, self).setMaster(master)
+        super(Label, self).set_master(master)

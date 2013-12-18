@@ -12,11 +12,11 @@ class Panel(element.Element):
         
     def addElement(self, element):
         self.elements.append(element)
-        element.setMaster(self)
+        element.set_master(self)
         
     def removeElement(self, element):
         self.elements.remove(element)
-        element.setMaster(None)
+        element.set_master(None)
         
     def actionEvent(self, mousePress, mousePosition, mouseMovement):
         for element in self.elements:
@@ -28,9 +28,9 @@ class Panel(element.Element):
         self.master = master
         
     def updatePosition(self):
-        super(Panel, self).updatePosition()
+        super(Panel, self).update_position()
         for element in self.elements:
-            element.updatePosition()
+            element.update_position()
                 
     def render(self, window):
         for element in self.elements:
