@@ -40,7 +40,7 @@ class Console(object):
             mouse_movement = pygame.mouse.get_rel()
             for element in self.elements:
                 if hasattr(element, 'actionEvent'):
-                    element.actionEvent(mouse_press, mouse_position, mouse_movement)
+                    element.action_event(mouse_press, mouse_position, mouse_movement)
 
     def add_element(self, element):
         """

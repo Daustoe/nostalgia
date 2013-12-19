@@ -1,28 +1,28 @@
-'''
+"""
 Created on Mar 15, 2012
 
 @author: clayton
 
 To Do:
     Give buttons a visual for when they are clicked.
-'''
+    add doc strings
+"""
 
-import element
+import core.gui.element
 
 
-class Button(element.Element):
-    def __init__(self, position, (width, height), title, font, action,
-            fontColor=(100, 0, 0), color=(200, 200, 200)):
+class Button(core.gui.element.Element):
+    def __init__(self, position, (width, height), title, font, action, font_color=(100, 0, 0), color=(200, 200, 200)):
         super(Button, self).__init__(position, (width, height), color)
         self.font = font
         self.title = title
         self.action = action
-        self.fontColor = fontColor
+        self.font_color = font_color
         self.clicked = False
-        (xPos, yPos) = self.calculatePosition()
-        self.titlePosition = (xPos, yPos)
+        (xPos, yPos) = self.calculate_position()
+        self.title_position = (xPos, yPos)
 
-    def changeColor(self, (r, g, b)):
+    def change_color(self, (r, g, b)):
         self.color = (r, g, b)
         self.surface.fill(self.color)
 
@@ -40,22 +40,19 @@ class Button(element.Element):
         elif not mousePress[0]:
             self.clicked = False
 
-    def setMaster(self, master):
+    def set_master(self, master):
         super(Button, self).set_master(master)
 
-    def updatePosition(self):
+    def update_position(self):
         super(Button, self).update_position()
-        self.titlePosition = self.calculatePosition()
+        self.title_position = self.calculate_position()
 
     def render(self, window):
         super(Button, self).render(window)
-        window.blit(self.font.render(self.title, True, self.fontColor),
-            self.titlePosition)
+        window.blit(self.font.render(self.title, True, self.font_color), self.title_position)
 
-    '''
-    Calculates actual position of the button on the Panel.
-    '''
-    def calculatePosition(self):
+    def calculate_position(self):
+        """ Calculates actual position of the button on the Panel. """
         xPos = (self.position[0] + self.width / 2)
         xPos -= self.font.size(self.title)[0] / 2
         yPos = (self.position[1] + self.height / 2)

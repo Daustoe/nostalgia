@@ -22,7 +22,7 @@ class Panel(element.Element):
         for element in self.elements:
             if hasattr(element, 'actionEvent'):
                 newMouse = (mousePosition[0]-self.position[0], mousePosition[1]-self.position[1])
-                element.actionEvent(mousePress, newMouse, mouseMovement)
+                element.action_event(mousePress, newMouse, mouseMovement)
                 
     def setMaster(self, master):
         self.master = master

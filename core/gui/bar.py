@@ -2,11 +2,11 @@
 This is the Bar Class. It creates bars that represent information such as health, or mana.  It paints a filled bar
 corresponding to a maximum value that it is given. Inherits from the Element class.
 """
-import element
+import core.gui.element
 import pygame
 
 
-class Bar(element.Element):
+class Bar(core.gui.element.Element):
     """
     The constructor takes a position (x, y), size (width, height), a maximum
     value (upper bounds of the bar), a foreground color(filled bar), and a
@@ -27,25 +27,23 @@ class Bar(element.Element):
         if self.value > self.maximum:
             self.value = self.maximum
 
-    '''
-    Updates the value of the of the bar with valueChange. valueChange should be
-     a change such as dx would be.
-    '''
-    def updateValue(self, valueChange):
-        self.value += valueChange
+    def update_value(self, value_change):
+        """
+        Updates the value of the of the bar with value_change. value_change should be a change such as dx would be.
+        """
+        self.value += value_change
         if self.value > self.maximum:
             self.value = self.maximum
         elif self.value < 0:
             self.value = 0
         self.percentage = self.value * 1.0 / self.maximum
-        self.filled_bar = pygame.Surface(
-            (self.width * self.percentage, self.height))
+        self.filled_bar = pygame.Surface((self.width * self.percentage, self.height))
         self.filled_bar.fill(self.fill_color)
 
-    '''
-    Blits this object to the window. The super class render draws the background
-    surface while this render draws only the filled portion of the bar.
-    '''
     def render(self, window):
+        """
+        Blits this object to the window. The super class render draws the background
+        surface while this render draws only the filled portion of the bar.
+        """
         super(Bar, self).render(window)
         window.blit(self.filled_bar, self.position)

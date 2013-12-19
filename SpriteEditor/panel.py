@@ -21,7 +21,7 @@ class Panel(element.Element):
     def actionEvent(self, mousePress, mousePosition, mouseMovement):
         for element in self.elements:
             if hasattr(element, 'actionEvent'):
-                element.actionEvent(mousePress, mousePosition, mouseMovement)
+                element.action_event(mousePress, mousePosition, mouseMovement)
                 
     def render(self, window):
         super(Panel, self).render(window)

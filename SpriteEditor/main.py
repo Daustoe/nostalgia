@@ -71,7 +71,7 @@ def loadSprite():
         currentSprite.pixelSize = session['size']
         for x in range(currentSprite.pixelsInSprite[0]):
             for y in range(currentSprite.pixelsInSprite[1]):
-                currentSprite.pixelArray[x][y].changeColor(session['%d %d' % (x, y)])
+                currentSprite.pixelArray[x][y].change_color(session['%d %d' % (x, y)])
         session.close()
         currentSprite.generateSurface()
         pygame.event.pump()
@@ -143,12 +143,12 @@ def main():
             elif event.type == pygame.USEREVENT:
                 if event.info == 'right':
                     if control:
-                        color = event.object.getColor()
+                        color = event.object.get_color()
                         redSlider.setIndex(color[0])
                         greenSlider.setIndex(color[1])
                         blueSlider.setIndex(color[2])
                     else:
-                        event.object.changeColor(None)
+                        event.object.change_color(None)
             elif event.type == pygame.KEYDOWN:
                 if event.key == 306:
                     control = True
@@ -181,7 +181,7 @@ def main():
                 elif event.key == 306:
                     control = False
 
-        chooserBox.updateColors((int(redSlider.value*255), int(greenSlider.value*255), int(blueSlider.value*255)))
+        chooserBox.update_colors((int(redSlider.value*255), int(greenSlider.value*255), int(blueSlider.value*255)))
         window.window.blit(font.render("RGB: (%s, %s, %s)" % chooserBox.color, True, (0, 0, 0)), (625, 355))
         window.window.blit(font.render("Sprite Dimensions: (%d,%d)" % (currentSprite.pixelsInSprite[0], currentSprite.pixelsInSprite[1]), True, (0, 0, 0)), (540+5, 400))
         window.window.blit(font.render("Pixel Dimension: (%d,%d)" % (currentSprite.pixelSize[0], currentSprite.pixelSize[1]), True, (0, 0, 0)), (540+5, 420))

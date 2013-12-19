@@ -39,7 +39,7 @@ class Console(object):
             mouseMovement = pygame.mouse.get_rel()
             for each in self.elements:
                 if hasattr(each, 'actionEvent'):
-                    each.actionEvent(mousePress, mousePosition, mouseMovement)
+                    each.action_event(mousePress, mousePosition, mouseMovement)
                         
     '''
     Adds an element to the consoles list of elements to draw.
