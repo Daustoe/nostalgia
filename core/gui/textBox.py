@@ -5,41 +5,37 @@ import sys
 
 class TextBox(element.Element):
 
-    def __init__(self, position, (width, height), font, defaultText="",
-            fontColor=(0, 0, 0), color=(200, 200, 200)):
+    def __init__(self, position, (width, height), font, default_text="", font_color=(0, 0, 0), color=(200, 200, 200)):
         super(TextBox, self).__init__(position, (width, height), (0, 0, 0))
         self.font = font
-        self.fontColor = fontColor
-        self.text = defaultText
-        self.textSurface = pygame.Surface((width - 2, height - 2))
-        self.textSurface.fill(color)
-        self.surface.blit(self.textSurface,
+        self.font_color = font_color
+        self.text = default_text
+        self.text_surface = pygame.Surface((width - 2, height - 2))
+        self.text_surface.fill(color)
+        self.surface.blit(self.text_surface,
             (self.position[0] + 1, self.position[1] + 1))
 
     def render(self, window):
         super(TextBox, self).render(window)
-        window.blit(self.textSurface,
-            (self.position[0] + 1, self.position[1] + 1))
-        window.blit(self.font.render(self.text, True, self.fontColor),
-            (self.position[0] + 1, self.position[1] + 1))
+        window.blit(self.text_surface, (self.position[0] + 1, self.position[1] + 1))
+        window.blit(self.font.render(self.text, True, self.font_color), (self.position[0] + 1, self.position[1] + 1))
 
-    def actionEvent(self, mousePress, mousePosition, mouseMovement):
-        mouseLeft = mousePosition[0] > self.position[0]
-        mouseRight = mousePosition[0] < self.position[0] + self.size[0]
-        if mouseLeft and mouseRight:
-            mouseUp = mousePosition[1] > self.position[1]
-            mouseDown = mousePosition[1] < self.position[1] + self.size[1]
-            if mouseUp and mouseDown:
-                if mousePress[0]:
+    def action_event(self, mouse_press, mouse_position, mouse_movement):
+        mouse_left = mouse_position[0] > self.position[0]
+        mouse_right = mouse_position[0] < self.position[0] + self.size[0]
+        if mouse_left and mouse_right:
+            mouse_up = mouse_position[1] > self.position[1]
+            mouse_down = mouse_position[1] < self.position[1] + self.size[1]
+            if mouse_up and mouse_down:
+                if mouse_press[0]:
                     #post a new event that this object is the active Element
                     #event asks for control of event queue until it is not
                     #the active element any longer.
-                    pygame.event.post(pygame.event.Event(pygame.USEREVENT,
-                        object=self))
+                    pygame.event.post(pygame.event.Event(pygame.USEREVENT, object=self))
                     return True
         return False
 
-    def becomeActive(self, window):
+    def become_active(self, window):
         stop = False
         while not stop:
             for event in pygame.event.get():

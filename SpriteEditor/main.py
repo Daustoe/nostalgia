@@ -144,9 +144,9 @@ def main():
                 if event.info == 'right':
                     if control:
                         color = event.object.get_color()
-                        redSlider.setIndex(color[0])
-                        greenSlider.setIndex(color[1])
-                        blueSlider.setIndex(color[2])
+                        redSlider.set_index(color[0])
+                        greenSlider.set_index(color[1])
+                        blueSlider.set_index(color[2])
                     else:
                         event.object.change_color(None)
             elif event.type == pygame.KEYDOWN:
