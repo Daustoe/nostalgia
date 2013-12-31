@@ -33,6 +33,7 @@ import tkFileDialog
 
 filename = None
 session = None
+current_sprite = None
 
 window = console.Console(835, 520)
 font = pygame.font.SysFont('timesnewroman', 16, bold=True)
@@ -53,14 +54,14 @@ exportOptions = {'defaultextension': '.jpg',
                  'title': 'Export as image'}
 
 import_options = {'defaultextension': '.jpg',
-                 'filetypes': [('jpeg files', '.jpg'), ('png files', '.png'), ('all files', '.*')],
-                 'initialdir': 'C:\\',
-                 'initialfile': 'default.jpg',
-                 'title': 'Import Browser'}
+                  'filetypes': [('jpeg files', '.jpg'), ('png files', '.png'), ('all files', '.*')],
+                  'initialdir': 'C:\\',
+                  'initialfile': 'default.jpg',
+                  'title': 'Import Browser'}
 
 
 def load_sprite():
-    global current_sprite, filename
+    global current_sprite, filename, session
     filename = tkFileDialog.askopenfilename(**options)
     if not filename == '':
         session = shelve.open(filename)
@@ -117,9 +118,10 @@ def import_sprite():
                             (red, green, blue) = (red + temp[0], green + temp[1], blue + temp[2])
                             chunk_total += 1
                 temp_array[x_chunk / chunk_size[0]].append(pixel.Pixel((x_chunk / chunk_size[0] * this_block_size[0],
-                                                                        y_chunk / chunk_size[1] * this_block_size[1]),
+                                                                       y_chunk / chunk_size[1] * this_block_size[1]),
                                                                        this_block_size,
-                                                                       (red / chunk_total, green / chunk_total, blue / chunk_total)))
+                                                                       (red / chunk_total, green / chunk_total,
+                                                                       blue / chunk_total)))
                 chunk_total = 0
         current_sprite.pixels = temp_array
         current_sprite.render(window.window)
@@ -179,11 +181,17 @@ def main():
                 elif event.key == 306:
                     control = False
 
-        chooser_box.update_colors((int(redSlider.value*255), int(greenSlider.value*255), int(blueSlider.value*255)))
+        chooser_box.update_colors(
+            (int(redSlider.value * 255), int(greenSlider.value * 255), int(blueSlider.value * 255)))
         window.window.blit(font.render("RGB: (%s, %s, %s)" % chooser_box.color, True, (0, 0, 0)), (625, 355))
-        window.window.blit(font.render("Sprite Dimensions: (%d,%d)" % (current_sprite.pixels_in_sprite[0], current_sprite.pixels_in_sprite[1]), True, (0, 0, 0)), (540+5, 400))
-        window.window.blit(font.render("Pixel Dimension: (%d,%d)" % (current_sprite.pixel_size[0], current_sprite.pixel_size[1]), True, (0, 0, 0)), (540+5, 420))
+        window.window.blit(font.render(
+            "Sprite Dimensions: (%d,%d)" % (current_sprite.pixels_in_sprite[0], current_sprite.pixels_in_sprite[1]),
+            True, (0, 0, 0)), (540 + 5, 400))
+        window.window.blit(
+            font.render("Pixel Dimension: (%d,%d)" % (current_sprite.pixel_size[0], current_sprite.pixel_size[1]), True,
+                        (0, 0, 0)), (540 + 5, 420))
         pygame.display.flip()
+
 
 infoPanel = panel.Panel((540, 0), (295, 520), (255, 255, 255))
 redSlider = slider.Slider((10, 295), (270, 15), (255, 200, 200), (255, 0, 0))
