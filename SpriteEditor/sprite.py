@@ -1,9 +1,9 @@
 import pygame
-import element
+import core.gui.element as Element
 from pixel import Pixel
 
 
-class Sprite(element.Element):
+class Sprite(Element.Element):
     def __init__(self, (x, y), (width, height), pixel_size=(2, 2), pixels_in_sprite=(20, 20), pixel_array=[]):
         super(Sprite, self).__init__((x, y), (width, height), (255, 255, 255))
         self.sprite_size = None

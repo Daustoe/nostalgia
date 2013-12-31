@@ -30,7 +30,7 @@ class Panel(core.gui.element.Element):
         Panel.
         """
         for element in self.elements:
-            if hasattr(element, 'actionEvent'):
+            if hasattr(element, 'action_event'):
                 element.action_event(mouse_press, mouse_position, mouse_movement)
 
     def render(self, window):

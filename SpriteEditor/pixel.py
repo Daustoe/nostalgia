@@ -1,8 +1,8 @@
 import pygame
-import element
+import core.gui.element as Element
 
 
-class Pixel(element.Element):
+class Pixel(Element.Element):
     """
     Some notes!!!
     perhaps we want render() to draw the outline of each pixel, instead of relying on

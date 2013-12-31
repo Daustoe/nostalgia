@@ -1,8 +1,4 @@
 """
-Created on Mar 15, 2012
-
-@author: clayton
-
 To Do:
     Give buttons a visual for when they are clicked.
     add doc strings
@@ -19,25 +15,25 @@ class Button(core.gui.element.Element):
         self.action = action
         self.font_color = font_color
         self.clicked = False
-        (xPos, yPos) = self.calculate_position()
-        self.title_position = (xPos, yPos)
+        (x_pos, y_pos) = self.calculate_position()
+        self.title_position = (x_pos, y_pos)
 
     def change_color(self, (r, g, b)):
         self.color = (r, g, b)
         self.surface.fill(self.color)
 
-    def actionEvent(self, mousePress, mousePosition, mouseMovement):
-        if mousePress[0] and not self.clicked:
-            mouseLeft = mousePosition[0] > self.position[0]
-            mouseRight = mousePosition[0] < self.position[0] + self.size[0]
-            if mouseLeft and mouseRight:
-                mouseUp = mousePosition[1] > self.position[1]
-                mouseDown = mousePosition[1] < self.position[1] + self.size[1]
-                if mouseUp and mouseDown:
+    def action_event(self, mouse_press, mouse_position, mouse_movement):
+        if mouse_press[0] and not self.clicked:
+            mouse_left = mouse_position[0] > self.position[0]
+            mouse_right = mouse_position[0] < self.position[0] + self.size[0]
+            if mouse_left and mouse_right:
+                mouse_up = mouse_position[1] > self.position[1]
+                mouse_down = mouse_position[1] < self.position[1] + self.size[1]
+                if mouse_up and mouse_down:
                     self.clicked = True  # self.darken()
                     self.action()
-        #if not mousePress[0] and self.clicked: self.lighten()
-        elif not mousePress[0]:
+        #if not mouse_press[0] and self.clicked: self.lighten()
+        elif not mouse_press[0]:
             self.clicked = False
 
     def set_master(self, master):
@@ -53,8 +49,8 @@ class Button(core.gui.element.Element):
 
     def calculate_position(self):
         """ Calculates actual position of the button on the Panel. """
-        xPos = (self.position[0] + self.width / 2)
-        xPos -= self.font.size(self.title)[0] / 2
-        yPos = (self.position[1] + self.height / 2)
-        yPos -= self.font.size(self.title)[1] / 2
-        return (xPos, yPos)
+        x_pos = (self.position[0] + self.width / 2)
+        x_pos -= self.font.size(self.title)[0] / 2
+        y_pos = (self.position[1] + self.height / 2)
+        y_pos -= self.font.size(self.title)[1] / 2
+        return x_pos, y_pos

@@ -21,12 +21,12 @@ import sys
 import pygame
 import shelve
 import sprite
-import slider
-import button
+import core.gui.slider as Slider
+import core.gui.button as Button
 import pixel
-import console
-import panel
-import colorBox
+import core.gui.console as Console
+import core.gui.panel as Panel
+import core.gui.colorBox as ColorBox
 import Image
 import Tkinter
 import tkFileDialog
@@ -35,7 +35,7 @@ filename = None
 session = None
 current_sprite = None
 
-window = console.Console(835, 520)
+window = Console.Console(835, 520)
 font = pygame.font.SysFont('timesnewroman', 16, bold=True)
 window.set_caption("Sprite Editor")
 root = Tkinter.Tk()
@@ -193,15 +193,15 @@ def main():
         pygame.display.flip()
 
 
-infoPanel = panel.Panel((540, 0), (295, 520), (255, 255, 255))
-redSlider = slider.Slider((10, 295), (270, 15), (255, 200, 200), (255, 0, 0))
-greenSlider = slider.Slider((10, 315), (270, 15), (200, 255, 200), (0, 255, 0))
-blueSlider = slider.Slider((10, 335), (270, 15), (200, 200, 255), (0, 0, 255))
-saveButton = button.Button((5, 375), (65, 20), "Save", font, save_sprite)
-loadButton = button.Button((75, 375), (65, 20), "Load", font, load_sprite)
-importButton = button.Button((145, 375), (65, 20), "Import", font, import_sprite)
-exportButton = button.Button((215, 375), (65, 20), "Export", font, export_sprite)
-chooser_box = colorBox.ColorBox((10, 10), (275, 275))
+infoPanel = Panel.Panel((540, 0), (295, 520), (255, 255, 255))
+redSlider = Slider.Slider((10, 295), (270, 15), (255, 200, 200), (255, 0, 0))
+greenSlider = Slider.Slider((10, 315), (270, 15), (200, 255, 200), (0, 255, 0))
+blueSlider = Slider.Slider((10, 335), (270, 15), (200, 200, 255), (0, 0, 255))
+saveButton = Button.Button((5, 375), (65, 20), "Save", font, save_sprite)
+loadButton = Button.Button((75, 375), (65, 20), "Load", font, load_sprite)
+importButton = Button.Button((145, 375), (65, 20), "Import", font, import_sprite)
+exportButton = Button.Button((215, 375), (65, 20), "Export", font, export_sprite)
+chooser_box = ColorBox.ColorBox((10, 10), (275, 275))
 window.add_element(infoPanel)
 infoPanel.add_element(saveButton)
 infoPanel.add_element(loadButton)
