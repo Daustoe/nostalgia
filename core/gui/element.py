@@ -1,12 +1,11 @@
-"""
-This is the abstract class that any gui element needs to inherit from. It has the
-basic definitions and variables needed by the console object to handle
-actionEvents and rendering.
-"""
 import pygame
 
 
 class Element(object):
+    """
+    The Element object is the abstract class that all gui elements of nostalgia inherit from. It has the basic
+    definitions and variables needed by the by the Console object to hand events and rendering.
+    """
     def __init__(self, position, (width, height), color=(200, 200, 200)):
         super(Element, self).__init__()
         self.position = (self.x, self.y) = position

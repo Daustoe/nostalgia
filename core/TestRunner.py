@@ -1,4 +1,4 @@
-'''
+"""
 Created on Mar 15, 2012
 
 @author: clayton
@@ -17,55 +17,52 @@ Issue List for whole of development kit
 --basic class structures of game Objects
 --heightmap stuff for above ground map generation
 --make gameCanvas (main display of game)
-'''
-import gui.console as console
+"""
+import gui.console as Console
 import pygame
 import sys
-import gui.button as button
+import gui.button as Button
 # import messageBox
-import core.gui.slider as slider
-import core.gui.menu
-import dungeonGenerator
-import pathfinder
-import gui.panel as panel
-import gui.bar as bar
-import gameObject
-from pygame.locals import *
+import core.gui.slider as Slider
+import core.gui.menu as Menu
+import core.gameDev.dungeonGenerator as Dungeon
+import core.gameDev.pathfinder as PathFinder
+import gui.panel as Panel
+import gui.bar as Bar
+import core.gameDev.gameObject as gameObject
 import random
 import time
 
 
-def buttonAction():
+def button_action():
     print "Button works"
 
 
-window = console.Console(1100, 720)
+window = Console.Console(1100, 720)
 font = pygame.font.SysFont('timesnewroman', 16, bold=True)
-firstButton = button.Button((10, 10), (80, 20), "Hello", font, buttonAction)
-slider = slider.Slider((10, 300), (275, 15), (255, 200, 200), (255, 0, 0))
-menu = menu.Menu((10, 10), (580, 580), font, title="Test Menu")
+firstButton = Button.Button((10, 10), (80, 20), "Hello", font, button_action)
+slider = Slider.Slider((10, 300), (275, 15), (255, 200, 200), (255, 0, 0))
+menu = Menu.Menu((10, 10), (580, 580), font, title="Test Menu")
 window.add_element(menu)
 player = gameObject.GameObject((0, 0), pygame.image.load("player.png"))
-bottomPanel = panel.Panel((0, 560), (1100, 180), (20, 20, 20))
-healthbar = bar.Bar((10, 20), (200, 10), 100, (200, 0, 0), (100, 20, 20))
-manabar = bar.Bar((10, 40), (200, 10), 100, (0, 0, 200), (20, 20, 100))
-bottomPanel.add_element(manabar)
-bottomPanel.add_element(healthbar)
+bottomPanel = Panel.Panel((0, 560), (1100, 180), (20, 20, 20))
+health_bar = Bar.Bar((10, 20), (200, 10), 100, (200, 0, 0), (100, 20, 20))
+mana_bar = Bar.Bar((10, 40), (200, 10), 100, (0, 0, 200), (20, 20, 100))
+bottomPanel.add_element(mana_bar)
+bottomPanel.add_element(health_bar)
 window.add_element(bottomPanel)
 
-mapmaker = dungeonGenerator.DungeonGenerator(30, 6, 13, 85, 40)
+mapmaker = Dungeon.DungeonGenerator(30, 6, 13, 85, 40)
 
 myMap = mapmaker.makeMap()
-finder = pathfinder.PathFinder(myMap)
+finder = PathFinder.PathFinder(myMap)
 
 while myMap[player.position[0]][player.position[1]].blockSight:
     x = random.randint(0, 84)
     y = random.randint(0, 39)
     player.position = (x, y)
 
-menuOptions = []
-menuOptions.append("test1")
-menuOptions.append("test2")
+menu_options = ["test1", "test2"]
 
 pauseOptions = ["Save Game", "Load Game", "Quit to Desktop"]
 
@@ -73,8 +70,8 @@ lightWall = (130, 110, 50)
 lightGround = (200, 180, 50)
 
 
-def colorMap():
-    global myMap, lightWall, lightGround, tilesize
+def color_map():
+    global myMap, lightWall, lightGround
     for y in range(40):
         for x in range(85):
             wall = myMap[x][y].blockSight
@@ -84,7 +81,7 @@ def colorMap():
                 myMap[x][y].setColor(lightGround)
 
 userQuit = False
-colorMap()
+color_map()
 while not userQuit:
     window.draw_elements()
     window.handle_element_actions()
@@ -96,25 +93,24 @@ while not userQuit:
         if event.type == pygame.QUIT:
             userQuit = True
             sys.exit()
-            break
         elif event.type == pygame.KEYDOWN:
             if event.key == 115:  # hit 's' testing out dijkstra's algorithm
-                starty = random.randint(0, 42)
-                startx = random.randint(0, 79)
-                endy = random.randint(0, 42)
-                endx = random.randint(0, 79)
-                while myMap[startx][starty].blockSight is True:
-                    starty = random.randint(0, 42)
-                    startx = random.randint(0, 79)
-                while myMap[endx][endy].blockSight is True:
-                    endy = random.randint(0, 42)
-                    endx = random.randint(0, 79)
-                myMap[startx][starty].setColor((255, 0, 255))
-                myMap[endx][endy].setColor((0, 255, 0))
-                myMap[startx][starty].render(window.window)
-                myMap[endx][endy].render(window.window)
+                start_y = random.randint(0, 42)
+                start_x = random.randint(0, 79)
+                end_y = random.randint(0, 42)
+                end_x = random.randint(0, 79)
+                while myMap[start_x][start_y].blockSight is True:
+                    start_y = random.randint(0, 42)
+                    start_x = random.randint(0, 79)
+                while myMap[end_x][end_y].blockSight is True:
+                    end_y = random.randint(0, 42)
+                    end_x = random.randint(0, 79)
+                myMap[start_x][start_y].setColor((255, 0, 255))
+                myMap[end_x][end_y].setColor((0, 255, 0))
+                myMap[start_x][start_y].render(window.window)
+                myMap[end_x][end_y].render(window.window)
                 pygame.display.flip()
-                print finder.dijkstra((startx, starty), (endx, endy))
+                print finder.dijkstra((start_x, start_y), (end_x, end_y))
             elif event.key == 27:  # escape key hit
                 value = menu.open(pauseOptions)
                 if value == 2:

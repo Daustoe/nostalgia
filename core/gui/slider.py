@@ -1,20 +1,14 @@
-"""
-This is the Slider class. It is an interface object which has a value tied to a
-movable slider so that the user can change that value. Inherits from the Element
-class.
-"""
-
 import core.gui.element
 import pygame
 
 
 class Slider(core.gui.element.Element):
     """
-    The constructor takes a position (x, y), size (width, height), barColor(r,g,b), sliderColor (r,g,b), and a value
-    which defaults to 0. Index becomes value (pixel index based on background surface). The actual value that this
-    object holds onto is a float from 0 to 1.
+    This is the Slider class. It is an interface object which has a value tied to a movable slider so that the user can
+    change that value. Inherits from the Element class. The constructor takes a position (x, y), size (width, height),
+    barColor(r,g,b), sliderColor (r,g,b), and a value which defaults to 0. Index becomes value (pixel index based on
+    background surface). The actual value that this object holds onto is a float from 0 to 1.
     """
-
     def __init__(self, position, (width, height), bar_color, slider_color, value=0):
         super(Slider, self).__init__(position, (width, height), bar_color)
         self.slider = pygame.Surface((20, self.height))
@@ -51,8 +45,7 @@ class Slider(core.gui.element.Element):
 
     def set_index(self, index):
         """
-        The setIndex definition is self explanatory. It takes a new index, sets it,
-        and updates this objects value.
+        The setIndex definition is self explanatory. It takes a new index, sets it, and updates this objects value.
         """
         self.index = index
         self.value = 1.0 * self.index / (self.width - 20)
@@ -61,9 +54,8 @@ class Slider(core.gui.element.Element):
 
     def render(self, window):
         """
-        The render method blits this object's surface to the window. The super class
-        draws the background while this object draws the slider at the correct
-        position.
+        The render method draws this object's surface to the window. The super class draws the background while this
+        object draws the slider at the correct position.
         """
         super(Slider, self).render(window)
         position = (self.position[0] + self.index, self.position[1])

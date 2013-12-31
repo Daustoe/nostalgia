@@ -1,14 +1,13 @@
-"""
-Console object, built upon pygames console and modified just a bit. Takes the width, height, and isFullscreen boolean as
-arguments. The main benefit of this object is that it is set up to automatically handle rendering and actionEvent
-handling of gui objects which inherit from the Element object.
-"""
-
 import pygame
 from pygame.locals import FULLSCREEN
 
 
 class Console(object):
+    """
+    Console object, wraps the pygame Console object. Takes the width, height, and fullscreen boolean as arguments. The
+    main benefit of this object is that it is set up to automatically handle rendering and the events of gui objects
+    which inherit from the Element object of the gui.
+    """
     def __init__(self, width, height, is_fullscreen=False):
         pygame.init()
         self.size = (width, height)

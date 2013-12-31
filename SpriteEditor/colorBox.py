@@ -1,24 +1,27 @@
-'''
+"""
 Created on Mar 22, 2012
 
 @author: Claymore
-'''
-import element
+
+@todo
+    add doc strings
+"""
+import core.gui.element
 
 
-class ColorBox(element.Element):
+class ColorBox(core.gui.element.Element):
     def __init__(self, (x, y), (width, height), color=(0, 0, 0)):
         super(ColorBox, self).__init__((x, y), (width, height), color)
 
-    def updateColors(self, (r, g, b)):
+    def update_colors(self, (r, g, b)):
         self.color = (r, g, b)
         self.surface.fill(self.color)
 
-    def setMaster(self, master):
+    def set_master(self, master):
         super(ColorBox, self).set_master(master)
 
     def render(self, window):
         super(ColorBox, self).render(window)
 
-    def getColor(self):
+    def get_color(self):
         return self.color

@@ -4,7 +4,9 @@ import sys
 
 
 class TextBox(element.Element):
-
+    """
+    This is a work in progress, it needs a major refactoring.
+    """
     def __init__(self, position, (width, height), font, default_text="", font_color=(0, 0, 0), color=(200, 200, 200)):
         super(TextBox, self).__init__(position, (width, height), (0, 0, 0))
         self.font = font
@@ -12,15 +14,20 @@ class TextBox(element.Element):
         self.text = default_text
         self.text_surface = pygame.Surface((width - 2, height - 2))
         self.text_surface.fill(color)
-        self.surface.blit(self.text_surface,
-            (self.position[0] + 1, self.position[1] + 1))
+        self.surface.blit(self.text_surface, (self.position[0] + 1, self.position[1] + 1))
 
     def render(self, window):
+        """
+        Calls the super Element's render and then draws the text on top of that surface.
+        """
         super(TextBox, self).render(window)
         window.blit(self.text_surface, (self.position[0] + 1, self.position[1] + 1))
         window.blit(self.font.render(self.text, True, self.font_color), (self.position[0] + 1, self.position[1] + 1))
 
     def action_event(self, mouse_press, mouse_position, mouse_movement):
+        """
+        Action event for this object
+        """
         mouse_left = mouse_position[0] > self.position[0]
         mouse_right = mouse_position[0] < self.position[0] + self.size[0]
         if mouse_left and mouse_right:
