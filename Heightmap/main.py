@@ -1,4 +1,4 @@
-'''
+"""
 Now I just need to link the button tools to the actual heightmap methods, the only problem that I
 can see with this is that we need to set the variables of the methods based on values from gui
 sliders. This may present a problem.
@@ -8,22 +8,22 @@ todo:
 -will allow user to change pieces in the history without rewriting data.
 -need to solve the greedy cpu issues, will soak up too much.
 -want to display values of the slider bars beside them.
-'''
+"""
 
 import sys
 import pygame
-import slider
-import button
-import console
-import panel
+import core.gui.slider as Slider
+import core.gui.button as Button
+import core.gui.console as Console
+import core.gui.panel as Panel
 import heightmap
-import label
+import core.gui.label as Label
 
-window = console.Console(960, 720)
+window = Console.Console(960, 720)
 font = pygame.font.SysFont('timesnewroman', 16, bold=True)
 window.set_caption("Heightmap Generator")
 myMap = heightmap.HeightMap(100, 100)
-selectedPanel = None
+selected_panel = None
 historyElementOffset = 15
 historyCount = 0
 history = []
@@ -55,72 +55,71 @@ class HistoryObject:
         self.panel = panel
         self.name = name
 
-    def historyAction(self):
-        global infoPanel, selectedPanel, myMap
-        if selectedPanel is not None:
-            infoPanel.remove_element(selectedPanel)
-        selectedPanel = self.panel
+    def history_action(self):
+        global infoPanel, selected_panel, myMap
+        if selected_panel is not None:
+            infoPanel.remove_element(selected_panel)
+        selected_panel = self.panel
         infoPanel.add_element(self.panel)
 
 
-def writeOut():
+def write_out():
     global history
     filename = "hm.py"
-    fileOut = open(filename, "w")
+    file_out = open(filename, "w")
     header = "import heightmap\n\n" + "hm = heightmap.Heightmap(100,80)\n" + "def buildMap():\n"
-    fileOut.write(header)
-    '''
-    need to be able to access elements in panel with a given name
-    '''
+    file_out.write(header)
+    # need to be able to access elements in panel with a given name
+
     for each in history:
         if each.name == "change":
-            fileOut.write("    hm.changeHeight({})\n".format(each.panel.heightSlider.value - .5))
+            file_out.write("    hm.changeHeight({})\n".format(each.panel.heightSlider.value - .5))
         elif each.name == "valley":
-            fileOut.write("    hm.addvalleys({},{},{},{})\n".format(int(
+            file_out.write("    hm.addvalleys({},{},{},{})\n".format(int(
                 each.panel.numberSlider.value * 50), int(each.panel.radiusSlider.value * 20),
                 each.panel.radVarSlider.value, each.panel.heightSlider.value))
         elif each.name == "smooth":
-            fileOut.write("    hm.smooth({},{},{})\n".format(each.panel.weightSlider.value * 20,
-                each.panel.minSlider.value, each.panel.maxSlider.value * 5))
+            file_out.write("    hm.smooth({},{},{})\n".format(each.panel.weightSlider.value * 20,
+                                                              each.panel.minSlider.value,
+                                                              each.panel.maxSlider.value * 5))
         elif each.name == "hill":
-            fileOut.write("    hm.addHills({},{},{},{})\n".format(int(
+            file_out.write("    hm.addHills({},{},{},{})\n".format(int(
                 each.panel.hillNumSlider.value * 50), int(each.panel.radiusSlider.value * 20),
                 each.panel.radiusVarSlider.value, each.panel.heightSlider.value))
         elif each.name == "normal":
-            fileOut.write("    hm.normalize({},{})\n".format(each.panel.minSlider.value,
-            each.panel.maxSlider.value))
+            file_out.write("    hm.normalize({},{})\n".format(each.panel.minSlider.value, each.panel.maxSlider.value))
         elif each.name == "rain":
-            fileOut.write("    hm.rainErosion({},{},{})\n".format(int(
-                each.panel.rainDropsSlider.value * 20000), each.panel.erosionSlider.value,
-                each.panel.sedimentSlider.value))
-    fileOut.close()
+            file_out.write("    hm.rainErosion({},{},{})\n".format(int(each.panel.rainDropsSlider.value * 20000),
+                                                                   each.panel.erosionSlider.value,
+                                                                   each.panel.sedimentSlider.value))
+    file_out.close()
 
 
-def doneAction():
-    if selectedPanel.name == "change":
-        myMap.changeHeights(selectedPanel.heightSlider.value * 2 - 1)
-    elif selectedPanel.name == "valley":
-        myMap.addValleys(int(selectedPanel.numberSlider.value * 50), int(
-            selectedPanel.radiusSlider.value * 25), selectedPanel.radVarSlider.value,
-            selectedPanel.heightSlider.value)
-    elif selectedPanel.name == "hill":
-        myMap.addHills(int(selectedPanel.hillNumSlider.value * 50), int(
-            selectedPanel.radiusSlider.value * 25), selectedPanel.radiusVarSlider.value,
-            selectedPanel.heightSlider.value)
-    elif selectedPanel.name == "normal":
-        myMap.normalize(selectedPanel.minSlider.value, selectedPanel.maxSlider.value)
-    elif selectedPanel.name == "smooth":
-        myMap.smooth(int(selectedPanel.weightSlider.value * 10), selectedPanel.minSlider.value,
-            selectedPanel.maxSlider.value)
-    elif selectedPanel.name == "rain":
-        myMap.rainErosion(int(selectedPanel.rainDropsSlider.value * 20000),
-            selectedPanel.erosionSlider.value, selectedPanel.sedimentSlider.value)
+def done_action():
+    if selected_panel.name == "change":
+        myMap.changeHeights(selected_panel.heightSlider.value * 2 - 1)
+    elif selected_panel.name == "valley":
+        myMap.addValleys(int(selected_panel.numberSlider.value * 50), int(
+            selected_panel.radiusSlider.value * 25), selected_panel.radVarSlider.value,
+                         selected_panel.heightSlider.value)
+    elif selected_panel.name == "hill":
+        myMap.addHills(int(selected_panel.hillNumSlider.value * 50), int(
+            selected_panel.radiusSlider.value * 25), selected_panel.radiusVarSlider.value,
+                       selected_panel.heightSlider.value)
+    elif selected_panel.name == "normal":
+        myMap.normalize(selected_panel.minSlider.value, selected_panel.maxSlider.value)
+    elif selected_panel.name == "smooth":
+        myMap.smooth(int(selected_panel.weightSlider.value * 10), selected_panel.minSlider.value,
+                     selected_panel.maxSlider.value)
+    elif selected_panel.name == "rain":
+        myMap.rainErosion(int(selected_panel.rainDropsSlider.value * 20000),
+                          selected_panel.erosionSlider.value, selected_panel.sedimentSlider.value)
 
 
 def changeButtonAction():
-    global selectedPanel, historyElementOffset, font, history, myMap
-    if selectedPanel is not None:
-        infoPanel.remove_element(selectedPanel)
+    global selected_panel, historyElementOffset, font, history, myMap
+    if selected_panel is not None:
+        infoPanel.remove_element(selected_panel)
     changePanel = panel.Panel((5, 210), (230, 80), (10, 10, 50))
     changeLabel = label.Label((5, 2), (230, 8), font, "------valleys------", (230, 230, 230))
     changePanel.add_element(changeLabel)
@@ -129,24 +128,24 @@ def changeButtonAction():
     changePanel.add_element(heightLabel)
     changePanel.add_element(heightSlider)
     doneButton = button.Button((5, 80), (100, 10), "done", font, myMap.changeHeights, (230, 230,
-        230), (10, 10, 50))
+                                                                                       230), (10, 10, 50))
     changePanel.add_element(doneButton)
     changePanel.name = "change"
     heightSlider.setValue(.55)
-    selectedPanel = changePanel
+    selected_panel = changePanel
     changePanel.heightSlider = heightSlider
     infoPanel.add_element(changePanel)
     history.append(HistoryObject(changePanel, "change"))
     historyPanel.add_element(button.Button((5, historyElementOffset), (220, 10), "change z", font,
-        history[-1].historyAction, (230, 230, 230), (10, 10, 50)))
+                                           history[-1].history_action, (230, 230, 230), (10, 10, 50)))
     historyElementOffset += 15
     #myMap.changeHeights(.1)
 
 
 def valleyButtonAction():
-    global selectedPanel, historyElementOffset, font, history, myMap
-    if selectedPanel is not None:
-        infoPanel.remove_element(selectedPanel)
+    global selected_panel, historyElementOffset, font, history, myMap
+    if selected_panel is not None:
+        infoPanel.remove_element(selected_panel)
     valleyPanel = panel.Panel((5, 210), (230, 80), (10, 10, 50))
     valleyLabel = label.Label((5, 2), (230, 8), font, "------valleys------", (230, 230, 230))
     valleyPanel.add_element(valleyLabel)
@@ -166,7 +165,7 @@ def valleyButtonAction():
     heightSlider = slider.Slider((80, 60), (140, 8), (50, 50, 50), (230, 230, 230))
     valleyPanel.add_element(heightLabel)
     valleyPanel.add_element(heightSlider)
-    selectedPanel = valleyPanel
+    selected_panel = valleyPanel
     valleyPanel.numberSlider = numberSlider
     valleyPanel.radiusSlider = radiusSlider
     valleyPanel.radVarSlider = radVarSlider
@@ -175,15 +174,15 @@ def valleyButtonAction():
     infoPanel.add_element(valleyPanel)
     history.append(HistoryObject(valleyPanel, "valley"))
     historyPanel.add_element(button.Button((5, historyElementOffset), (220, 10), "valleys", font,
-        history[-1].historyAction, (230, 230, 230), (10, 10, 50)))
+                                           history[-1].history_action, (230, 230, 230), (10, 10, 50)))
     historyElementOffset += 15
     #myMap.addValleys(25, 10, .5, .5)
 
 
 def smoothButtonAction():
-    global selectedPanel, historyElementOffset, font, history, myMap
-    if selectedPanel is not None:
-        infoPanel.remove_element(selectedPanel)
+    global selected_panel, historyElementOffset, font, history, myMap
+    if selected_panel is not None:
+        infoPanel.remove_element(selected_panel)
     smoothPanel = panel.Panel((5, 210), (230, 80), (10, 10, 50))
     smoothLabel = label.Label((5, 2), (230, 8), font, "------smooth------", (230, 230, 230))
     smoothPanel.add_element(smoothLabel)
@@ -199,7 +198,7 @@ def smoothButtonAction():
     weightSlider = slider.Slider((80, 45), (140, 8), (50, 50, 50), (150, 150, 150))
     smoothPanel.add_element(weightLabel)
     smoothPanel.add_element(weightSlider)
-    selectedPanel = smoothPanel
+    selected_panel = smoothPanel
     smoothPanel.minSlider = minSlider
     smoothPanel.maxSlider = maxSlider
     smoothPanel.weightSlider = weightSlider
@@ -207,15 +206,15 @@ def smoothButtonAction():
     infoPanel.add_element(smoothPanel)
     history.append(HistoryObject(smoothPanel, "smooth"))
     historyPanel.add_element(button.Button((5, historyElementOffset), (220, 10), "smooth", font,
-        history[-1].historyAction, (230, 230, 230), (10, 10, 50)))
+                                           history[-1].history_action, (230, 230, 230), (10, 10, 50)))
     historyElementOffset += 15
     #myMap.smooth(2, 0, 1.95)
 
 
 def normalButtonAction():
-    global selectedPanel, historyElementOffset, font, history, myMap
-    if selectedPanel is not None:
-        infoPanel.remove_element(selectedPanel)
+    global selected_panel, historyElementOffset, font, history, myMap
+    if selected_panel is not None:
+        infoPanel.remove_element(selected_panel)
     normPanel = panel.Panel((5, 210), (230, 80), (10, 10, 50))
     normLabel = label.Label((5, 2), (230, 8), font, "------normalize------", (230, 230, 230))
     normPanel.add_element(normLabel)
@@ -227,22 +226,22 @@ def normalButtonAction():
     normPanel.add_element(minSlider)
     normPanel.add_element(maxSlider)
     normPanel.add_element(maxLabel)
-    selectedPanel = normPanel
+    selected_panel = normPanel
     normPanel.minSlider = minSlider
     normPanel.maxSlider = maxSlider
     infoPanel.add_element(normPanel)
     normPanel.name = "normal"
     history.append(HistoryObject(normPanel, "normal"))
     historyPanel.add_element(button.Button((5, historyElementOffset), (220, 10), "normalize", font,
-        history[-1].historyAction, (230, 230, 230), (10, 10, 50)))
+                                           history[-1].history_action, (230, 230, 230), (10, 10, 50)))
     historyElementOffset += 15
     #myMap.normalize(0, 1)
 
 
 def hillButtonAction():
-    global selectedPanel, font, history, historyElementOffset, myMap
-    if selectedPanel is not None:
-        infoPanel.remove_element(selectedPanel)
+    global selected_panel, font, history, historyElementOffset, myMap
+    if selected_panel is not None:
+        infoPanel.remove_element(selected_panel)
     hillPanel = panel.Panel((5, 210), (230, 80), (10, 10, 50))
     hillLabel = label.Label((5, 2), (230, 8), font, "------hills------", (230, 230, 230))
     hillPanel.add_element(hillLabel)
@@ -266,20 +265,20 @@ def hillButtonAction():
     hillPanel.radiusSlider = radiusSlider
     hillPanel.radiusVarSlider = radiusVarSlider
     hillPanel.heightSlider = heightSlider
-    selectedPanel = hillPanel
+    selected_panel = hillPanel
     hillPanel.name = "hill"
     infoPanel.add_element(hillPanel)
     history.append(HistoryObject(hillPanel, "hill"))
     historyPanel.add_element(button.Button((5, historyElementOffset), (220, 10), "hills", font,
-        history[-1].historyAction, (230, 230, 230), (10, 10, 50)))
+                                           history[-1].history_action, (230, 230, 230), (10, 10, 50)))
     historyElementOffset += 15
     #myMap.addHills(25, 10, .5, .5)
 
 
 def rainButtonAction():
-    global selectedPanel, font, history, historyElementOffset
-    if selectedPanel is not None:
-        infoPanel.remove_element(selectedPanel)
+    global selected_panel, font, history, historyElementOffset
+    if selected_panel is not None:
+        infoPanel.remove_element(selected_panel)
     rainPanel = panel.Panel((5, 210), (230, 80), (10, 10, 50))
     rainLabel = label.Label((5, 2), (230, 8), font, "------rain------", (230, 230, 230))
     rainPanel.add_element(rainLabel)
@@ -298,12 +297,12 @@ def rainButtonAction():
     rainPanel.rainDropsSlider = rainDropsSlider
     rainPanel.erosionSlider = erosionSlider
     rainPanel.sedimentSlider = sedimentSlider
-    selectedPanel = rainPanel
+    selected_panel = rainPanel
     rainPanel.name = "rain"
     infoPanel.add_element(rainPanel)
     history.append(HistoryObject(rainPanel, "rain"))
     historyPanel.add_element(button.Button((5, historyElementOffset), (220, 10), "rain", font,
-        history[-1].historyAction, (230, 230, 230), (10, 10, 50)))
+                                           history[-1].history_action, (230, 230, 230), (10, 10, 50)))
     historyElementOffset += 15
     #myMap.rainErosion(1000, .05, .05)
 
@@ -342,41 +341,42 @@ def main():
                 break
         pygame.display.flip()
 
+
 infoPanel = panel.Panel((720, 0), (240, 720), (200, 200, 200))
 toolPanel = panel.Panel((5, 5), (230, 200), (10, 10, 50))
 toolPanelLabel = label.Label((5, 2), (230, 8), font, "------tools------", (230, 230, 230))
 toolPanel.add_element(toolPanelLabel)
 
 normButton = button.Button((5, 20), (220, 10), "normalize", font, normalButtonAction, (230, 230,
-    230), (10, 10, 50))
+                                                                                       230), (10, 10, 50))
 toolPanel.add_element(normButton)
 
 hillButton = button.Button((5, 50), (220, 10), "hills", font, hillButtonAction, (230, 230, 230),
-    (10, 10, 50))
+                           (10, 10, 50))
 toolPanel.add_element(hillButton)
 
 rainButton = button.Button((5, 65), (220, 10), "rain", font, rainButtonAction, (230, 230, 230),
-    (10, 10, 50))
+                           (10, 10, 50))
 toolPanel.add_element(rainButton)
 
 valleyButton = button.Button((5, 35), (220, 10), "valleys", font, valleyButtonAction, (230, 230,
-    230), (10, 10, 50))
+                                                                                       230), (10, 10, 50))
 toolPanel.add_element(valleyButton)
 
 smoothButton = button.Button((5, 80), (220, 10), "smooth", font, smoothButtonAction, (230, 230,
-    230), (10, 10, 50))
+                                                                                      230), (10, 10, 50))
 toolPanel.add_element(smoothButton)
 
 changeButton = button.Button((5, 95), (220, 10), "change z", font, changeButtonAction, (230, 230,
-    230), (10, 10, 50))
+                                                                                        230), (10, 10, 50))
 toolPanel.add_element(changeButton)
 
-writeButton = button.Button((5, 110), (220, 10), "write to file", font, writeOut, (230, 230, 230),
-    (10, 10, 50))
+writeButton = button.Button((5, 110), (220, 10), "write to file", font, write_out, (230, 230, 230),
+                            (10, 10, 50))
 toolPanel.add_element(writeButton)
 
-doneButton = button.Button((5, 295), (230, 15), "done", font, doneAction, (230, 230, 230),
-    (10, 10, 50))
+doneButton = button.Button((5, 295), (230, 15), "done", font, done_action, (230, 230, 230),
+                           (10, 10, 50))
 infoPanel.add_element(doneButton)
 
 infoPanel.add_element(toolPanel)
@@ -386,6 +386,6 @@ historyLabel = label.Label((5, 2), (230, 8), font, "------history------", (230, 
 historyPanel.add_element(historyLabel)
 infoPanel.add_element(historyPanel)
 window.add_element(infoPanel)
-writeOut()
+write_out()
 if __name__ == "__main__":
     main()
