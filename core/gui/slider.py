@@ -43,6 +43,17 @@ class Slider(core.gui.element.Element):
             self.index = self.width - 20
             self.value = 1.0
 
+    def set_value(self, value):
+        """
+        Sets the value of the bar location. Float between 0 and 1, 1 representing full and 0 empty.
+        """
+        if value >= 1.0:
+            self.value = 1.0
+        elif value <= 0.0:
+            self.value = 0.0
+        else:
+            self.value = value
+
     def set_index(self, index):
         """
         The setIndex definition is self explanatory. It takes a new index, sets it, and updates this objects value.
