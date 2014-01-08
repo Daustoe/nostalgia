@@ -75,17 +75,19 @@ def write_out():
         if each.name == "change":
             file_out.write("    hm.changeHeight({})\n".format(each.panel.heightSlider.value - .5))
         elif each.name == "valley":
-            file_out.write("    hm.addvalleys({},{},{},{})\n".format(int(
-                each.panel.numberSlider.value * 50), int(each.panel.radiusSlider.value * 20),
-                each.panel.radVarSlider.value, each.panel.heightSlider.value))
+            file_out.write("    hm.addvalleys({},{},{},{})\n".format(int(each.panel.numberSlider.value * 50),
+                                                                     int(each.panel.radiusSlider.value * 20),
+                                                                     each.panel.radVarSlider.value,
+                                                                     each.panel.heightSlider.value))
         elif each.name == "smooth":
             file_out.write("    hm.smooth({},{},{})\n".format(each.panel.weightSlider.value * 20,
                                                               each.panel.minSlider.value,
                                                               each.panel.maxSlider.value * 5))
         elif each.name == "hill":
-            file_out.write("    hm.addHills({},{},{},{})\n".format(int(
-                each.panel.hillNumSlider.value * 50), int(each.panel.radiusSlider.value * 20),
-                each.panel.radiusVarSlider.value, each.panel.heightSlider.value))
+            file_out.write("    hm.addHills({},{},{},{})\n".format(int(each.panel.hillNumSlider.value * 50),
+                                                                   int(each.panel.radiusSlider.value * 20),
+                                                                   each.panel.radiusVarSlider.value,
+                                                                   each.panel.heightSlider.value))
         elif each.name == "normal":
             file_out.write("    hm.normalize({},{})\n".format(each.panel.minSlider.value, each.panel.maxSlider.value))
         elif each.name == "rain":
@@ -100,10 +102,10 @@ def done_action():
         myMap.change_height(selected_panel.heightSlider.value * 2 - 1)
     elif selected_panel.name == "valley":
         myMap.add_valleys(int(selected_panel.numberSlider.value * 50), int(selected_panel.radiusSlider.value * 25),
-                         selected_panel.radVarSlider.value, selected_panel.heightSlider.value)
+                          selected_panel.radVarSlider.value, selected_panel.heightSlider.value)
     elif selected_panel.name == "hill":
         myMap.add_hills(int(selected_panel.hillNumSlider.value * 50), int(selected_panel.radiusSlider.value * 25),
-                       selected_panel.radiusVarSlider.value, selected_panel.heightSlider.value)
+                        selected_panel.radiusVarSlider.value, selected_panel.heightSlider.value)
     elif selected_panel.name == "normal":
         myMap.normalize(selected_panel.minSlider.value, selected_panel.maxSlider.value)
     elif selected_panel.name == "smooth":
@@ -111,7 +113,7 @@ def done_action():
                      selected_panel.maxSlider.value)
     elif selected_panel.name == "rain":
         myMap.rain_erosion(int(selected_panel.rainDropsSlider.value * 20000), selected_panel.erosionSlider.value,
-                          selected_panel.sedimentSlider.value)
+                           selected_panel.sedimentSlider.value)
 
 
 def change_button_action():
@@ -310,9 +312,9 @@ def main():
         window.draw_elements()
         window.handle_element_actions()
         #need to perform all the operations
+        color = None
         for x in range(myMap.width):
             for y in range(myMap.height):
-                color = None
                 if myMap.heightmap[x][y] <= 0.08:
                     color = colorKey[0]
                 elif myMap.heightmap[x][y] < 0.12:
