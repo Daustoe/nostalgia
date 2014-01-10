@@ -1,7 +1,7 @@
-import core.gui.element
+import element
 
 
-class Panel(core.gui.element.Element):
+class Panel(element.Element):
     """
     The Panel object is a more basic object of the nostalgia gui. It merely holds onto a list of elements which belong
     to it. It sets the position of it's containing elements to be based off of the panel.

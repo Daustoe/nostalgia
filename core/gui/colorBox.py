@@ -6,10 +6,10 @@ Created on Mar 22, 2012
 @todo
     add doc strings
 """
-import core.gui.element
+import element
 
 
-class ColorBox(core.gui.element.Element):
+class ColorBox(element.Element):
     def __init__(self, (x, y), (width, height), color=(0, 0, 0)):
         super(ColorBox, self).__init__((x, y), (width, height), color)
 

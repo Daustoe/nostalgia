@@ -1,8 +1,8 @@
-import core.gui.element
+import element
 import pygame
 
 
-class Slider(core.gui.element.Element):
+class Slider(element.Element):
     """
     This is the Slider class. It is an interface object which has a value tied to a movable slider so that the user can
     change that value. Inherits from the Element class. The constructor takes a position (x, y), size (width, height),

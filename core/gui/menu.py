@@ -1,9 +1,9 @@
-import core.gui.element
+import element
 import pygame
 import sys
 
 
-class Menu(core.gui.element.Element):
+class Menu(element.Element):
     """
     The Menu object pulls up a panel with options given. It then waits for the user to make a selection before
     continuing the flow of the game.

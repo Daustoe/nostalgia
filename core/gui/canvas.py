@@ -3,10 +3,10 @@ The Canvas object can be thought of as the actual game board that represents
 actual characters and the environment of your game. Inherits from the Element
 object.
 """
-import core.gui.element
+import element
 
 
-class Canvas(core.gui.element.Element):
+class Canvas(element.Element):
     """
     Constructor takes position (x, y) and (width, height). (x, y) is the upper
     left-hand corner display is an array of items to be displayed on our canvas,

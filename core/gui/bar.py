@@ -2,11 +2,11 @@
 This is the Bar Class. It creates bars that represent information such as health, or mana.  It paints a filled bar
 corresponding to a maximum value that it is given. Inherits from the Element class.
 """
-import core.gui.element
+import element
 import pygame
 
 
-class Bar(core.gui.element.Element):
+class Bar(element.Element):
     """
     The constructor takes a position (x, y), size (width, height), a maximum
     value (upper bounds of the bar), a foreground color(filled bar), and a

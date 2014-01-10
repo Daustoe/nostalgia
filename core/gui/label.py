@@ -1,7 +1,7 @@
-import core.gui.element
+import element
 
 
-class Label(core.gui.element.Element):
+class Label(element.Element):
     """
     Label inherits from Element. It takes position (x, y), size (width, height) font (pygame.font), text (String),
     fontColor (red, green, blue) defaults to black.

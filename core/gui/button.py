@@ -4,10 +4,10 @@ To Do:
     add doc strings
 """
 
-import core.gui.element
+import element
 
 
-class Button(core.gui.element.Element):
+class Button(element.Element):
     def __init__(self, position, (width, height), title, font, action, font_color=(100, 0, 0), color=(200, 200, 200)):
         super(Button, self).__init__(position, (width, height), color)
         self.font = font
