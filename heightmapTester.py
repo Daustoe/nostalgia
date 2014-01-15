@@ -12,11 +12,11 @@ todo:
 
 import sys
 import pygame
+from core.gameDev import heightmap
 import core.gui.slider as Slider
 import core.gui.button as Button
 import core.gui.console as Console
 import core.gui.panel as Panel
-import heightmap
 import core.gui.label as Label
 
 window = Console.Console(960, 720)

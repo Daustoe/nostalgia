@@ -16,6 +16,9 @@ class HeightMap(object):
         self.dx = [-1, 0, 1, -1, 0, 1, -1, 0, 1]
         self.dy = [-1, -1, -1, 0, 0, 0, 1, 1, 1]
 
+    def noise(self, x, y):
+        return 0
+
     def normalize(self, minimum, maximum):
         """
         Normalizes the values of the HeightMap. Lowers extremely high values and raises low values.

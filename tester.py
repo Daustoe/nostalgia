@@ -2,10 +2,12 @@
 Testing module for all of the Game Engine
 """
 
-from core.gui import *
-from Heightmap.heightmap import HeightMap
-import pygame
 import sys
+
+import pygame
+
+from core.gui import *
+from core.gameDev.heightmap import HeightMap
 
 
 def game_loop(window):
