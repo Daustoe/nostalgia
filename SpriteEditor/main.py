@@ -61,6 +61,7 @@ import_options = {'defaultextension': '.jpg',
 
 
 def load_sprite():
+    """Loads a .spr Sprite file as the current_sprite and is used by the Load Button."""
     global current_sprite, filename, session
     filename = tkFileDialog.askopenfilename(**options)
     if not filename == '':
@@ -76,6 +77,7 @@ def load_sprite():
 
 
 def save_sprite():
+    """Saves the current_sprite as a .spr Sprite file and is used by the Save Button."""
     global session, filename, current_sprite
     filename = tkFileDialog.asksaveasfilename(**options)
     if not filename == '':
@@ -90,6 +92,7 @@ def save_sprite():
 
 
 def export_sprite():
+    """Exports the current_sprite as an image and is used by the Export Button."""
     file_name = tkFileDialog.asksaveasfilename(**exportOptions)
     if not file_name == '':
         pygame.image.save(current_sprite.make_image(), file_name)
@@ -97,6 +100,7 @@ def export_sprite():
 
 
 def import_sprite():
+    """Imports an image file to the current_sprite and is used by the Import Button."""
     global current_sprite
     file_name = tkFileDialog.askopenfilename(**import_options)
     if not file_name == '':
@@ -129,6 +133,10 @@ def import_sprite():
 
 
 def main():
+    """Main loop of the Sprite Editor.
+
+    Loops through and draws the surface and handles user actions every iteration.
+    """
     global current_sprite
     current_sprite = sprite.Sprite((0, 0), (540, 520))
     current_sprite.set_color_box(chooser_box)
