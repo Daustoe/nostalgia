@@ -3,10 +3,8 @@ Issue List:
 
 --May want to think about moving the cursor after the window closes! would get rid
     of the bug I'm having with the file browser i think.
---Suggest adding a Label object to the development kit
 --want to display the sprite as it's actual size on the side.
-    --only issue right now is that the actual pixelArray needs to also follow
-        the size of the sprite when the user changes it!!
+    --can convert current_sprite to an image and display that image on the side
 
 --Still having some small problems with clicking the buttons:
     error when exporting and such, pygame reports mouse as being clicked when it isn't
@@ -138,6 +136,24 @@ def main():
     Loops through and draws the surface and handles user actions every iteration.
     """
     global current_sprite
+    info_panel = Panel.Panel((540, 0), (295, 520), (255, 255, 255))
+    red_slider = Slider.Slider((10, 295), (270, 15), (255, 200, 200), (255, 0, 0))
+    green_slider = Slider.Slider((10, 315), (270, 15), (200, 255, 200), (0, 255, 0))
+    blue_slider = Slider.Slider((10, 335), (270, 15), (200, 200, 255), (0, 0, 255))
+    save_button = Button.Button((5, 375), (65, 20), "Save", font, save_sprite)
+    load_button = Button.Button((75, 375), (65, 20), "Load", font, load_sprite)
+    import_button = Button.Button((145, 375), (65, 20), "Import", font, import_sprite)
+    export_button = Button.Button((215, 375), (65, 20), "Export", font, export_sprite)
+    chooser_box = ColorBox.ColorBox((10, 10), (275, 275))
+    window.add_element(info_panel)
+    info_panel.add_element(save_button)
+    info_panel.add_element(load_button)
+    info_panel.add_element(import_button)
+    info_panel.add_element(export_button)
+    info_panel.add_element(chooser_box)
+    info_panel.add_element(red_slider)
+    info_panel.add_element(green_slider)
+    info_panel.add_element(blue_slider)
     current_sprite = sprite.Sprite((0, 0), (540, 520))
     current_sprite.set_color_box(chooser_box)
     window.add_element(current_sprite)
@@ -152,9 +168,9 @@ def main():
                 if event.info == 'right':
                     if control:
                         color = event.object.get_color()
-                        redSlider.set_index(color[0])
-                        greenSlider.set_index(color[1])
-                        blueSlider.set_index(color[2])
+                        red_slider.set_index(color[0])
+                        green_slider.set_index(color[1])
+                        blue_slider.set_index(color[2])
                     else:
                         event.object.change_color(None)
             elif event.type == pygame.KEYDOWN:
@@ -190,7 +206,7 @@ def main():
                     control = False
 
         chooser_box.update_colors(
-            (int(redSlider.value * 255), int(greenSlider.value * 255), int(blueSlider.value * 255)))
+            (int(red_slider.value * 255), int(green_slider.value * 255), int(blue_slider.value * 255)))
         window.window.blit(font.render("RGB: (%s, %s, %s)" % chooser_box.color, True, (0, 0, 0)), (625, 355))
         window.window.blit(font.render(
             "Sprite Dimensions: (%d,%d)" % (current_sprite.pixels_in_sprite[0], current_sprite.pixels_in_sprite[1]),
@@ -200,25 +216,6 @@ def main():
                         (0, 0, 0)), (540 + 5, 420))
         pygame.display.flip()
 
-
-info_panel = Panel.Panel((540, 0), (295, 520), (255, 255, 255))
-redSlider = Slider.Slider((10, 295), (270, 15), (255, 200, 200), (255, 0, 0))
-greenSlider = Slider.Slider((10, 315), (270, 15), (200, 255, 200), (0, 255, 0))
-blueSlider = Slider.Slider((10, 335), (270, 15), (200, 200, 255), (0, 0, 255))
-saveButton = Button.Button((5, 375), (65, 20), "Save", font, save_sprite)
-loadButton = Button.Button((75, 375), (65, 20), "Load", font, load_sprite)
-importButton = Button.Button((145, 375), (65, 20), "Import", font, import_sprite)
-exportButton = Button.Button((215, 375), (65, 20), "Export", font, export_sprite)
-chooser_box = ColorBox.ColorBox((10, 10), (275, 275))
-window.add_element(info_panel)
-info_panel.add_element(saveButton)
-info_panel.add_element(loadButton)
-info_panel.add_element(importButton)
-info_panel.add_element(exportButton)
-info_panel.add_element(chooser_box)
-info_panel.add_element(redSlider)
-info_panel.add_element(greenSlider)
-info_panel.add_element(blueSlider)
 
 if __name__ == "__main__":
     main()
