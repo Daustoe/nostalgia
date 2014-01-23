@@ -13,7 +13,7 @@ class ColorBox(element.Element):
     def __init__(self, (x, y), (width, height), color=(0, 0, 0)):
         super(ColorBox, self).__init__((x, y), (width, height), color)
 
-    def update_colors(self, (r, g, b)):
+    def update_colors(self, r, g, b):
         self.color = (r, g, b)
         self.surface.fill(self.color)
 

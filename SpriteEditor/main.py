@@ -9,11 +9,6 @@ Issue List:
 --Still having some small problems with clicking the buttons:
     error when exporting and such, pygame reports mouse as being clicked when it isn't
     don't know if this is my problem or someone else's, suggest talking to Randy
-
-!!!!!!!ISSUES ON THE BACKBURNER!!!!!!!!!!!!!!!!!!!!
---displaying animation sequence on the left hand side(up to down)
-    --ability to cycle through them
-
 """
 import sys
 import pygame
@@ -29,193 +24,183 @@ import Image
 import Tkinter
 import tkFileDialog
 
-filename = None
-session = None
-current_sprite = None
 
-window = Console.Console(835, 520)
-font = pygame.font.SysFont('timesnewroman', 16, bold=True)
-window.set_caption("Sprite Editor")
-root = Tkinter.Tk()
-root.withdraw()
+class SpriteEditor(Console.Console):
+    def __init__(self):
+        super(SpriteEditor, self).__init__(835, 520)
+        self.current_sprite = sprite.Sprite((0, 0), (540, 520))
+        self.font = pygame.font.SysFont('timesnewroman', 16, bold=True)
+        self.set_caption("Sprite Editor")
+        self.root = Tkinter.Tk()
+        self.root.withdraw()
+        self.options = {'defaultextension': '.spr',
+                        'filetypes': [('sprite files', '.spr'), ('all files', '.*')],
+                        'initialdir': 'C:\\',
+                        'initialfile': 'default.spr',
+                        'title': 'File Browser'}
 
-options = {'defaultextension': '.spr',
-           'filetypes': [('sprite files', '.spr'), ('all files', '.*')],
-           'initialdir': 'C:\\',
-           'initialfile': 'default.spr',
-           'title': 'File Browser'}
+        self.export_options = {'defaultextension': '.jpg',
+                               'initialdir': 'C:\\',
+                               'initialfile': 'default.jpg',
+                               'filetypes': [('JPEG files', '.jpg'), ('PNG files', '.png'), ('all files', '.*')],
+                               'title': 'Export as image'}
 
-exportOptions = {'defaultextension': '.jpg',
-                 'initialdir': 'C:\\',
-                 'initialfile': 'default.jpg',
-                 'filetypes': [('JPEG files', '.jpg'), ('PNG files', '.png'), ('all files', '.*')],
-                 'title': 'Export as image'}
+        self.import_options = {'defaultextension': '.jpg',
+                               'filetypes': [('jpeg files', '.jpg'), ('png files', '.png'), ('all files', '.*')],
+                               'initialdir': 'C:\\',
+                               'initialfile': 'default.jpg',
+                               'title': 'Import Browser'}
 
-import_options = {'defaultextension': '.jpg',
-                  'filetypes': [('jpeg files', '.jpg'), ('png files', '.png'), ('all files', '.*')],
-                  'initialdir': 'C:\\',
-                  'initialfile': 'default.jpg',
-                  'title': 'Import Browser'}
+        info_panel = Panel.Panel((540, 0), (295, 520), (255, 255, 255))
+        self.red_slider = Slider.Slider((10, 295), (270, 15), (255, 200, 200), (255, 0, 0))
+        self.green_slider = Slider.Slider((10, 315), (270, 15), (200, 255, 200), (0, 255, 0))
+        self.blue_slider = Slider.Slider((10, 335), (270, 15), (200, 200, 255), (0, 0, 255))
+        save_button = Button.Button((5, 375), (65, 20), "Save", self.font, self.save_sprite)
+        load_button = Button.Button((75, 375), (65, 20), "Load", self.font, self.load_sprite)
+        import_button = Button.Button((145, 375), (65, 20), "Import", self.font, self.import_sprite)
+        export_button = Button.Button((215, 375), (65, 20), "Export", self.font, self.export_sprite)
+        self.color_box = ColorBox.ColorBox((10, 10), (275, 275))
+        self.add_element(info_panel)
+        info_panel.add_element(save_button)
+        info_panel.add_element(load_button)
+        info_panel.add_element(import_button)
+        info_panel.add_element(export_button)
+        info_panel.add_element(self.color_box)
+        info_panel.add_element(self.red_slider)
+        info_panel.add_element(self.green_slider)
+        info_panel.add_element(self.blue_slider)
+        self.current_sprite.set_color_box(self.color_box)
+        self.add_element(self.current_sprite)
 
+        self.main_loop()
 
-def load_sprite():
-    """Loads a .spr Sprite file as the current_sprite and is used by the Load Button."""
-    global current_sprite, filename, session
-    filename = tkFileDialog.askopenfilename(**options)
-    if not filename == '':
-        session = shelve.open(filename)
-        current_sprite.pixels_in_sprite = session['dimension']
-        current_sprite.pixel_size = session['size']
-        for x in range(current_sprite.pixels_in_sprite[0]):
-            for y in range(current_sprite.pixels_in_sprite[1]):
-                current_sprite.pixelArray[x][y].change_color(session['%d %d' % (x, y)])
-        session.close()
-        current_sprite.generate_surface()
+    def main_loop(self):
+        control = False
+        while True:
+            self.draw_elements()
+            self.handle_element_actions()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                elif event.type == pygame.USEREVENT:
+                    if event.info == 'right':
+                        if control:
+                            color = event.object.get_color()
+                            self.red_slider.set_index(color[0])
+                            self.green_slider.set_index(color[1])
+                            self.blue_slider.set_index(color[2])
+                        else:
+                            event.object.change_color(None)
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == 306:
+                        control = True
+                elif event.type == pygame.KEYUP:
+                    #print event
+                    if event.key == 273:
+                        #up arrow
+                        if event.mod == 1:
+                            self.current_sprite.update_pixel_size(0, 1)
+                        else:
+                            self.current_sprite.update_pixel_count(0, -1)
+                    elif event.key == 274:
+                        #down arrow
+                        if event.mod == 1:
+                            self.current_sprite.update_pixel_size(0, -1)
+                        else:
+                            self.current_sprite.update_pixel_count(0, 1)
+                    elif event.key == 275:
+                        #right arrow
+                        if event.mod == 1:
+                            self.current_sprite.update_pixel_size(1, 0)
+                        else:
+                            self.current_sprite.update_pixel_count(1, 0)
+                    elif event.key == 276:
+                        #left arrow
+                        if event.mod == 1:
+                            self.current_sprite.update_pixel_size(-1, 0)
+                        else:
+                            self.current_sprite.update_pixel_count(-1, 0)
+                    elif event.key == 306:
+                        control = False
+
+            self.color_box.update_colors(int(self.red_slider.value * 255), int(self.green_slider.value * 255),
+                                         int(self.blue_slider.value * 255))
+            self.window.blit(self.font.render("RGB: (%s, %s, %s)" % self.color_box.color, True, (0, 0, 0)), (625, 355))
+            self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % (self.current_sprite.pixels_in_sprite[0],
+                                                                              self.current_sprite.pixels_in_sprite[1]),
+                                              True, (0, 0, 0)), (540 + 5, 400))
+            self.window.blit(self.font.render("Pixel Dimension: (%d,%d)" % (self.current_sprite.pixel_size[0],
+                                                                            self.current_sprite.pixel_size[1]),
+                                              True, (0, 0, 0)), (540 + 5, 420))
+            pygame.display.flip()
+
+    def load_sprite(self):
+        """Loads a .spr Sprite file as the current_sprite and is used by the Load Button."""
+        filename = tkFileDialog.askopenfilename(**self.options)
+        if not filename == '':
+            session = shelve.open(filename)
+            self.current_sprite.pixels_in_sprite = session['dimension']
+            self.current_sprite.pixel_size = session['size']
+            for x in range(self.current_sprite.pixels_in_sprite[0]):
+                for y in range(self.current_sprite.pixels_in_sprite[1]):
+                    self.current_sprite.pixels[x][y].change_color(session['%d %d' % (x, y)])
+            session.close()
+            self.current_sprite.generate_surface()
+            pygame.event.pump()
+
+    def save_sprite(self):
+        """Saves the current_sprite as a .spr Sprite file and is used by the Save Button."""
+        filename = tkFileDialog.asksaveasfilename(**self.options)
+        if not filename == '':
+            session = shelve.open(filename)
+            session['dimension'] = self.current_sprite.pixelsInSprite
+            session['size'] = self.current_sprite.pixelSize
+            for x in range(self.current_sprite.pixelsInSprite[0]):
+                for y in range(self.current_sprite.pixelsInSprite[1]):
+                    session['%d %d' % (x, y)] = self.current_sprite.pixelArray[x][y].save_color()
+            session.close()
+            pygame.event.pump()
+
+    def export_sprite(self):
+        """Exports the current_sprite as an image and is used by the Export Button."""
+        filename = tkFileDialog.asksaveasfilename(**self.export_options)
+        if not filename == '':
+            pygame.image.save(self.current_sprite.make_image(), filename)
         pygame.event.pump()
 
-
-def save_sprite():
-    """Saves the current_sprite as a .spr Sprite file and is used by the Save Button."""
-    global session, filename, current_sprite
-    filename = tkFileDialog.asksaveasfilename(**options)
-    if not filename == '':
-        session = shelve.open(filename)
-        session['dimension'] = current_sprite.pixelsInSprite
-        session['size'] = current_sprite.pixelSize
-        for x in range(current_sprite.pixelsInSprite[0]):
-            for y in range(current_sprite.pixelsInSprite[1]):
-                session['%d %d' % (x, y)] = current_sprite.pixelArray[x][y].save_color()
-        session.close()
-        pygame.event.pump()
-
-
-def export_sprite():
-    """Exports the current_sprite as an image and is used by the Export Button."""
-    file_name = tkFileDialog.asksaveasfilename(**exportOptions)
-    if not file_name == '':
-        pygame.image.save(current_sprite.make_image(), file_name)
-    pygame.event.pump()
-
-
-def import_sprite():
-    """Imports an image file to the current_sprite and is used by the Import Button."""
-    global current_sprite
-    file_name = tkFileDialog.askopenfilename(**import_options)
-    if not file_name == '':
-        image = Image.open(file_name)
-        (width, height) = image.size
-        chunk_size = (width / current_sprite.pixels_in_sprite[0], height / current_sprite.pixels_in_sprite[1])
-        temp_array = []
-        pix = image.load()
-        this_block_size = current_sprite.block_size
-        chunk_total = 0
-        for x_chunk in range(0, width - 1, chunk_size[0]):
-            temp_array.append([])
-            for y_chunk in range(0, height - 1, chunk_size[1]):
-                (red, green, blue) = (0, 0, 0)
-                for x in range(x_chunk, x_chunk + chunk_size[0]):
-                    for y in range(y_chunk, y_chunk + chunk_size[1]):
-                        if x < width and y < height:
-                            temp = pix[x, y]
-                            (red, green, blue) = (red + temp[0], green + temp[1], blue + temp[2])
-                            chunk_total += 1
-                temp_array[x_chunk / chunk_size[0]].append(pixel.Pixel((x_chunk / chunk_size[0] * this_block_size[0],
-                                                                       y_chunk / chunk_size[1] * this_block_size[1]),
-                                                                       this_block_size,
-                                                                       (red / chunk_total, green / chunk_total,
-                                                                       blue / chunk_total)))
-                chunk_total = 0
-        current_sprite.pixels = temp_array
-        current_sprite.render(window.window)
-        pygame.event.pump()
-
-
-def main():
-    """Main loop of the Sprite Editor.
-
-    Loops through and draws the surface and handles user actions every iteration.
-    """
-    global current_sprite
-    info_panel = Panel.Panel((540, 0), (295, 520), (255, 255, 255))
-    red_slider = Slider.Slider((10, 295), (270, 15), (255, 200, 200), (255, 0, 0))
-    green_slider = Slider.Slider((10, 315), (270, 15), (200, 255, 200), (0, 255, 0))
-    blue_slider = Slider.Slider((10, 335), (270, 15), (200, 200, 255), (0, 0, 255))
-    save_button = Button.Button((5, 375), (65, 20), "Save", font, save_sprite)
-    load_button = Button.Button((75, 375), (65, 20), "Load", font, load_sprite)
-    import_button = Button.Button((145, 375), (65, 20), "Import", font, import_sprite)
-    export_button = Button.Button((215, 375), (65, 20), "Export", font, export_sprite)
-    chooser_box = ColorBox.ColorBox((10, 10), (275, 275))
-    window.add_element(info_panel)
-    info_panel.add_element(save_button)
-    info_panel.add_element(load_button)
-    info_panel.add_element(import_button)
-    info_panel.add_element(export_button)
-    info_panel.add_element(chooser_box)
-    info_panel.add_element(red_slider)
-    info_panel.add_element(green_slider)
-    info_panel.add_element(blue_slider)
-    current_sprite = sprite.Sprite((0, 0), (540, 520))
-    current_sprite.set_color_box(chooser_box)
-    window.add_element(current_sprite)
-    control = False
-    while True:
-        window.draw_elements()
-        window.handle_element_actions()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-            elif event.type == pygame.USEREVENT:
-                if event.info == 'right':
-                    if control:
-                        color = event.object.get_color()
-                        red_slider.set_index(color[0])
-                        green_slider.set_index(color[1])
-                        blue_slider.set_index(color[2])
-                    else:
-                        event.object.change_color(None)
-            elif event.type == pygame.KEYDOWN:
-                if event.key == 306:
-                    control = True
-            elif event.type == pygame.KEYUP:
-                #print event
-                if event.key == 273:
-                    #up arrow
-                    if event.mod == 1:
-                        current_sprite.update_pixel_size(0, 1)
-                    else:
-                        current_sprite.update_pixel_count(0, -1)
-                elif event.key == 274:
-                    #down arrow
-                    if event.mod == 1:
-                        current_sprite.update_pixel_size(0, -1)
-                    else:
-                        current_sprite.update_pixel_count(0, 1)
-                elif event.key == 275:
-                    #right arrow
-                    if event.mod == 1:
-                        current_sprite.update_pixel_size(1, 0)
-                    else:
-                        current_sprite.update_pixel_count(1, 0)
-                elif event.key == 276:
-                    #left arrow
-                    if event.mod == 1:
-                        current_sprite.update_pixel_size(-1, 0)
-                    else:
-                        current_sprite.update_pixel_count(-1, 0)
-                elif event.key == 306:
-                    control = False
-
-        chooser_box.update_colors(
-            (int(red_slider.value * 255), int(green_slider.value * 255), int(blue_slider.value * 255)))
-        window.window.blit(font.render("RGB: (%s, %s, %s)" % chooser_box.color, True, (0, 0, 0)), (625, 355))
-        window.window.blit(font.render(
-            "Sprite Dimensions: (%d,%d)" % (current_sprite.pixels_in_sprite[0], current_sprite.pixels_in_sprite[1]),
-            True, (0, 0, 0)), (540 + 5, 400))
-        window.window.blit(
-            font.render("Pixel Dimension: (%d,%d)" % (current_sprite.pixel_size[0], current_sprite.pixel_size[1]), True,
-                        (0, 0, 0)), (540 + 5, 420))
-        pygame.display.flip()
+    def import_sprite(self):
+        """Imports an image file to the current_sprite and is used by the Import Button."""
+        filename = tkFileDialog.askopenfilename(**self.import_options)
+        if not filename == '':
+            image = Image.open(filename)
+            (width, height) = image.size
+            chunk_size = (
+                width / self.current_sprite.pixels_in_sprite[0], height / self.current_sprite.pixels_in_sprite[1])
+            temp_array = []
+            pix = image.load()
+            this_block_size = self.current_sprite.block_size
+            chunk_total = 0
+            for x_chunk in range(0, width - 1, chunk_size[0]):
+                temp_array.append([])
+                for y_chunk in range(0, height - 1, chunk_size[1]):
+                    (red, green, blue) = (0, 0, 0)
+                    for x in range(x_chunk, x_chunk + chunk_size[0]):
+                        for y in range(y_chunk, y_chunk + chunk_size[1]):
+                            if x < width and y < height:
+                                temp = pix[x, y]
+                                (red, green, blue) = (red + temp[0], green + temp[1], blue + temp[2])
+                                chunk_total += 1
+                    temp_array[x_chunk / chunk_size[0]].append(
+                        pixel.Pixel((x_chunk / chunk_size[0] * this_block_size[0],
+                                     y_chunk / chunk_size[1] * this_block_size[1]),
+                                    this_block_size,
+                                    (red / chunk_total, green / chunk_total,
+                                     blue / chunk_total)))
+                    chunk_total = 0
+            self.current_sprite.pixels = temp_array
+            self.current_sprite.render(self.window)
+            pygame.event.pump()
 
 
 if __name__ == "__main__":
-    main()
+    SpriteEditor()
