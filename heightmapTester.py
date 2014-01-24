@@ -12,7 +12,7 @@ todo:
 
 import sys
 import pygame
-from core.gameDev import heightmap
+from core.tools import heightmap
 import core.gui.slider as Slider
 import core.gui.button as Button
 import core.gui.console as Console

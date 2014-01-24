@@ -153,11 +153,11 @@ class SpriteEditor(Console.Console):
         filename = tkFileDialog.asksaveasfilename(**self.options)
         if not filename == '':
             session = shelve.open(filename)
-            session['dimension'] = self.current_sprite.pixelsInSprite
-            session['size'] = self.current_sprite.pixelSize
-            for x in range(self.current_sprite.pixelsInSprite[0]):
-                for y in range(self.current_sprite.pixelsInSprite[1]):
-                    session['%d %d' % (x, y)] = self.current_sprite.pixelArray[x][y].save_color()
+            session['dimension'] = self.current_sprite.pixels_in_sprite
+            session['size'] = self.current_sprite.pixel_size
+            for x in range(self.current_sprite.pixels_in_sprite[0]):
+                for y in range(self.current_sprite.pixels_in_sprite[1]):
+                    session['%d %d' % (x, y)] = self.current_sprite.pixels[x][y].save_color()
             session.close()
             pygame.event.pump()
 

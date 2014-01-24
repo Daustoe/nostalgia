@@ -2,7 +2,7 @@
 The LivingObject class inherits from the GameObject class. It represents any
 living object
 '''
-import gameObject
+from core.engine import gameObject
 
 
 class LivingObject(gameObject.GameObject):

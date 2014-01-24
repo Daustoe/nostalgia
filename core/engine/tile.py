@@ -4,7 +4,7 @@ Created on Apr 18, 2012
 @author: Claymore
 '''
 import pygame
-import gameObject
+from core.engine import gameObject
 
 
 class Tile(gameObject.GameObject):

@@ -3,8 +3,9 @@ Created on Apr 18, 2012
 
 @author: Claymore
 '''
-from tile import *
 import random
+
+from core.engine.tile import *
 
 
 class Room:

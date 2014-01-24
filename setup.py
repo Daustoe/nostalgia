@@ -7,5 +7,5 @@ setup(name='nostalgia',
       author='Clayton Powell',
       author_email='daustoe@gmail.com',
       url='https://github.com/Daustoe/nostalgia',
-      packages=['gameDev', 'gui'],
+      packages=['tools', 'gui'],
       )

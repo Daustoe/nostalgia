@@ -7,7 +7,7 @@ import sys
 import pygame
 
 from core.gui import *
-from core.gameDev.heightmap import HeightMap
+from core.tools.heightmap import HeightMap
 
 
 def game_loop(window):

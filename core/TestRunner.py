@@ -18,18 +18,21 @@ Issue List for whole of development kit
 --heightmap stuff for above ground map generation
 --make gameCanvas (main display of game)
 """
-import gui.console as Console
-import pygame
 import sys
+
+import pygame
+
+import gui.console as Console
 import gui.button as Button
+
 # import messageBox
 import core.gui.slider as Slider
 import core.gui.menu as Menu
-import core.gameDev.dungeonGenerator as Dungeon
-import core.gameDev.pathfinder as PathFinder
+import core.tools.dungeonGenerator as Dungeon
+import core.tools.pathfinder as PathFinder
 import gui.panel as Panel
 import gui.bar as Bar
-import core.gameDev.gameObject as gameObject
+import core.engine.gameObject as gameObject
 import random
 import time
 

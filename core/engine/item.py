@@ -3,7 +3,7 @@ Created on Apr 4, 2012
 
 @author: Claymore
 '''
-import gameObject
+from core.engine import gameObject
 
 
 class Item(gameObject.GameObject):
