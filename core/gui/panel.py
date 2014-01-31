@@ -33,6 +33,14 @@ class Panel(element.Element):
             if hasattr(element, 'action_event'):
                 element.action_event(mouse_press, mouse_position, mouse_movement)
 
+    def set_master(self, master):
+        """
+        Elements that belong to a Panel need to also update their position to follow their parent
+        """
+        super(Panel, self).set_master(master)
+        for element in self.elements:
+            element.update_position()
+
     def render(self, window):
         """
         We render this Panel, it may or may not have it's own surface, and then render all elements that belong to this
