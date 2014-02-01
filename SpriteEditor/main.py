@@ -14,7 +14,6 @@ import sys
 import pygame
 import shelve
 import sprite
-import core.gui.slider as Slider
 import core.gui.button as Button
 import pixel
 import core.gui.console as Console
@@ -31,8 +30,8 @@ class SpriteEditor(Console.Console):
         self.current_sprite = sprite.Sprite((0, 0), (540, 520))
         self.font = pygame.font.SysFont('timesnewroman', 16, bold=True)
         self.set_caption("Sprite Editor")
-        self.root = Tkinter.Tk()
-        self.root.withdraw()
+        Tkinter.Tk().withdraw()
+        self.fps_clock = pygame.time.Clock()
         self.options = {'defaultextension': '.spr',
                         'filetypes': [('sprite files', '.spr'), ('all files', '.*')],
                         'initialdir': 'C:\\',
@@ -52,9 +51,6 @@ class SpriteEditor(Console.Console):
                                'title': 'Import Browser'}
 
         info_panel = Panel.Panel((540, 0), (295, 520), (255, 255, 255))
-        #self.red_slider = Slider.Slider((10, 295), (270, 15), (255, 200, 200), (255, 0, 0))
-        #self.green_slider = Slider.Slider((10, 315), (270, 15), (200, 255, 200), (0, 255, 0))
-        #self.blue_slider = Slider.Slider((10, 335), (270, 15), (200, 200, 255), (0, 0, 255))
         save_button = Button.Button((5, 375), (65, 20), "Save", self.font, self.save_sprite)
         load_button = Button.Button((75, 375), (65, 20), "Load", self.font, self.load_sprite)
         import_button = Button.Button((145, 375), (65, 20), "Import", self.font, self.import_sprite)
@@ -66,9 +62,6 @@ class SpriteEditor(Console.Console):
         info_panel.add_element(import_button)
         info_panel.add_element(export_button)
         info_panel.add_element(self.color_box)
-        #info_panel.add_element(self.red_slider)
-        #info_panel.add_element(self.green_slider)
-        #info_panel.add_element(self.blue_slider)
         self.current_sprite.set_color_box(self.color_box)
         self.add_element(self.current_sprite)
 
@@ -120,9 +113,6 @@ class SpriteEditor(Console.Console):
                             self.current_sprite.update_pixel_count(-1, 0)
                     elif event.key == 306:
                         control = False
-
-            #self.color_box.update_colors(int(self.red_slider.value * 255), int(self.green_slider.value * 255),
-             #                            int(self.blue_slider.value * 255))
             self.window.blit(self.font.render("RGB: (%s, %s, %s)" % self.color_box.color, True, (0, 0, 0)), (625, 355))
             self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % (self.current_sprite.pixels_in_sprite[0],
                                                                               self.current_sprite.pixels_in_sprite[1]),
@@ -131,6 +121,7 @@ class SpriteEditor(Console.Console):
                                                                             self.current_sprite.pixel_size[1]),
                                               True, (0, 0, 0)), (540 + 5, 420))
             pygame.display.flip()
+            self.fps_clock.tick(30)
 
     def load_sprite(self):
         """Loads a .spr Sprite file as the current_sprite and is used by the Load Button."""
