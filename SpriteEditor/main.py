@@ -55,7 +55,7 @@ class SpriteEditor(Console.Console):
         load_button = Button.Button((75, 375), (65, 20), "Load", self.font, self.load_sprite)
         import_button = Button.Button((145, 375), (65, 20), "Import", self.font, self.import_sprite)
         export_button = Button.Button((215, 375), (65, 20), "Export", self.font, self.export_sprite)
-        self.color_box = ColorBox.ColorBox((10, 10), (275, 275))
+        self.color_box = ColorBox.ColorBox((0, 0), (295, 350))
         self.add_element(info_panel)
         info_panel.add_element(save_button)
         info_panel.add_element(load_button)
