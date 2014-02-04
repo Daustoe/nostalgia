@@ -1,11 +1,12 @@
 import pygame
 import core.gui.element as Element
 from pixel import Pixel
+from pygame.color import Color
 
 
 class Sprite(Element.Element):
     def __init__(self, (x, y), (width, height), pixel_size=(2, 2), pixels_in_sprite=(20, 20), pixel_array=[]):
-        super(Sprite, self).__init__((x, y), (width, height), (255, 255, 255))
+        super(Sprite, self).__init__(x, y, width, height, Color(255, 255, 255))
         self.sprite_size = None
         self.pixels = pixel_array
         self.pixel_size = pixel_size
@@ -85,17 +86,17 @@ class Sprite(Element.Element):
                 each.set_master(self)
 
     def action_event(self, mouse_press, mouse_position, mouse_movement):
-        if self.color_box is not None and self.position[0] < mouse_position[0] < self.position[0] + self.size[0]:
-            if self.position[1] < mouse_position[1] < self.position[1] + self.size[1]:
+        if self.color_box is not None and self.x < mouse_position[0] < self.x + self.width:
+            if self.y < mouse_position[1] < self.y + self.height:
                 if mouse_press[0] and not self.clicked:
                     self.clicked = True
-                    x = (mouse_position[0] - self.position[0]) / self.block_size[0]
-                    y = (mouse_position[1] - self.position[1]) / self.block_size[1]
+                    x = (mouse_position[0] - self.x) / self.block_size[0]
+                    y = (mouse_position[1] - self.y) / self.block_size[1]
                     self.pixels[x][y].change_color(self.color_box.get_color())
                 elif mouse_press[2] and not self.clicked:
                     self.clicked = True
-                    x = (mouse_position[0] - self.position[0]) / self.block_size[0]
-                    y = (mouse_position[1] - self.position[1]) / self.block_size[1]
+                    x = (mouse_position[0] - self.x) / self.block_size[0]
+                    y = (mouse_position[1] - self.y) / self.block_size[1]
                     pygame.event.post(pygame.event.Event(pygame.USEREVENT, info="right", object=self.pixels[x][y]))
         self.clicked = False
 

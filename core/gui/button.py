@@ -4,12 +4,13 @@ To Do:
     add doc strings
 """
 
-import element
+from element import Element
+from pygame.color import Color
 
 
-class Button(element.Element):
-    def __init__(self, position, (width, height), title, font, action, font_color=(100, 0, 0), color=(200, 200, 200)):
-        super(Button, self).__init__(position, (width, height), color)
+class Button(Element):
+    def __init__(self, x, y, width, height, title, font, action, font_color=Color('black'), color=Color('gray')):
+        super(Button, self).__init__(x, y, width, height, color)
         self.font = font
         self.title = title
         self.action = action
@@ -24,11 +25,11 @@ class Button(element.Element):
 
     def action_event(self, mouse_press, mouse_position, mouse_movement):
         if mouse_press[0] and not self.clicked:
-            mouse_left = mouse_position[0] > self.position[0]
-            mouse_right = mouse_position[0] < self.position[0] + self.size[0]
+            mouse_left = mouse_position[0] > self.x
+            mouse_right = mouse_position[0] < self.x + self.width
             if mouse_left and mouse_right:
-                mouse_up = mouse_position[1] > self.position[1]
-                mouse_down = mouse_position[1] < self.position[1] + self.size[1]
+                mouse_up = mouse_position[1] > self.y
+                mouse_down = mouse_position[1] < self.y + self.height
                 if mouse_up and mouse_down:
                     self.clicked = True  # self.darken()
                     self.action()
@@ -49,8 +50,8 @@ class Button(element.Element):
 
     def calculate_position(self):
         """ Calculates actual position of the button on the Panel. """
-        x_pos = (self.position[0] + self.width / 2)
+        x_pos = (self.x + self.width / 2)
         x_pos -= self.font.size(self.title)[0] / 2
-        y_pos = (self.position[1] + self.height / 2)
+        y_pos = (self.y + self.height / 2)
         y_pos -= self.font.size(self.title)[1] / 2
         return x_pos, y_pos

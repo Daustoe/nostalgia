@@ -10,6 +10,7 @@ import panel
 import slider
 import label
 import element
+import pygame.color as Color
 
 
 class ColorBox(panel.Panel):
@@ -20,15 +21,15 @@ class ColorBox(panel.Panel):
 
     As of now it includes a slider for red, green, and blue.
     """
-    def __init__(self, (x, y), (width, height), color=(50, 50, 50)):
+    def __init__(self, x, y, width, height, color=Color.Color('0x323232')):
         """
-        Initializes the sliders, and adds them to the ColorBox object.
+        Initializes the sliders, and adds them to the ColorBox object. Default background color is rgb=505050
         """
-        super(ColorBox, self).__init__((x, y), (width, height), color)
-        self.red = slider.Slider((10, 290), (275, 15), (255, 200, 200), (255, 0, 0))
-        self.green = slider.Slider((10, 310), (275, 15), (200, 255, 200), (0, 255, 0))
-        self.blue = slider.Slider((10, 330), (275, 15), (200, 200, 255), (0, 0, 255))
-        self.square = element.Element((10, 10), (275, 275), color=(0, 0, 0))
+        super(ColorBox, self).__init__(x, y, width, height, color)
+        self.red = slider.Slider(10, 290, 275, 15, Color.Color('0xffc8c8'), Color.Color('red'))
+        self.green = slider.Slider(10, 310, 275, 15, Color.Color('0xc8ffc8'), Color.Color('green'))
+        self.blue = slider.Slider(10, 330, 275, 15, Color.Color('0xc8c8ff'), Color.Color('blue'))
+        self.square = element.Element(10, 10, 275, 275)
         self.add_element(self.red)
         self.add_element(self.green)
         self.add_element(self.blue)
@@ -48,7 +49,7 @@ class ColorBox(panel.Panel):
         Updates the color square to what the user has changed on the sliders. Done before every draw. Does not check
         to see if the user has updated.
         """
-        self.square.color = (self.red.value * 255, self.green.value * 255, self.blue.value * 255)
+        self.square.color = Color.Color(int(self.red.value * 255), int(self.green.value * 255), int(self.blue.value * 255))
         self.square.surface.fill(self.square.color)
 
     def render(self, window):

@@ -1,4 +1,4 @@
-import pygame
+from pygame import Surface, draw, Color
 import core.gui.element as Element
 
 
@@ -11,13 +11,13 @@ class Pixel(Element.Element):
     We are also going to want to add actionEvents for each pixel if it is clicked on, in order
     to change the pixels mouse clicks
     """
-    def __init__(self, (x, y), (width, height), color=(200, 200, 200)):
-        super(Pixel, self).__init__((x, y), (width, height), color)
+    def __init__(self, (x, y), (width, height), color=Color(200, 200, 200)):
+        super(Pixel, self).__init__(x, y, width, height, color)
         self.surface.set_alpha(255)
-        self.null_pixel = pygame.Surface(self.size)
+        self.null_pixel = Surface(self.size())
         self.null_pixel.fill((255, 255, 255))
-        pygame.draw.line(self.null_pixel, (150, 0, 0), (0, 0), self.size, 2)
-        pygame.draw.line(self.null_pixel, (150, 0, 0), (self.width, 0), (0, self.height), 2)
+        draw.line(self.null_pixel, (150, 0, 0), (0, 0), self.size(), 2)
+        draw.line(self.null_pixel, (150, 0, 0), (self.width, 0), (0, self.height), 2)
         self.clicked = False
         if self.color == (200, 200, 200):
             self.is_null = True
@@ -36,7 +36,7 @@ class Pixel(Element.Element):
         else:
             self.is_null = False
             self.color = color
-            self.surface = pygame.Surface(self.size)
+            self.surface = Surface(self.size())
             self.surface.fill(self.color)
 
     def set_master(self, master):
@@ -50,6 +50,6 @@ class Pixel(Element.Element):
 
     def render(self, window):
         if self.is_null:
-            window.blit(self.null_pixel, self.position)
+            window.blit(self.null_pixel, self.position())
         else:
-            window.blit(self.surface, self.position)
+            window.blit(self.surface, self.position())

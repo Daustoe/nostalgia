@@ -9,8 +9,8 @@ class Slider(element.Element):
     barColor(r,g,b), sliderColor (r,g,b), and a value which defaults to 0. Index becomes value (pixel index based on
     background surface). The actual value that this object holds onto is a float from 0 to 1.
     """
-    def __init__(self, position, (width, height), bar_color, slider_color, value=0):
-        super(Slider, self).__init__(position, (width, height), bar_color)
+    def __init__(self, x, y, width, height, bar_color, slider_color, value=0):
+        super(Slider, self).__init__(x, y, width, height, bar_color)
         self.slider = pygame.Surface((20, self.height))
         self.slider_color = slider_color
         self.slider.fill(self.slider_color)
@@ -24,11 +24,11 @@ class Slider(element.Element):
         This method should only be called by the console object.
         """
         if mouse_press[0]:
-            mouse_left = mouse_position[0] > self.position[0] + self.index
-            mouse_right = mouse_position[0] < self.position[0] + self.index + 20
+            mouse_left = mouse_position[0] > self.x + self.index
+            mouse_right = mouse_position[0] < self.x + self.index + 20
             if mouse_left and mouse_right:
-                mouse_up = mouse_position[1] > self.position[1]
-                mouse_down = mouse_position[1] < self.position[1] + self.height
+                mouse_up = mouse_position[1] > self.y
+                mouse_down = mouse_position[1] < self.y + self.height
                 if mouse_up and mouse_down:
                     self.clicked = True
         elif not mouse_press[0]:
@@ -69,5 +69,5 @@ class Slider(element.Element):
         object draws the slider at the correct position.
         """
         super(Slider, self).render(window)
-        position = (self.position[0] + self.index, self.position[1])
+        position = (self.x + self.index, self.y)
         window.blit(self.slider, position)

@@ -1,4 +1,4 @@
-import pygame
+from pygame import Color, Surface
 
 
 class Element(object):
@@ -6,21 +6,31 @@ class Element(object):
     The Element object is the abstract class that all gui elements of nostalgia inherit from. It has the basic
     definitions and variables needed by the by the Console object to hand events and rendering.
     """
-    def __init__(self, position, (width, height), color=(200, 200, 200)):
+    def __init__(self, x, y, width, height, color=Color('0x000000')):
         super(Element, self).__init__()
-        self.position = (self.x, self.y) = position
-        self.size = (self.width, self.height) = (width, height)
-        self.surface = pygame.Surface(self.size)
+        self.x, self.y = x, y
+        self.width, self.height = width, height
+        self.surface = Surface((self.width, self.height))
         self.color = color
-        self.surface.fill(color)
+        self.surface.fill(self.color)
         self.master = None
         self.clicked = False
 
+    def size(self):
+        """Returns size of element."""
+        size = (self.width, self.height)
+        return size
+
+    def position(self):
+        """Returns position of the element."""
+        position = (self.x, self.y)
+        return position
+
     def render(self, window):
         """
-        The render definition takes a surface as an arugement and blits its surface to the one given.
+        The render definition takes a surface as an argument and blits its surface to the one given.
         """
-        window.blit(self.surface, self.position)
+        window.blit(self.surface, self.position())
 
     def set_master(self, master):
         """
@@ -37,6 +47,7 @@ class Element(object):
         The method updatePosition, sets this objects position based upon its masters
         position. See the setMaster definition for a more thorough explanation.
         """
-        x = self.position[0] + self.master.position[0]
-        y = self.position[1] + self.master.position[1]
-        self.position = (x, y)
+        if hasattr(self.master, 'x'):
+            x = self.x + self.master.x
+            y = self.y + self.master.y
+            self.x, self.y = x, y

@@ -1,13 +1,14 @@
-import element
+from element import Element
+from pygame import Color
 
 
-class Panel(element.Element):
+class Panel(Element):
     """
     The Panel object is a more basic object of the nostalgia gui. It merely holds onto a list of elements which belong
     to it. It sets the position of it's containing elements to be based off of the panel.
     """
-    def __init__(self, position, (width, height), color=(200, 200, 200)):
-        super(Panel, self).__init__(position, (width, height), color)
+    def __init__(self, x, y, width, height, color=Color(200, 200, 200)):
+        super(Panel, self).__init__(x, y, width, height, color)
         self.elements = []
 
     def add_element(self, element):

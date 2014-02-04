@@ -50,12 +50,12 @@ class SpriteEditor(Console.Console):
                                'initialfile': 'default.jpg',
                                'title': 'Import Browser'}
 
-        info_panel = Panel.Panel((540, 0), (295, 520), (255, 255, 255))
-        save_button = Button.Button((5, 375), (65, 20), "Save", self.font, self.save_sprite)
-        load_button = Button.Button((75, 375), (65, 20), "Load", self.font, self.load_sprite)
-        import_button = Button.Button((145, 375), (65, 20), "Import", self.font, self.import_sprite)
-        export_button = Button.Button((215, 375), (65, 20), "Export", self.font, self.export_sprite)
-        self.color_box = ColorBox.ColorBox((0, 0), (295, 350))
+        info_panel = Panel.Panel(540, 0, 295, 520, pygame.Color(255, 255, 255))
+        save_button = Button.Button(5, 375, 65, 20, "Save", self.font, self.save_sprite)
+        load_button = Button.Button(75, 375, 65, 20, "Load", self.font, self.load_sprite)
+        import_button = Button.Button(145, 375, 65, 20, "Import", self.font, self.import_sprite)
+        export_button = Button.Button(215, 375, 65, 20, "Export", self.font, self.export_sprite)
+        self.color_box = ColorBox.ColorBox(0, 0, 295, 350)
         self.add_element(info_panel)
         info_panel.add_element(save_button)
         info_panel.add_element(load_button)
@@ -113,7 +113,7 @@ class SpriteEditor(Console.Console):
                             self.current_sprite.update_pixel_count(-1, 0)
                     elif event.key == 306:
                         control = False
-            self.window.blit(self.font.render("RGB: (%s, %s, %s)" % self.color_box.color, True, (0, 0, 0)), (625, 355))
+            self.window.blit(self.font.render("RGB: " + str(self.color_box.get_color()), True, (0, 0, 0)), (625, 355))
             self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % (self.current_sprite.pixels_in_sprite[0],
                                                                               self.current_sprite.pixels_in_sprite[1]),
                                               True, (0, 0, 0)), (540 + 5, 400))
