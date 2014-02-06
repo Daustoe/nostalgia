@@ -27,7 +27,7 @@ import tkFileDialog
 class SpriteEditor(Console.Console):
     def __init__(self):
         super(SpriteEditor, self).__init__(835, 520)
-        self.current_sprite = sprite.Sprite((0, 0), (540, 520))
+        self.current_sprite = sprite.Sprite(0, 0, 540, 520)
         self.font = pygame.font.SysFont('timesnewroman', 16, bold=True)
         self.set_caption("Sprite Editor")
         Tkinter.Tk().withdraw()
@@ -68,9 +68,10 @@ class SpriteEditor(Console.Console):
         self.main_loop()
 
     def main_loop(self):
+        #may want to add a list of keys down to track what keyboard keys are currently being held down.
+        #this will let us remove the control variable and just check our list of keys for 'Ctrl' and so on.
         control = False
         while True:
-            print
             self.draw_elements()
             self.handle_element_actions()
             for event in pygame.event.get():
@@ -140,6 +141,7 @@ class SpriteEditor(Console.Console):
     def save_sprite(self):
         """Saves the current_sprite as a .spr Sprite file and is used by the Save Button."""
         filename = tkFileDialog.asksaveasfilename(**self.options)
+        #perhaps do something here to prevent key from sticking in gui and reopening
         if not filename == '':
             session = shelve.open(filename)
             session['dimension'] = self.current_sprite.pixels_in_sprite
@@ -161,32 +163,7 @@ class SpriteEditor(Console.Console):
         """Imports an image file to the current_sprite and is used by the Import Button."""
         filename = tkFileDialog.askopenfilename(**self.import_options)
         if not filename == '':
-            image = Image.open(filename)
-            (width, height) = image.size
-            chunk_size = (
-                width / self.current_sprite.pixels_in_sprite[0], height / self.current_sprite.pixels_in_sprite[1])
-            temp_array = []
-            pix = image.load()
-            this_block_size = self.current_sprite.block_size
-            chunk_total = 0
-            for x_chunk in range(0, width - 1, chunk_size[0]):
-                temp_array.append([])
-                for y_chunk in range(0, height - 1, chunk_size[1]):
-                    (red, green, blue) = (0, 0, 0)
-                    for x in range(x_chunk, x_chunk + chunk_size[0]):
-                        for y in range(y_chunk, y_chunk + chunk_size[1]):
-                            if x < width and y < height:
-                                temp = pix[x, y]
-                                (red, green, blue) = (red + temp[0], green + temp[1], blue + temp[2])
-                                chunk_total += 1
-                    temp_array[x_chunk / chunk_size[0]].append(
-                        pixel.Pixel((x_chunk / chunk_size[0] * this_block_size[0],
-                                     y_chunk / chunk_size[1] * this_block_size[1]),
-                                    this_block_size,
-                                    (red / chunk_total, green / chunk_total,
-                                     blue / chunk_total)))
-                    chunk_total = 0
-            self.current_sprite.pixels = temp_array
+            self.current_sprite.simple_image_to_sprite(Image.open(filename))
             self.current_sprite.render(self.window)
             pygame.event.pump()
 
