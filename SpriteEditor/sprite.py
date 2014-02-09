@@ -3,6 +3,7 @@ import core.gui.element as Element
 from pixel import Pixel
 from pygame.color import Color
 
+#TODO We may want to change how this sprite is displayed
 
 class Sprite(Element.Element):
     def __init__(self, x, y, width, height, pixel_size=(2, 2), pixels_in_sprite=(20, 20), pixel_array=None):
@@ -13,6 +14,7 @@ class Sprite(Element.Element):
         else:
             self.pixels = []
         self.pixel_size = pixel_size
+        #TODO pixels in sprite should perhaps be the width and height, remove current width and height1
         self.pixels_in_sprite = pixels_in_sprite
         self.block_size = (self.width / self.pixels_in_sprite[0], self.height / self.pixels_in_sprite[1])
         self.update_sprite_size()
@@ -45,7 +47,13 @@ class Sprite(Element.Element):
                 self.pixels[x][y].set_master(self)
 
     def complex_image_to_sprite(self, image):
-        pass
+        """
+        We want to enable bicubic interpolation so that we can get a more crisp picture of our image. Or some other
+        algorithm that does more than just average the pixel rgb's across a block of the image to make a pixel. Weighted
+        more to the center perhaps to adjust to a more realistic image.
+        """
+        (width, height) = image.size
+        chunk_size = None
 
     def simple_image_to_sprite(self, image):
         """
