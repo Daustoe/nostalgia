@@ -45,6 +45,21 @@ class Sprite(Element.Element):
                 self.pixels[x].append(Pixel((x * self.block_size[0], y * self.block_size[1]), self.block_size,
                                             temp_array[x][y].get_color()))
                 self.pixels[x][y].set_master(self)
+                
+    def cubic_interpolation(self, row, value):
+        first = value * (3.0 * (row[1] - row[2]) + row[3] - row[0])
+        second = value * (2.0 * row[0] - 5.0 * row[1] + 4.0 * row[2] - row[3] + first)
+        third = value * (row[2] - row[0] + second)
+        fourth = row[1] + 0.5 * third
+        return fourth
+        
+    def bicubic_interpolation(self, cube, x, y):
+        temp = []
+        temp.append(self.cubic_interpolation(cube[0], y))
+        temp.append(self.cubic_interpolation(cube[1], y))
+        temp.append(self.cubic_interpolation(cube[2], y))
+        temp.append(self.cubic_interpolation(cube[3], y))
+        return self.cubic_interpolation(temp, x)
 
     def complex_image_to_sprite(self, image):
         """
@@ -53,7 +68,12 @@ class Sprite(Element.Element):
         more to the center perhaps to adjust to a more realistic image.
         """
         (width, height) = image.size
-        chunk_size = None
+        (sample_width, sample_height = (width / 20, height / 20)  # setting this to 20 by default
+        pixels = image.load()
+        for sample_x in range(0, width - 1, sample_width):
+            for sample_y in range(0, height - 1, sample_height):
+                (red, green, blue) = (0, 0, 0)
+                for 
 
     def simple_image_to_sprite(self, image):
         """
