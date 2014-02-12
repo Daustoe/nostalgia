@@ -47,28 +47,36 @@ class Sprite(Element.Element):
                 self.pixels[x][y].set_master(self)
                 
     def cubic_interpolation(self, row, value):
-        first = value * (3.0 * (row[1] - row[2]) + row[3] - row[0])
+        """
+        Performs the cubic operations with the given row of pixels (colors) need to be careful that we perform the tuple
+        operations correctly down below, this may cause this function to blow up (may need to add quite a bit more code
+        to get it to do what we want.)
+        """
+        first = value * (3.0 * (row[1] - row[2]) + row[3] - row[0])  # tuple and float operations, be careful!
         second = value * (2.0 * row[0] - 5.0 * row[1] + 4.0 * row[2] - row[3] + first)
         third = value * (row[2] - row[0] + second)
         fourth = row[1] + 0.5 * third
         return fourth
         
     def bicubic_interpolation(self, cube, x, y):
-        temp = []
-        temp.append(self.cubic_interpolation(cube[0], y))
-        temp.append(self.cubic_interpolation(cube[1], y))
-        temp.append(self.cubic_interpolation(cube[2], y))
-        temp.append(self.cubic_interpolation(cube[3], y))
+        """
+        Here we are handed a cube of pixels 4x4 and we need to take their r, g, b values and perform this function
+        on them to get a weighted average. Performs the normal cubic interpolation on the rows, then again on the
+        results to get our bicubic weighted value.
+        """
+        temp = [self.cubic_interpolation(cube[0], y),
+                self.cubic_interpolation(cube[1], y),
+                self.cubic_interpolation(cube[2], y),
+                self.cubic_interpolation(cube[3], y)]
         return self.cubic_interpolation(temp, x)
 
     def complex_image_to_sprite(self, image):
         """
-        We want to enable bicubic interpolation so that we can get a more crisp picture of our image. Or some other
-        algorithm that does more than just average the pixel rgb's across a block of the image to make a pixel. Weighted
-        more to the center perhaps to adjust to a more realistic image.
+        For the bicubic interpolation we want to draw lines through our image. Where these lines intersect we are making
+        the new pixels for the downscaled image. In this function we are defining where those pixels are.
         """
-        (width, height) = image.size
-        (sample_width, sample_height = (width / 20, height / 20)  # setting this to 20 by default
+        width, height = image.size
+        sample_width, sample_height = (width / 20, height / 20)  # setting this to 20 by default
         pixels = image.load()
         for sample_x in range(0, width - 1, sample_width):
             for sample_y in range(0, height - 1, sample_height):
