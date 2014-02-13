@@ -15,7 +15,6 @@ import pygame
 import shelve
 import sprite
 import core.gui.button as Button
-import pixel
 import core.gui.console as Console
 import core.gui.panel as Panel
 import core.gui.colorBox as ColorBox
@@ -164,6 +163,7 @@ class SpriteEditor(Console.Console):
         filename = tkFileDialog.askopenfilename(**self.import_options)
         if not filename == '':
             self.current_sprite.simple_image_to_sprite(Image.open(filename))
+            self.current_sprite.complex_image_to_sprite(Image.open(filename))
             self.current_sprite.render(self.window)
             pygame.event.pump()
 

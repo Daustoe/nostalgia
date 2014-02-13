@@ -5,6 +5,8 @@ from pygame.color import Color
 
 #TODO We may want to change how this sprite is displayed
 
+
+#noinspection PyArgumentList
 class Sprite(Element.Element):
     def __init__(self, x, y, width, height, pixel_size=(2, 2), pixels_in_sprite=(20, 20), pixel_array=None):
         super(Sprite, self).__init__(x, y, width, height, Color(255, 255, 255))
@@ -14,7 +16,7 @@ class Sprite(Element.Element):
         else:
             self.pixels = []
         self.pixel_size = pixel_size
-        #TODO pixels in sprite should perhaps be the width and height, remove current width and height1
+        #TODO pixels in sprite should perhaps be the width and height, remove current width and height
         self.pixels_in_sprite = pixels_in_sprite
         self.block_size = (self.width / self.pixels_in_sprite[0], self.height / self.pixels_in_sprite[1])
         self.update_sprite_size()
@@ -45,7 +47,8 @@ class Sprite(Element.Element):
                 self.pixels[x].append(Pixel((x * self.block_size[0], y * self.block_size[1]), self.block_size,
                                             temp_array[x][y].get_color()))
                 self.pixels[x][y].set_master(self)
-                
+
+    #TODO need to perform this function on all values of the color. Right now we are just doing it on the tuple color
     def cubic_interpolation(self, row, value):
         """
         Performs the cubic operations with the given row of pixels (colors) need to be careful that we perform the tuple
@@ -74,14 +77,20 @@ class Sprite(Element.Element):
         """
         For the bicubic interpolation we want to draw lines through our image. Where these lines intersect we are making
         the new pixels for the downscaled image. In this function we are defining where those pixels are.
+
+        Essentially these lines should bisect at the center of these blocks we are making.
+
+        We may also have to perform this operation a few times to scale down our image and still retain a good quality.
+        Shrinking an image too much using this method may yield poor results, so we will have to gradually bring it down
         """
-        width, height = image.size
-        sample_width, sample_height = (width / 20, height / 20)  # setting this to 20 by default
+        image_width, image_height = image.size
+        sample_width, sample_height = (image_width / 20, image_height / 20)  # setting this to 20 by default
         pixels = image.load()
-        for sample_x in range(0, width - 1, sample_width):
-            for sample_y in range(0, height - 1, sample_height):
-                (red, green, blue) = (0, 0, 0)
-                for 
+        for sample_x in range(0, image_width - 1, sample_width):
+            for sample_y in range(0, image_height - 1, sample_height):
+                x = sample_x + 10
+                y = sample_y + 10
+                print x, y
 
     def simple_image_to_sprite(self, image):
         """
