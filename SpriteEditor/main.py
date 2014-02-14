@@ -18,7 +18,7 @@ import core.gui.button as Button
 import core.gui.console as Console
 import core.gui.panel as Panel
 import core.gui.colorBox as ColorBox
-import Image
+from PIL import Image
 import Tkinter
 import tkFileDialog
 
@@ -162,8 +162,7 @@ class SpriteEditor(Console.Console):
         """Imports an image file to the current_sprite and is used by the Import Button."""
         filename = tkFileDialog.askopenfilename(**self.import_options)
         if not filename == '':
-            self.current_sprite.simple_image_to_sprite(Image.open(filename))
-            self.current_sprite.complex_image_to_sprite(Image.open(filename))
+            self.current_sprite.image_to_sprite(Image.open(filename))
             self.current_sprite.render(self.window)
             pygame.event.pump()
 

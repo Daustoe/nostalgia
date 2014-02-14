@@ -48,19 +48,22 @@ class Sprite(Element.Element):
                                             temp_array[x][y].get_color()))
                 self.pixels[x][y].set_master(self)
 
-    #TODO need to perform this function on all values of the color. Right now we are just doing it on the tuple color
-    def cubic_interpolation(self, row, value):
+    @staticmethod
+    def cubic_interpolation(row, value):
         """
         Performs the cubic operations with the given row of pixels (colors) need to be careful that we perform the tuple
         operations correctly down below, this may cause this function to blow up (may need to add quite a bit more code
         to get it to do what we want.)
         """
-        first = value * (3.0 * (row[1] - row[2]) + row[3] - row[0])  # tuple and float operations, be careful!
-        second = value * (2.0 * row[0] - 5.0 * row[1] + 4.0 * row[2] - row[3] + first)
-        third = value * (row[2] - row[0] + second)
-        fourth = row[1] + 0.5 * third
-        return fourth
-        
+        interpolated_color = [0, 0, 0]
+        for color in range(3):
+            first = value * (3.0 * (row[1][color] - row[2][color]) + row[3][color] - row[0][color])
+            second = value * (2.0 * row[0][color] - 5.0 * row[1][color] + 4.0 * row[2][color] - row[3][color] + first)
+            third = value * (row[2][color] - row[0][color] + second)
+            fourth = row[1][color] + 0.5 * third
+            interpolated_color[color] = fourth
+        return tuple(interpolated_color)
+
     def bicubic_interpolation(self, cube, x, y):
         """
         Here we are handed a cube of pixels 4x4 and we need to take their r, g, b values and perform this function
@@ -73,7 +76,7 @@ class Sprite(Element.Element):
                 self.cubic_interpolation(cube[3], y)]
         return self.cubic_interpolation(temp, x)
 
-    def complex_image_to_sprite(self, image):
+    def image_to_sprite(self, image):
         """
         For the bicubic interpolation we want to draw lines through our image. Where these lines intersect we are making
         the new pixels for the downscaled image. In this function we are defining where those pixels are.
@@ -84,18 +87,27 @@ class Sprite(Element.Element):
         Shrinking an image too much using this method may yield poor results, so we will have to gradually bring it down
         """
         image_width, image_height = image.size
-        sample_width, sample_height = (image_width / 20, image_height / 20)  # setting this to 20 by default
+        sample_width, sample_height = (image_width / self.pixels_in_sprite[0], image_height / self.pixels_in_sprite[1])
         pixels = image.load()
+        new_pixels = []
         for sample_x in range(0, image_width - 1, sample_width):
+            temp_row = []
             for sample_y in range(0, image_height - 1, sample_height):
-                x = sample_x + 10
-                y = sample_y + 10
-                print x, y
+                x_mid = sample_x + sample_width / 2
+                y_mid = sample_y + sample_height / 2
+                cube = [[pixels[x, y] for x in range(x_mid - 1, x_mid + 3, 1)] for y in range(y_mid - 1, y_mid + 3, 1)]
+                temp_row.append(Pixel((sample_x / sample_width * self.block_size[0],
+                                      sample_y / sample_height * self.block_size[1]),
+                                      self.block_size, self.bicubic_interpolation(cube, 1, 1)))
+            new_pixels.append(temp_row)
+        self.pixels = new_pixels
 
     def simple_image_to_sprite(self, image):
         """
         Performs a simple conversion of an image to a sprite set it as this sprite. Just grabs the average color of the
         entire section that will become one pixel of this sprite.
+
+        deprecated
         """
         (width, height) = image.size
         chunk_size = (width / self.pixels_in_sprite[0], height / self.pixels_in_sprite[1])
