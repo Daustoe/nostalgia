@@ -8,22 +8,24 @@ from pygame.color import Color
 
 #noinspection PyArgumentList
 class Sprite(Element.Element):
-    def __init__(self, x, y, width, height, pixel_size=(2, 2), pixels_in_sprite=(20, 20), pixel_array=None):
+    def __init__(self, x, y, width, height, pixel_size=(2, 2), sprite_dimension=(20, 20), pixels=None):
         super(Sprite, self).__init__(x, y, width, height, Color(255, 255, 255))
-        self.sprite_size = None
-        if pixel_array is not None:
-            self.pixels = pixel_array
+        self.size = None
+        if pixels is not None:
+            self.pixels = pixels
         else:
             self.pixels = []
         self.pixel_size = pixel_size
         #TODO pixels in sprite should perhaps be the width and height, remove current width and height
-        self.pixels_in_sprite = pixels_in_sprite
-        self.block_size = (self.width / self.pixels_in_sprite[0], self.height / self.pixels_in_sprite[1])
+        self.sprite_size = sprite_dimension
+        self.block_size = (self.width / self.sprite_size[0], self.height / self.sprite_size[1])
         self.update_sprite_size()
-        self.surface = pygame.Surface(self.sprite_size)
-        for x in range(self.pixels_in_sprite[0]):
+        self.surface = pygame.Surface(self.size)
+        #TODO self.pixels does not need to be a double array. Pixel objects know their location once set so we only need
+        #ToDo a list of them
+        for x in range(self.sprite_size[0]):
             self.pixels.append([])
-            for y in range(self.pixels_in_sprite[1]):
+            for y in range(self.sprite_size[1]):
                 self.pixels[x].append(Pixel((x * self.block_size[0], y * self.block_size[1]), self.block_size))
                 self.pixels[x][y].set_master(self)
         self.color_box = None
@@ -33,17 +35,16 @@ class Sprite(Element.Element):
         self.generate_surface()
 
     def update_sprite_size(self):
-        self.sprite_size = (self.block_size[0] * self.pixels_in_sprite[0],
-                            self.block_size[1] * self.pixels_in_sprite[1])
+        self.size = (self.block_size[0] * self.sprite_size[0], self.block_size[1] * self.sprite_size[1])
 
     def generate_surface(self):
         temp_array = self.pixels
         self.pixels = []
         self.update_sprite_size()
-        self.surface = pygame.Surface(self.sprite_size)
-        for x in range(self.pixels_in_sprite[0]):
+        self.surface = pygame.Surface(self.size)
+        for x in range(self.sprite_size[0]):
             self.pixels.append([])
-            for y in range(self.pixels_in_sprite[1]):
+            for y in range(self.sprite_size[1]):
                 self.pixels[x].append(Pixel((x * self.block_size[0], y * self.block_size[1]), self.block_size,
                                             temp_array[x][y].get_color()))
                 self.pixels[x][y].set_master(self)
@@ -76,6 +77,23 @@ class Sprite(Element.Element):
                 self.cubic_interpolation(cube[3], y)]
         return self.cubic_interpolation(temp, x)
 
+    def interpolation_step(self, pixels):
+        new_pixels = []
+        old_width, old_height = pixels.size
+        print old_height
+        new_width, new_height = (old_width / 4, old_height / 4)
+        for sample_x in range(0, old_width - 1, new_width):
+            temp_row = []
+            for sample_y in range(0, old_height - 1, new_height):
+                x_mid = sample_x + new_width / 2
+                y_mid = sample_y + new_height / 2
+                cube = [[pixels[x, y] for x in range(x_mid - 1, x_mid + 3, 1)] for y in range(y_mid - 1, y_mid + 3, 1)]
+                temp_row.append(self.bicubic_interpolation(cube, 1, 1))
+            new_pixels.append(temp_row)
+        if len(new_pixels) >= 30:
+            new_pixels = self.interpolation_step(new_pixels)
+        return new_pixels
+
     def image_to_sprite(self, image):
         """
         For the bicubic interpolation we want to draw lines through our image. Where these lines intersect we are making
@@ -86,21 +104,16 @@ class Sprite(Element.Element):
         We may also have to perform this operation a few times to scale down our image and still retain a good quality.
         Shrinking an image too much using this method may yield poor results, so we will have to gradually bring it down
         """
-        image_width, image_height = image.size
-        sample_width, sample_height = (image_width / self.pixels_in_sprite[0], image_height / self.pixels_in_sprite[1])
         pixels = image.load()
-        new_pixels = []
-        for sample_x in range(0, image_width - 1, sample_width):
-            temp_row = []
-            for sample_y in range(0, image_height - 1, sample_height):
-                x_mid = sample_x + sample_width / 2
-                y_mid = sample_y + sample_height / 2
-                cube = [[pixels[x, y] for x in range(x_mid - 1, x_mid + 3, 1)] for y in range(y_mid - 1, y_mid + 3, 1)]
-                temp_row.append(Pixel((sample_x / sample_width * self.block_size[0],
-                                      sample_y / sample_height * self.block_size[1]),
-                                      self.block_size, self.bicubic_interpolation(cube, 1, 1)))
-            new_pixels.append(temp_row)
-        self.pixels = new_pixels
+        #ToDo currently new_pixels is an array of colors, not Pixel objects. Need to convert and set locations
+        colors = self.interpolation_step(pixels)
+
+    def color_array_to_pixel_array(self, colors):
+        pixels = []
+        for row in colors:
+            pixels.append([])
+            for col in colors:
+                pixels[row].append(Pixel())
 
     def simple_image_to_sprite(self, image):
         """
@@ -110,7 +123,7 @@ class Sprite(Element.Element):
         deprecated
         """
         (width, height) = image.size
-        chunk_size = (width / self.pixels_in_sprite[0], height / self.pixels_in_sprite[1])
+        chunk_size = (width / self.sprite_size[0], height / self.sprite_size[1])
         temp_array = []
         pix = image.load()
         this_block_size = self.block_size
@@ -134,39 +147,37 @@ class Sprite(Element.Element):
         self.pixels = temp_array
 
     def update_pixel_count(self, dx, dy):
-        self.pixels_in_sprite = (self.pixels_in_sprite[0] + dx, self.pixels_in_sprite[1] + dy)
-        self.block_size = (self.width / self.pixels_in_sprite[0], self.height / self.pixels_in_sprite[1])
+        self.sprite_size = (self.sprite_size[0] + dx, self.sprite_size[1] + dy)
+        self.block_size = (self.width / self.sprite_size[0], self.height / self.sprite_size[1])
         if dx == 1:
             self.pixels.append([])
-            for each in range(self.pixels_in_sprite[1]):
-                self.pixels[self.pixels_in_sprite[0] - 1].append(Pixel(((
-                                                                            self.pixels_in_sprite[0] - 1) *
-                                                                        self.block_size[0], each * self.block_size[1]),
+            for each in range(self.sprite_size[1]):
+                self.pixels[self.sprite_size[0] - 1].append(Pixel(((self.sprite_size[0] - 1) * self.block_size[0], each * self.block_size[1]),
                                                                        self.block_size))
         elif dx == -1:
             self.pixels.pop()
         if dy == 1:
-            for each in range(self.pixels_in_sprite[0]):
+            for each in range(self.sprite_size[0]):
                 self.pixels[each].append(Pixel((each * self.block_size[0], (
-                                                                               self.pixels_in_sprite[1] - 1) *
+                                                                               self.sprite_size[1] - 1) *
                                                                            self.block_size[1]), self.block_size))
         elif dy == -1:
-            for each in range(self.pixels_in_sprite[0]):
+            for each in range(self.sprite_size[0]):
                 self.pixels[each].pop()
         self.generate_surface()
 
     def make_image(self):
-        image_surface = pygame.Surface((self.pixels_in_sprite[0] * self.pixel_size[0],
-                                        self.pixels_in_sprite[1] * self.pixel_size[1]))
-        for x in range(self.pixels_in_sprite[0]):
-            for y in range(self.pixels_in_sprite[1]):
+        image_surface = pygame.Surface((self.sprite_size[0] * self.pixel_size[0],
+                                        self.sprite_size[1] * self.pixel_size[1]))
+        for x in range(self.sprite_size[0]):
+            for y in range(self.sprite_size[1]):
                 image_surface.blit(self.pixels[x][y].surface.subsurface(pygame.Rect(self.position, self.pixel_size)),
                                    (x * self.pixel_size[0], y * self.pixel_size[1]))
         return image_surface
 
     def render(self, window):
-        for x in range(self.pixels_in_sprite[0]):
-            for y in range(self.pixels_in_sprite[1]):
+        for x in range(self.sprite_size[0]):
+            for y in range(self.sprite_size[1]):
                 self.pixels[x][y].render(self.surface)
         super(Sprite, self).render(window)
 

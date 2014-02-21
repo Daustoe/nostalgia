@@ -18,8 +18,7 @@ class Element(object):
 
     def size(self):
         """Returns size of element."""
-        size = (self.width, self.height)
-        return size
+        return self.width, self.height
 
     def position(self):
         """Returns position of the element."""

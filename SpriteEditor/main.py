@@ -114,8 +114,8 @@ class SpriteEditor(Console.Console):
                     elif event.key == 306:
                         control = False
             self.window.blit(self.font.render("RGB: " + str(self.color_box.get_color()), True, (0, 0, 0)), (625, 355))
-            self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % (self.current_sprite.pixels_in_sprite[0],
-                                                                              self.current_sprite.pixels_in_sprite[1]),
+            self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % (self.current_sprite.sprite_size[0],
+                                                                              self.current_sprite.sprite_size[1]),
                                               True, (0, 0, 0)), (540 + 5, 400))
             self.window.blit(self.font.render("Pixel Dimension: (%d,%d)" % (self.current_sprite.pixel_size[0],
                                                                             self.current_sprite.pixel_size[1]),
@@ -128,10 +128,10 @@ class SpriteEditor(Console.Console):
         filename = tkFileDialog.askopenfilename(**self.options)
         if not filename == '':
             session = shelve.open(filename)
-            self.current_sprite.pixels_in_sprite = session['dimension']
+            self.current_sprite.sprite_size = session['dimension']
             self.current_sprite.pixel_size = session['size']
-            for x in range(self.current_sprite.pixels_in_sprite[0]):
-                for y in range(self.current_sprite.pixels_in_sprite[1]):
+            for x in range(self.current_sprite.sprite_size[0]):
+                for y in range(self.current_sprite.sprite_size[1]):
                     self.current_sprite.pixels[x][y].change_color(session['%d %d' % (x, y)])
             session.close()
             self.current_sprite.generate_surface()
@@ -143,10 +143,10 @@ class SpriteEditor(Console.Console):
         #perhaps do something here to prevent key from sticking in gui and reopening
         if not filename == '':
             session = shelve.open(filename)
-            session['dimension'] = self.current_sprite.pixels_in_sprite
+            session['dimension'] = self.current_sprite.sprite_size
             session['size'] = self.current_sprite.pixel_size
-            for x in range(self.current_sprite.pixels_in_sprite[0]):
-                for y in range(self.current_sprite.pixels_in_sprite[1]):
+            for x in range(self.current_sprite.sprite_size[0]):
+                for y in range(self.current_sprite.sprite_size[1]):
                     session['%d %d' % (x, y)] = self.current_sprite.pixels[x][y].save_color()
             session.close()
             pygame.event.pump()
