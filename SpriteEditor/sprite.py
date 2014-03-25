@@ -105,15 +105,15 @@ class Sprite(Element.Element):
         Shrinking an image too much using this method may yield poor results, so we will have to gradually bring it down
         """
         pixels = image.load()
-        #ToDo currently new_pixels is an array of colors, not Pixel objects. Need to convert and set locations
         colors = self.interpolation_step(pixels)
 
     def color_array_to_pixel_array(self, colors):
+        #ToDo currently new_pixels is an array of colors, not Pixel objects. Need to convert and set locations
         pixels = []
         for row in colors:
             pixels.append([])
             for col in colors:
-                pixels[row].append(Pixel())
+                pixels[row].append(Pixel((20, 20), colors[row][col]))
 
     def simple_image_to_sprite(self, image):
         """
@@ -152,15 +152,14 @@ class Sprite(Element.Element):
         if dx == 1:
             self.pixels.append([])
             for each in range(self.sprite_size[1]):
-                self.pixels[self.sprite_size[0] - 1].append(Pixel(((self.sprite_size[0] - 1) * self.block_size[0], each * self.block_size[1]),
-                                                                       self.block_size))
+                self.pixels[self.sprite_size[0] - 1].append(
+                    Pixel(((self.sprite_size[0] - 1) * self.block_size[0], each * self.block_size[1]), self.block_size))
         elif dx == -1:
             self.pixels.pop()
         if dy == 1:
             for each in range(self.sprite_size[0]):
-                self.pixels[each].append(Pixel((each * self.block_size[0], (
-                                                                               self.sprite_size[1] - 1) *
-                                                                           self.block_size[1]), self.block_size))
+                self.pixels[each].append(
+                    Pixel((each * self.block_size[0], (self.sprite_size[1] - 1) * self.block_size[1]), self.block_size))
         elif dy == -1:
             for each in range(self.sprite_size[0]):
                 self.pixels[each].pop()
