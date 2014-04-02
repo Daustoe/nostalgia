@@ -80,7 +80,7 @@ class Sprite(Element.Element):
     def interpolation_step(self, pixels):
         new_pixels = []
         old_width, old_height = pixels.size
-        print old_height
+        print pixels.index()
         new_width, new_height = (old_width / 4, old_height / 4)
         for sample_x in range(0, old_width - 1, new_width):
             temp_row = []
@@ -104,8 +104,7 @@ class Sprite(Element.Element):
         We may also have to perform this operation a few times to scale down our image and still retain a good quality.
         Shrinking an image too much using this method may yield poor results, so we will have to gradually bring it down
         """
-        pixels = image.load()
-        colors = self.interpolation_step(pixels)
+        colors = self.interpolation_step(image)
 
     def color_array_to_pixel_array(self, colors):
         #ToDo currently new_pixels is an array of colors, not Pixel objects. Need to convert and set locations
