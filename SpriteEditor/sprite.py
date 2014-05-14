@@ -10,7 +10,7 @@ from pixel import Pixel
 
 #noinspection PyArgumentList
 class Sprite(Element.Element):
-    def __init__(self, x, y, width, height, sprite_dimension=(20, 20), pixels=None):
+    def __init__(self, x, y, width, height, sprite_width=20, sprite_height=20, pixels=None):
         super(Sprite, self).__init__(x, y, width, height, Color(255, 255, 255))
         self.size = None
         if pixels is not None:
@@ -21,7 +21,8 @@ class Sprite(Element.Element):
         self.pixel_width = 2
         self.pixel_height = 2
         #TODO pixels in sprite should perhaps be the width and height, remove current width and height
-        self.sprite_width, self.sprite_height = sprite_dimension
+        self.sprite_width = sprite_width
+        self.sprite_height = sprite_height
         self.block_width, self.block_height = (self.width / self.sprite_width, self.height / self.sprite_height)
         self.update_sprite_size()
         self.surface = pygame.Surface(self.size)
@@ -127,27 +128,26 @@ class Sprite(Element.Element):
         deprecated
         """
         (width, height) = image.size
-        chunk_size = (width / self.sprite_width, height / self.sprite_height)
+        chunk_w = width / self.sprite_width
+        chunk_h = height / self.sprite_height
         temp_array = []
         pix = image.load()
-        this_block_size = (self.block_width, self.block_height)
-        chunk_total = 0
-        for x_chunk in range(0, width - 1, chunk_size[0]):
+        for x_chunk in range(0, width - 1, chunk_w):
             temp_array.append([])
-            for y_chunk in range(0, height - 1, chunk_size[1]):
+            for y_chunk in range(0, height - 1, chunk_h):
                 (red, green, blue) = (0, 0, 0)
-                for x in range(x_chunk, x_chunk + chunk_size[0]):
-                    for y in range(y_chunk, y_chunk + chunk_size[1]):
+                chunk_total = 0
+                for x in range(x_chunk, x_chunk + chunk_w):
+                    for y in range(y_chunk, y_chunk + chunk_h):
                         if x < width and y < height:
                             temp = pix[x, y]
                             (red, green, blue) = (red + temp[0], green + temp[1], blue + temp[2])
                             chunk_total += 1
-                temp_array[x_chunk / chunk_size[0]].append(Pixel((x_chunk / chunk_size[0] * this_block_size[0],
-                                                                  y_chunk / chunk_size[1] * this_block_size[1]),
-                                                                 this_block_size,
-                                                                 (red / chunk_total, green / chunk_total,
-                                                                  blue / chunk_total)))
-                chunk_total = 0
+                pixel_x = x_chunk / chunk_w * self.block_width
+                pixel_y = y_chunk / chunk_h * self.block_height
+                index = x_chunk / chunk_w
+                rgb = (red / chunk_total, green / chunk_total, blue / chunk_total)
+                temp_array[index].append(Pixel(pixel_x, pixel_y, self.block_width, self.block_height, rgb))
         self.pixels = temp_array
 
     def update_pixel_count(self, dx, dy):
