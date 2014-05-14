@@ -11,7 +11,7 @@ class Pixel(Element.Element):
     We are also going to want to add actionEvents for each pixel if it is clicked on, in order
     to change the pixels mouse clicks
     """
-    def __init__(self, (x, y), (width, height), color=Color(200, 200, 200)):
+    def __init__(self, x, y, width, height, color=Color(200, 200, 200)):
         super(Pixel, self).__init__(x, y, width, height, color)
         self.surface.set_alpha(255)
         self.null_pixel = Surface(self.size())

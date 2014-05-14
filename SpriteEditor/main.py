@@ -11,16 +11,18 @@ Issue List:
     don't know if this is my problem or someone else's, suggest talking to Randy
 """
 import sys
-import pygame
 import shelve
+import Tkinter
+import tkFileDialog
+
+import pygame
+from PIL import Image
+
 import sprite
 import core.gui.button as Button
 import core.gui.console as Console
 import core.gui.panel as Panel
 import core.gui.colorBox as ColorBox
-from PIL import Image
-import Tkinter
-import tkFileDialog
 
 
 class SpriteEditor(Console.Console):
@@ -114,11 +116,11 @@ class SpriteEditor(Console.Console):
                     elif event.key == 306:
                         control = False
             self.window.blit(self.font.render("RGB: " + str(self.color_box.get_color()), True, (0, 0, 0)), (625, 355))
-            self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % (self.current_sprite.sprite_size[0],
-                                                                              self.current_sprite.sprite_size[1]),
+            self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % (self.current_sprite.sprite_width,
+                                                                              self.current_sprite.sprite_height),
                                               True, (0, 0, 0)), (540 + 5, 400))
-            self.window.blit(self.font.render("Pixel Dimension: (%d,%d)" % (self.current_sprite.pixel_size[0],
-                                                                            self.current_sprite.pixel_size[1]),
+            self.window.blit(self.font.render("Pixel Dimension: (%d,%d)" % (self.current_sprite.pixel_width,
+                                                                            self.current_sprite.pixel_height),
                                               True, (0, 0, 0)), (540 + 5, 420))
             pygame.display.flip()
             self.fps_clock.tick(30)
@@ -143,10 +145,10 @@ class SpriteEditor(Console.Console):
         #perhaps do something here to prevent key from sticking in gui and reopening
         if not filename == '':
             session = shelve.open(filename)
-            session['dimension'] = self.current_sprite.sprite_size
-            session['size'] = self.current_sprite.pixel_size
-            for x in range(self.current_sprite.sprite_size[0]):
-                for y in range(self.current_sprite.sprite_size[1]):
+            session['dimension'] = (self.current_sprite.sprite_width, self.current_sprite.sprite_height)
+            session['size'] = (self.current_sprite.pixel_width, self.current_sprite.pixel_height)
+            for x in range(self.current_sprite.sprite_width):
+                for y in range(self.current_sprite.sprite_height):
                     session['%d %d' % (x, y)] = self.current_sprite.pixels[x][y].save_color()
             session.close()
             pygame.event.pump()
