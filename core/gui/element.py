@@ -5,6 +5,14 @@ class Element(object):
     """
     The Element object is the abstract class that all gui elements of nostalgia inherit from. It has the basic
     definitions and variables needed by the by the Console object to hand events and rendering.
+
+
+    for child in self.children:
+            child.stylize()
+        style = theme.current.get_dict(self)
+        for key, val in style.iteritems():
+            kvc.set_value_for_keypath(self, key, val)
+        self.layout()
     """
     def __init__(self, x, y, width, height, color=Color('0x000000')):
         super(Element, self).__init__()
@@ -22,8 +30,7 @@ class Element(object):
 
     def position(self):
         """Returns position of the element."""
-        position = (self.x, self.y)
-        return position
+        return self.x, self.y
 
     def render(self, window):
         """

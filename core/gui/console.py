@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import FULLSCREEN
+#TODO themes for objects. All element objects will have stylize() method to set current them settings to it
 
 
 class Console(object):
@@ -31,7 +32,9 @@ class Console(object):
     def handle_element_actions(self):
         """
         For elements that have actions (i.e. buttons, sliders, things you can click) call the actionEvent method
-        (inherited from the Element object) on that object and send it all current relevent mouse information.
+        (inherited from the Element object) on that object and send it all current relevant mouse information.
+
+        Note: may need to change how we think about events on gui elements.
         """
         if pygame.event.peek():
             mouse_press = pygame.mouse.get_pressed()
@@ -76,7 +79,7 @@ class Console(object):
         caption = pygame.display.get_caption()
         cursor = pygame.mouse.get_cursor()
 
-        size = (width, height) = (screen.get_width(), screen.get_height())
+        size = (screen.get_width(), screen.get_height())
         flags = screen.get_flags()
         bits = screen.get_bitsize()
 

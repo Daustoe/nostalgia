@@ -39,12 +39,6 @@ class Pixel(Element.Element):
             self.surface = Surface(self.size())
             self.surface.fill(self.color)
 
-    def set_master(self, master):
-        super(Pixel, self).set_master(master)
-
-    def update_position(self):
-        super(Pixel, self).update_position()
-
     def get_color(self):
         return self.color
 
@@ -52,4 +46,4 @@ class Pixel(Element.Element):
         if self.is_null:
             window.blit(self.null_pixel, self.position())
         else:
-            window.blit(self.surface, self.position())
+            super(Pixel, self).render(window)
