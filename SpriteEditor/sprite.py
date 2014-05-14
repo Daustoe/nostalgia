@@ -15,17 +15,17 @@ class Sprite(Element.Element):
             self.pixels = pixels
         else:
             self.pixels = []
-        self.pixel_size = pixel_size
+        self.pixel_width, self.pixel_height = pixel_size
         #TODO pixels in sprite should perhaps be the width and height, remove current width and height
-        self.sprite_size = sprite_dimension
+        self.sprite_width, self.sprite_height = sprite_dimension
         self.block_size = (self.width / self.sprite_size[0], self.height / self.sprite_size[1])
         self.update_sprite_size()
         self.surface = pygame.Surface(self.size)
         #TODO self.pixels does not need to be a double array. Pixel objects know their location once set so we only need
         #ToDo a list of them
-        for x in range(self.sprite_size[0]):
+        for x in range(self.sprite_width):
             self.pixels.append([])
-            for y in range(self.sprite_size[1]):
+            for y in range(self.sprite_height):
                 self.pixels[x].append(Pixel((x * self.block_size[0], y * self.block_size[1]), self.block_size))
                 self.pixels[x][y].set_master(self)
         self.color_box = None
