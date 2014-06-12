@@ -12,8 +12,8 @@ class Bar(element.Element):
     value (upper bounds of the bar), a foreground color(filled bar), and a
     background color(empty bar).
     """
-    def __init__(self, (x, y), (width, height), max_value, foreground=(200, 0, 0), background=(200, 200, 200)):
-        super(Bar, self).__init__((x, y), (width, height), background)
+    def __init__(self, x, y, width, height, max_value, foreground=(200, 0, 0), background=(200, 200, 200)):
+        super(Bar, self).__init__(x, y, width, height, background)
         self.maximum = max_value
         self.value = max_value
         self.percentage = 1.0
