@@ -1,26 +1,27 @@
-import element
-import pygame.color
+from element import Element
+from pygame.color import Color
 
 
-class Label(element.Element):
+class Label(Element):
     """
     Label inherits from Element. It takes position (x, y), size (width, height) font (pygame.font), text (String),
     fontColor (red, green, blue) defaults to black.
     """
-    def __init__(self, x, y, width, height, font, text, red=0, green=0, blue=0):
-        super(Label, self).__init__(x, y, width, height)
+    def __init__(self, x, y, width, height, font, text, color=Color('0x000000'), font_color=Color('0x000000')):
+        super(Label, self).__init__(x, y, width, height, color)
         self.font = font
         self.text = text
-        self.font_color = pygame.color.Color(red, green, blue)
+        self.font_color = font_color
 
     def render(self, window):
         """
         Overrides the render function of the Element class. Draws the text to the screen.
         """
-        window.blit(self.font.render(self.text, True, self.font_color), self.position)
+        super(Label, self).render(window)
+        window.blit(self.font.render(self.text, True, self.font_color), self.position())
 
-    def set_master(self, master):
+    def set_parent(self, master):
         """
         Calls the Element set_master function.
         """
-        super(Label, self).set_master(master)
+        super(Label, self).set_parent(master)

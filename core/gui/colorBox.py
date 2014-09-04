@@ -6,14 +6,14 @@ hue and saturation. Should switch to using Pygames built in color module, as it 
 mathematical color functions I will need for this.
 enable more options besides rgb (hue, saturation, etc.)
 """
-import panel
+import view
 import slider
 import label
 import element
 import pygame.color as Color
 
 
-class ColorBox(panel.Panel):
+class ColorBox(view.View):
     """
     The ColorBox class gives the developer a gui object that lets users select a color. As of right now this only
     supports rgb colors with no care for saturation or hue. That is something that we want to change. We also want to
@@ -30,10 +30,10 @@ class ColorBox(panel.Panel):
         self.green = slider.Slider(10, 310, 275, 15, Color.Color('0xc8ffc8'), Color.Color('green'))
         self.blue = slider.Slider(10, 330, 275, 15, Color.Color('0xc8c8ff'), Color.Color('blue'))
         self.square = element.Element(10, 10, 275, 275)
-        self.add_element(self.red)
-        self.add_element(self.green)
-        self.add_element(self.blue)
-        self.add_element(self.square)
+        self.add_child(self.red)
+        self.add_child(self.green)
+        self.add_child(self.blue)
+        self.add_child(self.square)
         self.rgb_label = label.Label
 
     def set_color(self, new_color):

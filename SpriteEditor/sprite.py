@@ -32,7 +32,7 @@ class Sprite(Element.Element):
             self.pixels.append([])
             for y in range(self.sprite_height):
                 self.pixels[x].append(Pixel(x * self.block_width, y * self.block_height, self.block_width, self.block_height))
-                self.pixels[x][y].set_master(self)
+                self.pixels[x][y].set_parent(self)
         self.color_box = None
 
     def update_pixel_size(self, dx, dy):
@@ -53,7 +53,7 @@ class Sprite(Element.Element):
             for y in range(self.sprite_height):
                 self.pixels[x].append(Pixel(x * self.block_width, y * self.block_height, self.block_width, self.block_height,
                                             temp_array[x][y].get_color()))
-                self.pixels[x][y].set_master(self)
+                self.pixels[x][y].set_parent(self)
 
     @staticmethod
     def cubic_interpolation(row, value):
@@ -188,11 +188,11 @@ class Sprite(Element.Element):
     def set_color_box(self, color_box):
         self.color_box = color_box
 
-    def set_master(self, master):
-        super(Sprite, self).set_master(master)
+    def set_parent(self, master):
+        super(Sprite, self).set_parent(master)
         for row in self.pixels:
             for each in row:
-                each.set_master(self)
+                each.set_parent(self)
 
     def action_event(self, mouse_press, mouse_position, mouse_movement):
         if self.color_box is not None and self.x < mouse_position[0] < self.x + self.width:

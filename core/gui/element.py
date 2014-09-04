@@ -38,7 +38,7 @@ class Element(object):
         """
         window.blit(self.surface, self.position())
 
-    def set_master(self, master):
+    def set_parent(self, master):
         """
         Sets the master handler of this object. Master's can be panels or the main
         console window. This updates this objects position in a way that makes the

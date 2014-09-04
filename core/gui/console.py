@@ -52,7 +52,7 @@ class Console(object):
             self.message_box_list.append(element)
         else:
             self.elements.append(element)
-        element.set_master(self)
+        element.set_parent(self)
 
     @staticmethod
     def set_caption(caption):
@@ -62,7 +62,7 @@ class Console(object):
     def remove_element(self, element):
         """ Removes element from the list of console elements to draw. """
         self.elements.remove(element)
-        element.set_master(None)
+        element.set_parent(None)
 
     def change_dimensions(self, width, height):
         """ Changes the dimensions of the window. """

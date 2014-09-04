@@ -21,7 +21,7 @@ from PIL import Image
 import sprite
 import core.gui.button as Button
 import core.gui.console as Console
-import core.gui.panel as Panel
+import core.gui.view as Panel
 import core.gui.colorBox as ColorBox
 
 
@@ -51,18 +51,18 @@ class SpriteEditor(Console.Console):
                                'initialfile': 'default.jpg',
                                'title': 'Import Browser'}
 
-        info_panel = Panel.Panel(540, 0, 295, 520, pygame.Color(255, 255, 255))
+        info_panel = Panel.View(540, 0, 295, 520, pygame.Color(255, 255, 255))
         save_button = Button.Button(5, 375, 65, 20, "Save", self.font, self.save_sprite)
         load_button = Button.Button(75, 375, 65, 20, "Load", self.font, self.load_sprite)
         import_button = Button.Button(145, 375, 65, 20, "Import", self.font, self.import_sprite)
         export_button = Button.Button(215, 375, 65, 20, "Export", self.font, self.export_sprite)
         self.color_box = ColorBox.ColorBox(0, 0, 295, 350)
         self.add_element(info_panel)
-        info_panel.add_element(save_button)
-        info_panel.add_element(load_button)
-        info_panel.add_element(import_button)
-        info_panel.add_element(export_button)
-        info_panel.add_element(self.color_box)
+        info_panel.add_child(save_button)
+        info_panel.add_child(load_button)
+        info_panel.add_child(import_button)
+        info_panel.add_child(export_button)
+        info_panel.add_child(self.color_box)
         self.current_sprite.set_color_box(self.color_box)
         self.add_element(self.current_sprite)
 

@@ -30,7 +30,7 @@ import core.gui.slider as Slider
 import core.gui.menu as Menu
 import core.tools.dungeonGenerator as Dungeon
 import core.tools.pathfinder as PathFinder
-import gui.panel as Panel
+import gui.view as Panel
 import gui.bar as Bar
 import core.engine.gameObject as gameObject
 import random
@@ -48,11 +48,11 @@ slider = Slider.Slider((10, 300), (275, 15), (255, 200, 200), (255, 0, 0))
 menu = Menu.Menu((10, 10), (580, 580), font, title="Test Menu")
 window.add_element(menu)
 player = gameObject.GameObject((0, 0), pygame.image.load("player.png"))
-bottomPanel = Panel.Panel((0, 560), (1100, 180), (20, 20, 20))
+bottomPanel = Panel.View((0, 560), (1100, 180), (20, 20, 20))
 health_bar = Bar.Bar((10, 20), (200, 10), 100, (200, 0, 0), (100, 20, 20))
 mana_bar = Bar.Bar((10, 40), (200, 10), 100, (0, 0, 200), (20, 20, 100))
-bottomPanel.add_element(mana_bar)
-bottomPanel.add_element(health_bar)
+bottomPanel.add_child(mana_bar)
+bottomPanel.add_child(health_bar)
 window.add_element(bottomPanel)
 
 mapmaker = Dungeon.DungeonGenerator(30, 6, 13, 85, 40)

@@ -14,7 +14,7 @@ import element
 import label
 import menu
 import messageBox
-import panel
+import view
 import selectionSphere
 import slider
 import textBox
