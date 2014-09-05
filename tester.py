@@ -13,7 +13,7 @@ from core.tools.heightmap import HeightMap
 def game_loop(window):
     user_quit = False
     while not user_quit:
-        window.draw_elements()
+        window.draw_children()
         window.handle_element_actions()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

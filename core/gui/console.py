@@ -16,16 +16,16 @@ class Console(object):
         self.active_element = None
         self.position = (0, 0)
         self.window = pygame.display.set_mode(self.size)
-        self.elements = []
+        self.children = []
         self.message_box_list = []
 
-    def draw_elements(self):
+    def draw_children(self):
         """
         Renders all of the consoles elements to the screen in the elements list to
         the window
         """
         self.window.fill((0, 0, 0))
-        for each in self.elements:
+        for each in self.children:
             if hasattr(each, 'render'):
                 each.render(self.window)
 
@@ -40,18 +40,18 @@ class Console(object):
             mouse_press = pygame.mouse.get_pressed()
             mouse_position = pygame.mouse.get_pos()
             mouse_movement = pygame.mouse.get_rel()
-            for element in self.elements:
+            for element in self.children:
                 if hasattr(element, 'action_event'):
                     element.action_event(mouse_press, mouse_position, mouse_movement)
 
-    def add_element(self, element):
+    def add(self, element):
         """
         Adds an element to the consoles list of elements to draw.
         """
         if element.__module__ == "messageBox":
             self.message_box_list.append(element)
         else:
-            self.elements.append(element)
+            self.children.append(element)
         element.set_parent(self)
 
     @staticmethod
@@ -61,7 +61,7 @@ class Console(object):
 
     def remove_element(self, element):
         """ Removes element from the list of console elements to draw. """
-        self.elements.remove(element)
+        self.children.remove(element)
         element.set_parent(None)
 
     def change_dimensions(self, width, height):

@@ -29,7 +29,8 @@ class SpriteEditor(Console.Console):
     def __init__(self):
         super(SpriteEditor, self).__init__(835, 520)
         self.current_sprite = sprite.Sprite(0, 0, 540, 520)
-        self.font = pygame.font.SysFont('timesnewroman', 16, bold=True)
+        self.font = pygame.font.Font("Munro.ttf", 18)
+        self.font.set_bold(True)
         self.set_caption("Sprite Editor")
         Tkinter.Tk().withdraw()
         self.fps_clock = pygame.time.Clock()
@@ -57,14 +58,14 @@ class SpriteEditor(Console.Console):
         import_button = Button.Button(145, 375, 65, 20, "Import", self.font, self.import_sprite)
         export_button = Button.Button(215, 375, 65, 20, "Export", self.font, self.export_sprite)
         self.color_box = ColorBox.ColorBox(0, 0, 295, 350)
-        self.add_element(info_panel)
+        self.add(info_panel)
         info_panel.add_child(save_button)
         info_panel.add_child(load_button)
         info_panel.add_child(import_button)
         info_panel.add_child(export_button)
         info_panel.add_child(self.color_box)
         self.current_sprite.set_color_box(self.color_box)
-        self.add_element(self.current_sprite)
+        self.add(self.current_sprite)
 
         self.main_loop()
 
@@ -73,7 +74,7 @@ class SpriteEditor(Console.Console):
         #this will let us remove the control variable and just check our list of keys for 'Ctrl' and so on.
         control = False
         while True:
-            self.draw_elements()
+            self.draw_children()
             self.handle_element_actions()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

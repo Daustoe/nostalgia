@@ -46,14 +46,14 @@ font = pygame.font.SysFont('timesnewroman', 16, bold=True)
 firstButton = Button.Button((10, 10), (80, 20), "Hello", font, button_action)
 slider = Slider.Slider((10, 300), (275, 15), (255, 200, 200), (255, 0, 0))
 menu = Menu.Menu((10, 10), (580, 580), font, title="Test Menu")
-window.add_element(menu)
+window.add(menu)
 player = gameObject.GameObject((0, 0), pygame.image.load("player.png"))
 bottomPanel = Panel.View((0, 560), (1100, 180), (20, 20, 20))
 health_bar = Bar.Bar((10, 20), (200, 10), 100, (200, 0, 0), (100, 20, 20))
 mana_bar = Bar.Bar((10, 40), (200, 10), 100, (0, 0, 200), (20, 20, 100))
 bottomPanel.add_child(mana_bar)
 bottomPanel.add_child(health_bar)
-window.add_element(bottomPanel)
+window.add(bottomPanel)
 
 mapmaker = Dungeon.DungeonGenerator(30, 6, 13, 85, 40)
 
@@ -86,7 +86,7 @@ def color_map():
 userQuit = False
 color_map()
 while not userQuit:
-    window.draw_elements()
+    window.draw_children()
     window.handle_element_actions()
     for y in range(40):
         for x in range(85):

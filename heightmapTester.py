@@ -309,7 +309,7 @@ def rain_button_action():
 def main():
     global myMap, mapSquareSize, colorKey
     while True:
-        window.draw_elements()
+        window.draw_children()
         window.handle_element_actions()
         #need to perform all the operations
         color = None
@@ -375,7 +375,7 @@ historyPanel = Panel.View((5, 315), (230, 400), (10, 10, 50))
 historyLabel = Label.Label((5, 2), (230, 8), font, "------history------", (230, 230, 230))
 historyPanel.add_child(historyLabel)
 info_panel.add_child(historyPanel)
-window.add_element(info_panel)
+window.add(info_panel)
 write_out()
 if __name__ == "__main__":
     main()
