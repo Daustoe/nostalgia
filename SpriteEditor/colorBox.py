@@ -26,14 +26,17 @@ class ColorBox(View):
         Initializes the sliders, and adds them to the ColorBox object. Default background color is rgb=505050
         """
         super(ColorBox, self).__init__(x, y, width, height, color)
+        self.square = Element(10, 10, 275, 275)
         self.red = Slider(10, 290, 275, 15, Color('0xffc8c8'), Color('red'))
         self.green = Slider(10, 310, 275, 15, Color('0xc8ffc8'), Color('green'))
         self.blue = Slider(10, 330, 275, 15, Color('0xc8c8ff'), Color('blue'))
-        self.square = Element(10, 10, 275, 275)
         self.add(self.red)
         self.add(self.green)
         self.add(self.blue)
         self.add(self.square)
+        self.blue.on_value_changed.connect(self.update_color)
+        self.green.on_value_changed.connect(self.update_color)
+        self.red.on_value_changed.connect(self.update_color)
         self.rgb_label = Label
 
     def set_color(self, new_color):
@@ -50,6 +53,7 @@ class ColorBox(View):
         to see if the user has updated.
         """
         # TODO perhaps modify color parameters to remove this error. Works, but looks annoying.
+        print self.red.value
         self.square.color = Color(int(self.red.value * 255), int(self.green.value * 255), int(self.blue.value * 255))
         self.square.surface.fill(self.square.color)
 
@@ -57,5 +61,4 @@ class ColorBox(View):
         """
         Draws the Colorbox surface (sliders and square for now) and blits it to the window.
         """
-        self.update_color()
         super(ColorBox, self).render(window)

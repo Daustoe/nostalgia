@@ -37,7 +37,7 @@ class Menu(Element):
             letter_index += 1
             index += 1
         self.is_open = True
-        super(Menu, self).render(self.master.window)
+        super(Menu, self).render(self.parent.window)
         pygame.display.update()
 
         # Starting loop that waits for user input

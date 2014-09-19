@@ -38,24 +38,21 @@ class View(Element):
         # TODO implement hidden and enabled for all objects
         # if self.hidden or not self._enabled:
             # return None
-
         if not self.frame.collidepoint(mouse_pos):
             return None
 
-        local_pt = (mouse_pos[0] - self.frame.x, mouse_pos[1] - self.frame.y)
-
         for child in reversed(self.children):   # front to back
-            hit_view = child.hit(local_pt)
+            hit_view = child.hit(mouse_pos)
             if hit_view is not None:
                 return hit_view
 
         return self
 
-    def set_parent(self, master):
+    def set_parent(self, parent):
         """
         Elements that belong to a View need to also update their position to follow their parent
         """
-        super(View, self).set_parent(master)
+        super(View, self).set_parent(parent)
         for element in self.children:
             element.update_position()
 

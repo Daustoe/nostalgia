@@ -1,7 +1,7 @@
 import pygame
 from pygame.color import Color
 
-import core.gui.element as Element
+from core.gui.element import Element
 from pixel import Pixel
 
 
@@ -9,7 +9,7 @@ from pixel import Pixel
 
 
 #noinspection PyArgumentList
-class Sprite(Element.Element):
+class Sprite(Element):
     def __init__(self, x, y, width, height, sprite_width=20, sprite_height=20, pixels=None):
         super(Sprite, self).__init__(x, y, width, height, Color(255, 255, 255))
         self.size = None
@@ -188,11 +188,13 @@ class Sprite(Element.Element):
     def set_color_box(self, color_box):
         self.color_box = color_box
 
-    def set_parent(self, master):
-        super(Sprite, self).set_parent(master)
+    def set_parent(self, parent):
+        super(Sprite, self).set_parent(parent)
         for row in self.pixels:
             for each in row:
                 each.set_parent(self)
+
+    # TODO need to change action_event method to a mouse_down or mouse_up.
 
     def action_event(self, mouse_press, mouse_position, mouse_movement):
         if self.color_box is not None and self.frame.x < mouse_position[0] < self.frame.x + self.frame.w:
@@ -211,3 +213,6 @@ class Sprite(Element.Element):
 
     def get_pixel_color(self, x, y):
         return self.pixels[x][y].get_color()
+
+    def mouse_down(self, button, point):
+        print "hit sprite!"

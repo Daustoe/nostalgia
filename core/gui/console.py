@@ -71,6 +71,12 @@ class Console(object):
         self.size = (width, height)
         self.window = pygame.display.set_mode(self.size)
 
+    def hit(self, mouse_pos):
+        for child in reversed(self.children):
+            hit_view = child.hit(mouse_pos)
+            if hit_view is not None:
+                return hit_view
+
     def toggle_fullscreen(self):
         """
         Toggles between fullscreen and windowed mode for our window, depending on how you set up your gui, this has the

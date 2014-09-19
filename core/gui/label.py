@@ -19,9 +19,3 @@ class Label(Element):
         """
         super(Label, self).render(window)
         window.blit(self.font.render(self.text, True, self.font_color), self.position())
-
-    def set_parent(self, master):
-        """
-        Calls the Element set_master function.
-        """
-        super(Label, self).set_parent(master)

@@ -1,4 +1,5 @@
 from pygame import Color, Surface, Rect
+from signal import Signal
 
 
 class Element(object):
@@ -20,12 +21,15 @@ class Element(object):
         self.surface = Surface(self.size())
         self.color = color
         self.surface.fill(self.color)
-        self.master = None
+        self.parent = None
         self.clicked = False
+        self.on_mouse_up = Signal()
+        self.on_mouse_down = Signal()
+        self.draggable = False
 
     def size(self):
         """Returns size of element."""
-        return self.frame.w, self.frame.h
+        return self.frame.size
 
     def hit(self, mouse_pos):
         # TODO here is where we would check if this object is enabled to the user
@@ -45,14 +49,14 @@ class Element(object):
         """
         window.blit(self.surface, self.position())
 
-    def set_parent(self, master):
+    def set_parent(self, parent):
         """
         Sets the master handler of this object. Master's can be panels or the main
         console window. This updates this objects position in a way that makes the
         origin (0, 0) that of its masters (x, y) position. It takes the master
         object as an argument.
         """
-        self.master = master
+        self.parent = parent
         self.update_position()
 
     def update_position(self):
@@ -60,7 +64,13 @@ class Element(object):
         The method updatePosition, sets this objects position based upon its masters
         position. See the setMaster definition for a more thorough explanation.
         """
-        if hasattr(self.master, 'frame'):
-            x = self.frame.x + self.master.frame.x
-            y = self.frame.y + self.master.frame.y
+        if hasattr(self.parent, 'frame'):
+            x = self.frame.x + self.parent.frame.x
+            y = self.frame.y + self.parent.frame.y
             self.frame.x, self.frame.y = x, y
+
+    def mouse_up(self, button, point):
+        self.on_mouse_up(self, button, point)
+
+    def mouse_down(self, button, point):
+        self.on_mouse_down(self, button, point)

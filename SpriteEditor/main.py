@@ -51,10 +51,14 @@ class SpriteEditor(Console):
                                'title': 'Import Browser'}
 
         info_panel = View(540, 0, 295, 520, pygame.Color('0xffffff'))
-        save_button = Button(5, 375, 65, 20, "Save", self.font, self.save_sprite)
-        load_button = Button(75, 375, 65, 20, "Load", self.font, self.load_sprite)
-        import_button = Button(145, 375, 65, 20, "Import", self.font, self.import_sprite)
-        export_button = Button(215, 375, 65, 20, "Export", self.font, self.export_sprite)
+        save_button = Button(5, 375, 65, 20, "Save", self.font)
+        save_button.on_clicked.connect(self.save_sprite)
+        load_button = Button(75, 375, 65, 20, "Load", self.font)
+        load_button.on_clicked.connect(self.load_sprite)
+        import_button = Button(145, 375, 65, 20, "Import", self.font)
+        import_button.on_clicked.connect(self.import_sprite)
+        export_button = Button(215, 375, 65, 20, "Export", self.font)
+        export_button.on_clicked.connect(self.export_sprite)
         self.color_box = ColorBox(0, 0, 295, 350)
         self.add(info_panel)
         info_panel.add(save_button)
@@ -71,9 +75,9 @@ class SpriteEditor(Console):
         #may want to add a list of keys down to track what keyboard keys are currently being held down.
         #this will let us remove the control variable and just check our list of keys for 'Ctrl' and so on.
         control = False
+        controlled_view = None
         while True:
             self.draw_children()
-            self.handle_element_actions()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
@@ -83,6 +87,19 @@ class SpriteEditor(Console):
                             self.color_box.set_color(event.object.get_color())
                         else:
                             event.object.change_color(None)
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    mouse_pos = pygame.mouse.get_pos()
+                    hit_view = self.hit(mouse_pos)
+                    hit_view.mouse_up(event.button, mouse_pos)
+                    controlled_view = None
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    hit_view = self.hit(mouse_pos)
+                    controlled_view = hit_view
+                    hit_view.mouse_down(event.button, mouse_pos)
+                elif event.type == pygame.MOUSEMOTION:
+                    if controlled_view and controlled_view.draggable:
+                        controlled_view.mouse_drag(pygame.mouse.get_pos(), event.rel)
                 elif event.type == pygame.KEYDOWN:
                     if event.key == 306:
                         control = True

@@ -1,5 +1,6 @@
 from element import Element
-import pygame
+from pygame import Surface, Rect
+from signal import Signal
 
 
 class Slider(Element):
@@ -11,55 +12,38 @@ class Slider(Element):
     """
     def __init__(self, x, y, width, height, bar_color, slider_color, value=0):
         super(Slider, self).__init__(x, y, width, height, bar_color)
-        self.slider = pygame.Surface((20, self.frame.h))
+        self.slider_frame = Rect(x, y, 20, self.frame.h)
+        self.slider = Surface(self.slider_frame.size)
         self.slider_color = slider_color
         self.slider.fill(self.slider_color)
-        self.index = value
         self.value = 1.0 * value / width
-        self.action = True
+        self.draggable = True
+        self.on_mouse_drag = Signal()
+        self.on_value_changed = Signal()
 
-    def action_event(self, mouse_press, mouse_position, mouse_movement):
-        """
-        actionEvent is the definition that handles what to do if the user interacts with this object with the mouse.
-        This method should only be called by the console object.
-        """
-        if mouse_press[0]:
-            mouse_left = mouse_position[0] > self.frame.x + self.index
-            mouse_right = mouse_position[0] < self.frame.x + self.index + 20
-            if mouse_left and mouse_right:
-                mouse_up = mouse_position[1] > self.frame.y
-                mouse_down = mouse_position[1] < self.frame.y + self.frame.h
-                if mouse_up and mouse_down:
-                    self.clicked = True
-        elif not mouse_press[0]:
-            self.clicked = False
-        if self.clicked:
-            self.index += mouse_movement[0]
-            self.value = 1.0 * self.index / (self.frame.w - 20)
-        if self.index < 0:
-            self.index = 0
-            self.value = 0.0
-        if self.index > self.frame.w - 20:
-            self.index = self.frame.w - 20
-            self.value = 1.0
-
-    def set_value(self, value):
-        """
-        Sets the value of the bar location. Float between 0 and 1, 1 representing full and 0 empty.
-        """
-        if value >= 1.0:
-            self.value = 1.0
-        elif value <= 0.0:
-            self.value = 0.0
+    def hit(self, mouse_pos):
+        if not self.slider_frame.collidepoint(mouse_pos):
+            return None
         else:
-            self.value = value
+            return self
 
-    def set_index(self, index):
+    def mouse_drag(self, position, delta):
+        self.slider_frame.x = min(self.slider_frame.x + delta[0], self.frame.x + self.frame.w - 20)
+        self.slider_frame.x = max(self.slider_frame.x, self.frame.x)
+        self.value = 1.0 * (self.slider_frame.x - self.frame.x) / (+ self.frame.w - 20)
+        self.on_mouse_drag(position, delta)
+        self.on_value_changed()
+
+    def update_position(self):
+        super(Slider, self).update_position()
+        self.slider_frame = Rect(self.frame.x, self.frame.y, 20, self.frame.h)
+
+    def set_slider(self, index):
         """
         The setIndex definition is self explanatory. It takes a new index, sets it, and updates this objects value.
         """
-        self.index = index
-        self.value = 1.0 * self.index / (self.frame.w - 20)
+        self.slider_frame.x = self.frame.x + index
+        self.value = 1.0 * self.slider_frame.x / (self.frame.w - 20)
         if self.value > 1.0:
             self.value = 1.0
 
@@ -69,5 +53,4 @@ class Slider(Element):
         object draws the slider at the correct position.
         """
         super(Slider, self).render(window)
-        position = (self.frame.x + self.index, self.frame.y)
-        window.blit(self.slider, position)
+        window.blit(self.slider, self.slider_frame)
