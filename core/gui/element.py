@@ -1,4 +1,4 @@
-from pygame import Color, Surface
+from pygame import Color, Surface, Rect
 
 
 class Element(object):
@@ -16,9 +16,8 @@ class Element(object):
     """
     def __init__(self, x, y, width, height, color=Color('0x000000')):
         super(Element, self).__init__()
-        self.x, self.y = x, y
-        self.width, self.height = width, height
-        self.surface = Surface((self.width, self.height))
+        self.frame = Rect(x, y, width, height)
+        self.surface = Surface(self.size())
         self.color = color
         self.surface.fill(self.color)
         self.master = None
@@ -26,11 +25,19 @@ class Element(object):
 
     def size(self):
         """Returns size of element."""
-        return self.width, self.height
+        return self.frame.w, self.frame.h
+
+    def hit(self, mouse_pos):
+        # TODO here is where we would check if this object is enabled to the user
+        # if self.hidden or not self.enabled
+        if not self.frame.collidepoint(mouse_pos):
+            return None
+        else:
+            return self
 
     def position(self):
         """Returns position of the element."""
-        return self.x, self.y
+        return self.frame.x, self.frame.y
 
     def render(self, window):
         """
@@ -53,7 +60,7 @@ class Element(object):
         The method updatePosition, sets this objects position based upon its masters
         position. See the setMaster definition for a more thorough explanation.
         """
-        if hasattr(self.master, 'x'):
-            x = self.x + self.master.x
-            y = self.y + self.master.y
-            self.x, self.y = x, y
+        if hasattr(self.master, 'frame'):
+            x = self.frame.x + self.master.frame.x
+            y = self.frame.y + self.master.frame.y
+            self.frame.x, self.frame.y = x, y

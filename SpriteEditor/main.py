@@ -2,13 +2,11 @@
 Issue List:
 
 --May want to think about moving the cursor after the window closes! would get rid
-    of the bug I'm having with the file browser i think.
+    of the bug I'm having with the file browser I think.
 --want to display the sprite as it's actual size on the side.
     --can convert current_sprite to an image and display that image on the side
 
---Still having some small problems with clicking the buttons:
-    error when exporting and such, pygame reports mouse as being clicked when it isn't
-    don't know if this is my problem or someone else's, suggest talking to Randy
+--Working on implementing signal slot for all gui objects, using this as a testing ground
 """
 import sys
 import shelve
@@ -19,13 +17,13 @@ import pygame
 from PIL import Image
 
 import sprite
-import core.gui.button as Button
-import core.gui.console as Console
-import core.gui.view as Panel
-import core.gui.colorBox as ColorBox
+from core.gui.button import Button
+from core.gui.console import Console
+from core.gui.view import View
+from colorBox import ColorBox
 
 
-class SpriteEditor(Console.Console):
+class SpriteEditor(Console):
     def __init__(self):
         super(SpriteEditor, self).__init__(835, 520)
         self.current_sprite = sprite.Sprite(0, 0, 540, 520)
@@ -52,18 +50,18 @@ class SpriteEditor(Console.Console):
                                'initialfile': 'default.jpg',
                                'title': 'Import Browser'}
 
-        info_panel = Panel.View(540, 0, 295, 520, pygame.Color(255, 255, 255))
-        save_button = Button.Button(5, 375, 65, 20, "Save", self.font, self.save_sprite)
-        load_button = Button.Button(75, 375, 65, 20, "Load", self.font, self.load_sprite)
-        import_button = Button.Button(145, 375, 65, 20, "Import", self.font, self.import_sprite)
-        export_button = Button.Button(215, 375, 65, 20, "Export", self.font, self.export_sprite)
-        self.color_box = ColorBox.ColorBox(0, 0, 295, 350)
+        info_panel = View(540, 0, 295, 520, pygame.Color('0xffffff'))
+        save_button = Button(5, 375, 65, 20, "Save", self.font, self.save_sprite)
+        load_button = Button(75, 375, 65, 20, "Load", self.font, self.load_sprite)
+        import_button = Button(145, 375, 65, 20, "Import", self.font, self.import_sprite)
+        export_button = Button(215, 375, 65, 20, "Export", self.font, self.export_sprite)
+        self.color_box = ColorBox(0, 0, 295, 350)
         self.add(info_panel)
-        info_panel.add_child(save_button)
-        info_panel.add_child(load_button)
-        info_panel.add_child(import_button)
-        info_panel.add_child(export_button)
-        info_panel.add_child(self.color_box)
+        info_panel.add(save_button)
+        info_panel.add(load_button)
+        info_panel.add(import_button)
+        info_panel.add(export_button)
+        info_panel.add(self.color_box)
         self.current_sprite.set_color_box(self.color_box)
         self.add(self.current_sprite)
 

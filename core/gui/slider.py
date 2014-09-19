@@ -1,8 +1,8 @@
-import element
+from element import Element
 import pygame
 
 
-class Slider(element.Element):
+class Slider(Element):
     """
     This is the Slider class. It is an interface object which has a value tied to a movable slider so that the user can
     change that value. Inherits from the Element class. The constructor takes a position (x, y), size (width, height),
@@ -11,7 +11,7 @@ class Slider(element.Element):
     """
     def __init__(self, x, y, width, height, bar_color, slider_color, value=0):
         super(Slider, self).__init__(x, y, width, height, bar_color)
-        self.slider = pygame.Surface((20, self.height))
+        self.slider = pygame.Surface((20, self.frame.h))
         self.slider_color = slider_color
         self.slider.fill(self.slider_color)
         self.index = value
@@ -24,23 +24,23 @@ class Slider(element.Element):
         This method should only be called by the console object.
         """
         if mouse_press[0]:
-            mouse_left = mouse_position[0] > self.x + self.index
-            mouse_right = mouse_position[0] < self.x + self.index + 20
+            mouse_left = mouse_position[0] > self.frame.x + self.index
+            mouse_right = mouse_position[0] < self.frame.x + self.index + 20
             if mouse_left and mouse_right:
-                mouse_up = mouse_position[1] > self.y
-                mouse_down = mouse_position[1] < self.y + self.height
+                mouse_up = mouse_position[1] > self.frame.y
+                mouse_down = mouse_position[1] < self.frame.y + self.frame.h
                 if mouse_up and mouse_down:
                     self.clicked = True
         elif not mouse_press[0]:
             self.clicked = False
         if self.clicked:
             self.index += mouse_movement[0]
-            self.value = 1.0 * self.index / (self.width - 20)
+            self.value = 1.0 * self.index / (self.frame.w - 20)
         if self.index < 0:
             self.index = 0
             self.value = 0.0
-        if self.index > self.width - 20:
-            self.index = self.width - 20
+        if self.index > self.frame.w - 20:
+            self.index = self.frame.w - 20
             self.value = 1.0
 
     def set_value(self, value):
@@ -59,7 +59,7 @@ class Slider(element.Element):
         The setIndex definition is self explanatory. It takes a new index, sets it, and updates this objects value.
         """
         self.index = index
-        self.value = 1.0 * self.index / (self.width - 20)
+        self.value = 1.0 * self.index / (self.frame.w - 20)
         if self.value > 1.0:
             self.value = 1.0
 
@@ -69,5 +69,5 @@ class Slider(element.Element):
         object draws the slider at the correct position.
         """
         super(Slider, self).render(window)
-        position = (self.x + self.index, self.y)
+        position = (self.frame.x + self.index, self.frame.y)
         window.blit(self.slider, position)

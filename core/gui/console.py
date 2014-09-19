@@ -30,12 +30,14 @@ class Console(object):
                 each.render(self.window)
 
     def handle_element_actions(self):
+        # TODO After implementing hit method we can remove this entire function
         """
         For elements that have actions (i.e. buttons, sliders, things you can click) call the actionEvent method
         (inherited from the Element object) on that object and send it all current relevant mouse information.
 
         Note: may need to change how we think about events on gui elements.
         """
+        # TODO We want to find the object that the mouse is interacting with, then send a signal to it.
         if pygame.event.peek():
             mouse_press = pygame.mouse.get_pressed()
             mouse_position = pygame.mouse.get_pos()
@@ -48,7 +50,7 @@ class Console(object):
         """
         Adds an element to the consoles list of elements to draw.
         """
-        if element.__module__ == "messageBox":
+        if element.__module__ == "messageBox":  # Message boxes are treated differently than other objects.
             self.message_box_list.append(element)
         else:
             self.children.append(element)
@@ -59,7 +61,7 @@ class Console(object):
         """ Sets the caption of the window."""
         pygame.display.set_caption(caption)
 
-    def remove_element(self, element):
+    def remove(self, element):
         """ Removes element from the list of console elements to draw. """
         self.children.remove(element)
         element.set_parent(None)

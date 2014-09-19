@@ -23,7 +23,7 @@ class Sprite(Element.Element):
         #TODO pixels in sprite should perhaps be the width and height, remove current width and height
         self.sprite_width = sprite_width
         self.sprite_height = sprite_height
-        self.block_width, self.block_height = (self.width / self.sprite_width, self.height / self.sprite_height)
+        self.block_width, self.block_height = (self.frame.w / self.sprite_width, self.frame.h / self.sprite_height)
         self.update_sprite_size()
         self.surface = pygame.Surface(self.size)
         #TODO self.pixels does not need to be a double array. Pixel objects know their location once set so we only need
@@ -153,8 +153,8 @@ class Sprite(Element.Element):
     def update_pixel_count(self, dx, dy):
         self.sprite_width = self.sprite_width + dx
         self.sprite_height = self.sprite_height + dy
-        self.block_width = self.width / self.sprite_width
-        self.block_height = self.height / self.sprite_height
+        self.block_width = self.frame.w / self.sprite_width
+        self.block_height = self.frame.h / self.sprite_height
         if dx == 1:
             self.pixels.append([])
             for each in range(self.sprite_height):
@@ -195,17 +195,17 @@ class Sprite(Element.Element):
                 each.set_parent(self)
 
     def action_event(self, mouse_press, mouse_position, mouse_movement):
-        if self.color_box is not None and self.x < mouse_position[0] < self.x + self.width:
-            if self.y < mouse_position[1] < self.y + self.height:
+        if self.color_box is not None and self.frame.x < mouse_position[0] < self.frame.x + self.frame.w:
+            if self.frame.y < mouse_position[1] < self.frame.y + self.frame.h:
                 if mouse_press[0] and not self.clicked:
                     self.clicked = True
-                    x = (mouse_position[0] - self.x) / self.block_width
-                    y = (mouse_position[1] - self.y) / self.block_height
+                    x = (mouse_position[0] - self.frame.x) / self.block_width
+                    y = (mouse_position[1] - self.frame.y) / self.block_height
                     self.pixels[x][y].change_color(self.color_box.get_color())
                 elif mouse_press[2] and not self.clicked:
                     self.clicked = True
-                    x = (mouse_position[0] - self.x) / self.block_width
-                    y = (mouse_position[1] - self.y) / self.block_height
+                    x = (mouse_position[0] - self.frame.x) / self.block_width
+                    y = (mouse_position[1] - self.frame.y) / self.block_height
                     pygame.event.post(pygame.event.Event(pygame.USEREVENT, info="right", object=self.pixels[x][y]))
         self.clicked = False
 

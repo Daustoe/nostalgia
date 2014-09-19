@@ -1,20 +1,20 @@
-import element
+from element import Element
 import pygame
 import sys
 
 
-class Menu(element.Element):
+class Menu(Element):
     """
     The Menu object pulls up a panel with options given. It then waits for the user to make a selection before
     continuing the flow of the game.
     """
-    def __init__(self, (x, y), (width, height), font, font_color=(255, 255, 255), title="", color=(100, 100, 100)):
-        super(Menu, self).__init__((x, y), (width, height), color)
+    def __init__(self, x, y, width, height, font, font_color=(255, 255, 255), title="", color=(100, 100, 100)):
+        super(Menu, self).__init__(x, y, width, height, color)
         self.font = font
         self.title = title
         self.font_color = font_color
         self.is_open = False
-        self.title_position = ((self.position[0] + self.width / 2) - self.font.size(self.title)[0] / 2, 2)
+        self.title_position = ((self.frame.x + self.frame.w / 2) - self.font.size(self.title)[0] / 2, 2)
         self.title_size = self.font.size(self.title)
         self.option_list = None
         self.reset_surface()
@@ -65,12 +65,12 @@ class Menu(element.Element):
         Need to find out exactly what this does, I believe that it is drawing lines using this point list to show
         which item from the option_list is currently selected.
         """
-        self.surface = pygame.Surface(self.size)
+        self.surface = pygame.Surface(self.size())
         self.surface.blit(self.font.render(self.title, True, self.font_color), self.title_position)
         point_list = [(self.title_position[0] - 2, self.title_size[1] / 2),
                       (self.title_size[1] / 2, self.title_size[1] / 2),
-                      (self.title_size[1] / 2, self.height - self.title_size[1] / 2),
-                      (self.width - self.title_size[1] / 2, self.height - self.title_size[1] / 2),
-                      (self.width - self.title_size[1] / 2, self.title_size[1] / 2),
+                      (self.title_size[1] / 2, self.frame.h - self.title_size[1] / 2),
+                      (self.frame.w - self.title_size[1] / 2, self.frame.h - self.title_size[1] / 2),
+                      (self.frame.w - self.title_size[1] / 2, self.title_size[1] / 2),
                       (self.title_position[0] + self.title_size[0] + 2, self.title_size[1] / 2)]
         pygame.draw.lines(self.surface, self.font_color, False, point_list, 3)

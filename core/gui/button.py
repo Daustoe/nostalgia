@@ -20,11 +20,11 @@ class Button(Label):
 
     def action_event(self, mouse_press, mouse_position, mouse_movement):
         if mouse_press[0] and not self.clicked:
-            mouse_left = mouse_position[0] > self.x
-            mouse_right = mouse_position[0] < self.x + self.width
+            mouse_left = mouse_position[0] > self.frame.x
+            mouse_right = mouse_position[0] < self.frame.x + self.frame.w
             if mouse_left and mouse_right:
-                mouse_up = mouse_position[1] > self.y
-                mouse_down = mouse_position[1] < self.y + self.height
+                mouse_up = mouse_position[1] > self.frame.y
+                mouse_down = mouse_position[1] < self.frame.y + self.frame.h
                 if mouse_up and mouse_down:
                     self.clicked = True
                     self.action()
