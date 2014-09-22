@@ -1,7 +1,7 @@
 import pygame
 from pygame.color import Color
 
-from core.gui.element import Element
+from core.gui.view import View
 from pixel import Pixel
 
 
@@ -9,14 +9,10 @@ from pixel import Pixel
 
 
 #noinspection PyArgumentList
-class Sprite(Element):
-    def __init__(self, x, y, width, height, sprite_width=20, sprite_height=20, pixels=None):
+class Sprite(View):
+    def __init__(self, x, y, width, height, sprite_width=20, sprite_height=20):
         super(Sprite, self).__init__(x, y, width, height, Color(255, 255, 255))
-        self.size = None
-        if pixels is not None:
-            self.pixels = pixels
-        else:
-            self.pixels = []
+        self.pixels = []
         #TODO we can calculate pixel w/h using sprite Dim and w/h of sprite surface
         self.pixel_width = 2
         self.pixel_height = 2
@@ -24,36 +20,26 @@ class Sprite(Element):
         self.sprite_width = sprite_width
         self.sprite_height = sprite_height
         self.block_width, self.block_height = (self.frame.w / self.sprite_width, self.frame.h / self.sprite_height)
-        self.update_sprite_size()
-        self.surface = pygame.Surface(self.size)
         #TODO self.pixels does not need to be a double array. Pixel objects know their location once set so we only need
         #ToDo a list of them
         for x in range(self.sprite_width):
-            self.pixels.append([])
             for y in range(self.sprite_height):
-                self.pixels[x].append(Pixel(x * self.block_width, y * self.block_height, self.block_width, self.block_height))
-                self.pixels[x][y].set_parent(self)
+                pixel = Pixel(x * self.block_width, y * self.block_height, self.block_width, self.block_height)
+                pixel.set_parent(self)
+                self.add(pixel)
+                self.pixels.append(pixel)
         self.color_box = None
-
-    def update_pixel_size(self, dx, dy):
-        self.pixel_width = self.pixel_width + dx
-        self.pixel_height = self.pixel_height + dy
-        self.generate_surface()
-
-    def update_sprite_size(self):
-        self.size = (self.block_width * self.sprite_width, self.block_height * self.sprite_height)
 
     def generate_surface(self):
         temp_array = self.pixels
         self.pixels = []
-        self.update_sprite_size()
         self.surface = pygame.Surface(self.size)
         for x in range(self.sprite_width):
-            self.pixels.append([])
             for y in range(self.sprite_height):
-                self.pixels[x].append(Pixel(x * self.block_width, y * self.block_height, self.block_width, self.block_height,
-                                            temp_array[x][y].get_color()))
-                self.pixels[x][y].set_parent(self)
+                pixel = Pixel(x * self.block_width, y * self.block_height, self.block_width, self.block_height, temp_array[x][y].get_color())
+                pixel.set_parent(self)
+                self.add(pixel)
+                self.pixels.append(pixel)
 
     @staticmethod
     def cubic_interpolation(row, value):
@@ -85,8 +71,7 @@ class Sprite(Element):
 
     def interpolation_step(self, pixels):
         new_pixels = []
-        old_width, old_height = pixels.size
-        print pixels.index()
+        old_width, old_height = pixels.size()
         new_width, new_height = (old_width / 4, old_height / 4)
         for sample_x in range(0, old_width - 1, new_width):
             temp_row = []
@@ -112,77 +97,16 @@ class Sprite(Element):
         """
         colors = self.interpolation_step(image)
 
-    def color_array_to_pixel_array(self, colors):
-        #ToDo currently new_pixels is an array of colors, not Pixel objects. Need to convert and set locations
-        pixels = []
-        for row in colors:
-            pixels.append([])
-            for col in colors:
-                pixels[row].append(Pixel((20, 20), colors[row][col]))
-
-    def simple_image_to_sprite(self, image):
-        """
-        Performs a simple conversion of an image to a sprite set it as this sprite. Just grabs the average color of the
-        entire section that will become one pixel of this sprite.
-
-        deprecated
-        """
-        (width, height) = image.size
-        chunk_w = width / self.sprite_width
-        chunk_h = height / self.sprite_height
-        temp_array = []
-        pix = image.load()
-        for x_chunk in range(0, width - 1, chunk_w):
-            temp_array.append([])
-            for y_chunk in range(0, height - 1, chunk_h):
-                (red, green, blue) = (0, 0, 0)
-                chunk_total = 0
-                for x in range(x_chunk, x_chunk + chunk_w):
-                    for y in range(y_chunk, y_chunk + chunk_h):
-                        if x < width and y < height:
-                            temp = pix[x, y]
-                            (red, green, blue) = (red + temp[0], green + temp[1], blue + temp[2])
-                            chunk_total += 1
-                pixel_x = x_chunk / chunk_w * self.block_width
-                pixel_y = y_chunk / chunk_h * self.block_height
-                index = x_chunk / chunk_w
-                rgb = (red / chunk_total, green / chunk_total, blue / chunk_total)
-                temp_array[index].append(Pixel(pixel_x, pixel_y, self.block_width, self.block_height, rgb))
-        self.pixels = temp_array
-
-    def update_pixel_count(self, dx, dy):
-        self.sprite_width = self.sprite_width + dx
-        self.sprite_height = self.sprite_height + dy
-        self.block_width = self.frame.w / self.sprite_width
-        self.block_height = self.frame.h / self.sprite_height
-        if dx == 1:
-            self.pixels.append([])
-            for each in range(self.sprite_height):
-                self.pixels[self.sprite_width - 1].append(
-                    Pixel((self.sprite_width - 1) * self.block_width, each * self.block_height, self.block_width, self.block_height))
-        elif dx == -1:
-            self.pixels.pop()
-        if dy == 1:
-            for each in range(self.sprite_width):
-                self.pixels[each].append(
-                    Pixel(each * self.block_width, (self.sprite_height - 1) * self.block_height, self.block_width, self.block_height))
-        elif dy == -1:
-            for each in range(self.sprite_width):
-                self.pixels[each].pop()
-        self.generate_surface()
-
     def make_image(self):
         image_surface = pygame.Surface((self.sprite_width * self.pixel_width, self.sprite_height * self.pixel_height))
-        for x in range(self.sprite_width):
-            for y in range(self.sprite_height):
-                image_surface.blit(self.pixels[x][y].surface.subsurface(pygame.Rect(self.position, (self.pixel_width, self.pixel_height))),
-                                   (x * self.pixel_width, y * self.pixel_height))
+        for pixel in self.pixels:
+            pixel_surface = pixel.surface.subsurface(pygame.Rect(self.position, (self.pixel_width, self.pixel_height)))
+            image_surface.blit(pixel_surface, (pixel.x * self.pixel_width, pixel.y * self.pixel_height))
         return image_surface
 
     def render(self, window):
-        for x in range(self.sprite_width):
-            for y in range(self.sprite_height):
-                self.pixels[x][y].render(self.surface)
+        for pixel in self.pixels:
+            pixel.render(self.surface)
         super(Sprite, self).render(window)
 
     def set_color_box(self, color_box):
@@ -190,29 +114,5 @@ class Sprite(Element):
 
     def set_parent(self, parent):
         super(Sprite, self).set_parent(parent)
-        for row in self.pixels:
-            for each in row:
-                each.set_parent(self)
-
-    # TODO need to change action_event method to a mouse_down or mouse_up.
-
-    def action_event(self, mouse_press, mouse_position, mouse_movement):
-        if self.color_box is not None and self.frame.x < mouse_position[0] < self.frame.x + self.frame.w:
-            if self.frame.y < mouse_position[1] < self.frame.y + self.frame.h:
-                if mouse_press[0] and not self.clicked:
-                    self.clicked = True
-                    x = (mouse_position[0] - self.frame.x) / self.block_width
-                    y = (mouse_position[1] - self.frame.y) / self.block_height
-                    self.pixels[x][y].change_color(self.color_box.get_color())
-                elif mouse_press[2] and not self.clicked:
-                    self.clicked = True
-                    x = (mouse_position[0] - self.frame.x) / self.block_width
-                    y = (mouse_position[1] - self.frame.y) / self.block_height
-                    pygame.event.post(pygame.event.Event(pygame.USEREVENT, info="right", object=self.pixels[x][y]))
-        self.clicked = False
-
-    def get_pixel_color(self, x, y):
-        return self.pixels[x][y].get_color()
-
-    def mouse_down(self, button, point):
-        print "hit sprite!"
+        for pixel in self.pixels:
+            pixel.set_parent(self)

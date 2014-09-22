@@ -52,8 +52,6 @@ class ColorBox(View):
         Updates the color square to what the user has changed on the sliders. Done before every draw. Does not check
         to see if the user has updated.
         """
-        # TODO perhaps modify color parameters to remove this error. Works, but looks annoying.
-        print self.red.value
         self.square.color = Color(int(self.red.value * 255), int(self.green.value * 255), int(self.blue.value * 255))
         self.square.surface.fill(self.square.color)
 

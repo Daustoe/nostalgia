@@ -16,9 +16,8 @@ class Bar(element.Element):
         super(Bar, self).__init__(x, y, width, height, background)
         self.maximum = max_value
         self.value = max_value
-        self.percentage = 1.0
         self.fill_color = foreground
-        self.filled_bar = pygame.Surface((self.frame.w * self.percentage, self.frame.h))
+        self.filled_bar = pygame.Surface((self.frame.w, self.frame.h))
         self.filled_bar.fill(self.fill_color)
 
     def set_maximum(self, maximum):
@@ -27,17 +26,15 @@ class Bar(element.Element):
         if self.value > self.maximum:
             self.value = self.maximum
 
-    def update_value(self, value_change):
+    def update_value(self, delta):
         """
         Updates the value of the of the bar with value_change. value_change should be a change such as dx would be.
         """
-        self.value += value_change
-        if self.value > self.maximum:
-            self.value = self.maximum
-        elif self.value < 0:
-            self.value = 0
-        self.percentage = self.value * 1.0 / self.maximum
-        self.filled_bar = pygame.Surface((self.frame.w * self.percentage, self.frame.h))
+        self.value += delta
+        self.value = min(self.value, self.maximum)  # Keep value below set max
+        self.value = max(self.value, 0)             # Keep value above 0
+        percentage = self.value * 1.0 / self.maximum
+        self.filled_bar = pygame.Surface((self.frame.w * percentage, self.frame.h))
         self.filled_bar.fill(self.fill_color)
 
     def render(self, window):

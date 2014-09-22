@@ -22,18 +22,20 @@ class Element(object):
         self.color = color
         self.surface.fill(self.color)
         self.parent = None
-        self.clicked = False
         self.on_mouse_up = Signal()
         self.on_mouse_down = Signal()
+        self.on_mouse_drag = Signal()
         self.draggable = False
+        self.enabled = True
+        self.hidden = False
 
     def size(self):
         """Returns size of element."""
         return self.frame.size
 
     def hit(self, mouse_pos):
-        # TODO here is where we would check if this object is enabled to the user
-        # if self.hidden or not self.enabled
+        if self.hidden or not self.enabled:
+            return None
         if not self.frame.collidepoint(mouse_pos):
             return None
         else:
@@ -74,3 +76,6 @@ class Element(object):
 
     def mouse_down(self, button, point):
         self.on_mouse_down(self, button, point)
+
+    def mouse_drag(self, view, position, event):
+        self.on_mouse_drag(self, position, event)

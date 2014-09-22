@@ -20,6 +20,7 @@ import sprite
 from core.gui.button import Button
 from core.gui.console import Console
 from core.gui.view import View
+from core.gui.label import Label
 from colorBox import ColorBox
 
 
@@ -51,6 +52,7 @@ class SpriteEditor(Console):
                                'title': 'Import Browser'}
 
         info_panel = View(540, 0, 295, 520, pygame.Color('0xffffff'))
+        color_label = Label(85, 535, 80, 20, self.font, "RGB: ")
         save_button = Button(5, 375, 65, 20, "Save", self.font)
         save_button.on_clicked.connect(self.save_sprite)
         load_button = Button(75, 375, 65, 20, "Load", self.font)
@@ -66,6 +68,7 @@ class SpriteEditor(Console):
         info_panel.add(import_button)
         info_panel.add(export_button)
         info_panel.add(self.color_box)
+        # TODO fix below command, we shouldn't have to pass the current sprite the color box
         self.current_sprite.set_color_box(self.color_box)
         self.add(self.current_sprite)
 
@@ -77,16 +80,9 @@ class SpriteEditor(Console):
         control = False
         controlled_view = None
         while True:
-            self.draw_children()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-                elif event.type == pygame.USEREVENT:
-                    if event.info == 'right':
-                        if control:
-                            self.color_box.set_color(event.object.get_color())
-                        else:
-                            event.object.change_color(None)
                 elif event.type == pygame.MOUSEBUTTONUP:
                     mouse_pos = pygame.mouse.get_pos()
                     hit_view = self.hit(mouse_pos)
@@ -98,39 +94,13 @@ class SpriteEditor(Console):
                     controlled_view = hit_view
                     hit_view.mouse_down(event.button, mouse_pos)
                 elif event.type == pygame.MOUSEMOTION:
+                    mouse_pos = pygame.mouse.get_pos()
+                    hit_view = self.hit(mouse_pos)
                     if controlled_view and controlled_view.draggable:
-                        controlled_view.mouse_drag(pygame.mouse.get_pos(), event.rel)
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == 306:
-                        control = True
-                elif event.type == pygame.KEYUP:
-                    #print event
-                    if event.key == 273:
-                        #up arrow
-                        if event.mod == 1:
-                            self.current_sprite.update_pixel_size(0, 1)
-                        else:
-                            self.current_sprite.update_pixel_count(0, -1)
-                    elif event.key == 274:
-                        #down arrow
-                        if event.mod == 1:
-                            self.current_sprite.update_pixel_size(0, -1)
-                        else:
-                            self.current_sprite.update_pixel_count(0, 1)
-                    elif event.key == 275:
-                        #right arrow
-                        if event.mod == 1:
-                            self.current_sprite.update_pixel_size(1, 0)
-                        else:
-                            self.current_sprite.update_pixel_count(1, 0)
-                    elif event.key == 276:
-                        #left arrow
-                        if event.mod == 1:
-                            self.current_sprite.update_pixel_size(-1, 0)
-                        else:
-                            self.current_sprite.update_pixel_count(-1, 0)
-                    elif event.key == 306:
-                        control = False
+                        controlled_view.mouse_drag(controlled_view, mouse_pos, event)
+                    else:
+                        hit_view.mouse_drag(controlled_view, mouse_pos, event)
+            # TODO make GUI Labels out of these three font renders. That way the flip method handles them.
             self.window.blit(self.font.render("RGB: " + str(self.color_box.get_color()), True, (0, 0, 0)), (625, 355))
             self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % (self.current_sprite.sprite_width,
                                                                               self.current_sprite.sprite_height),
@@ -138,7 +108,7 @@ class SpriteEditor(Console):
             self.window.blit(self.font.render("Pixel Dimension: (%d,%d)" % (self.current_sprite.pixel_width,
                                                                             self.current_sprite.pixel_height),
                                               True, (0, 0, 0)), (540 + 5, 420))
-            pygame.display.flip()
+            self.flip()
             self.fps_clock.tick(30)
 
     def load_sprite(self):

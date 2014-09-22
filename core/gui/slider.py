@@ -27,12 +27,14 @@ class Slider(Element):
         else:
             return self
 
-    def mouse_drag(self, position, delta):
-        self.slider_frame.x = min(self.slider_frame.x + delta[0], self.frame.x + self.frame.w - 20)
-        self.slider_frame.x = max(self.slider_frame.x, self.frame.x)
-        self.value = 1.0 * (self.slider_frame.x - self.frame.x) / (+ self.frame.w - 20)
-        self.on_mouse_drag(position, delta)
-        self.on_value_changed()
+    def mouse_drag(self, view, position, event):
+        if view == self:
+            delta = event.rel
+            self.slider_frame.x = min(self.slider_frame.x + delta[0], self.frame.x + self.frame.w - 20)
+            self.slider_frame.x = max(self.slider_frame.x, self.frame.x)
+            self.value = 1.0 * (self.slider_frame.x - self.frame.x) / (+ self.frame.w - 20)
+            self.on_mouse_drag(position, delta)
+            self.on_value_changed()
 
     def update_position(self):
         super(Slider, self).update_position()

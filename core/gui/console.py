@@ -19,7 +19,7 @@ class Console(object):
         self.children = []
         self.message_box_list = []
 
-    def draw_children(self):
+    def flip(self):
         """
         Renders all of the consoles elements to the screen in the elements list to
         the window
@@ -28,23 +28,7 @@ class Console(object):
         for each in self.children:
             if hasattr(each, 'render'):
                 each.render(self.window)
-
-    def handle_element_actions(self):
-        # TODO After implementing hit method we can remove this entire function
-        """
-        For elements that have actions (i.e. buttons, sliders, things you can click) call the actionEvent method
-        (inherited from the Element object) on that object and send it all current relevant mouse information.
-
-        Note: may need to change how we think about events on gui elements.
-        """
-        # TODO We want to find the object that the mouse is interacting with, then send a signal to it.
-        if pygame.event.peek():
-            mouse_press = pygame.mouse.get_pressed()
-            mouse_position = pygame.mouse.get_pos()
-            mouse_movement = pygame.mouse.get_rel()
-            for element in self.children:
-                if hasattr(element, 'action_event'):
-                    element.action_event(mouse_press, mouse_position, mouse_movement)
+        pygame.display.flip()
 
     def add(self, element):
         """
