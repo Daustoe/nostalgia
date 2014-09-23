@@ -22,13 +22,12 @@ class Pixel(Element):
         draw.line(self.null_pixel, (150, 0, 0), (self.frame.w, 0), (0, self.frame.h), 2)
         self.clicked = False
 
-    def save_color(self):
-        return self.color
-
     def change_color(self, color):
         self.color = color
         self.surface = Surface(self.size())
+        print color
         if color is not None:
+            print 'found a color!'
             self.surface.fill(self.color)
 
     def get_color(self):

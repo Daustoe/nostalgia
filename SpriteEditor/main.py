@@ -5,18 +5,14 @@ Issue List:
     of the bug I'm having with the file browser I think.
 --want to display the sprite as it's actual size on the side.
     --can convert current_sprite to an image and display that image on the side
-
---Working on implementing signal slot for all gui objects, using this as a testing ground
 """
 import sys
 import shelve
 import Tkinter
 import tkFileDialog
-
 import pygame
 from PIL import Image
-
-import sprite
+from sprite import Sprite
 from core.gui.button import Button
 from core.gui.console import Console
 from core.gui.view import View
@@ -27,7 +23,7 @@ from colorBox import ColorBox
 class SpriteEditor(Console):
     def __init__(self):
         super(SpriteEditor, self).__init__(835, 520)
-        self.current_sprite = sprite.Sprite(0, 0, 540, 520)
+        self.current_sprite = Sprite(0, 0, 540, 520)
         self.font = pygame.font.Font("Munro.ttf", 18)
         self.font.set_bold(True)
         self.set_caption("Sprite Editor")
@@ -109,7 +105,7 @@ class SpriteEditor(Console):
                                                                             self.current_sprite.pixel_height),
                                               True, (0, 0, 0)), (540 + 5, 420))
             self.flip()
-            self.fps_clock.tick(30)
+            self.fps_clock.tick(60)
 
     def load_sprite(self):
         """Loads a .spr Sprite file as the current_sprite and is used by the Load Button."""
@@ -118,9 +114,8 @@ class SpriteEditor(Console):
             session = shelve.open(filename)
             self.current_sprite.sprite_size = session['dimension']
             self.current_sprite.pixel_size = session['size']
-            for x in range(self.current_sprite.sprite_size[0]):
-                for y in range(self.current_sprite.sprite_size[1]):
-                    self.current_sprite.pixels[x][y].change_color(session['%d %d' % (x, y)])
+            for index in range(len(self.current_sprite.pixels)):
+                self.current_sprite.pixels[index].change_color(session['%d' % index])
             session.close()
             self.current_sprite.generate_surface()
             pygame.event.pump()
@@ -133,9 +128,8 @@ class SpriteEditor(Console):
             session = shelve.open(filename)
             session['dimension'] = (self.current_sprite.sprite_width, self.current_sprite.sprite_height)
             session['size'] = (self.current_sprite.pixel_width, self.current_sprite.pixel_height)
-            for x in range(self.current_sprite.sprite_width):
-                for y in range(self.current_sprite.sprite_height):
-                    session['%d %d' % (x, y)] = self.current_sprite.pixels[x][y].save_color()
+            for index in range(len(self.current_sprite.pixels)):
+                session['%d' % index] = self.current_sprite.pixels[index].get_color()
             session.close()
             pygame.event.pump()
 

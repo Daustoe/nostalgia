@@ -33,10 +33,10 @@ class Sprite(View):
     def generate_surface(self):
         temp_array = self.pixels
         self.pixels = []
-        self.surface = pygame.Surface(self.size)
+        self.surface = pygame.Surface(self.size())
         for x in range(self.sprite_width):
             for y in range(self.sprite_height):
-                pixel = Pixel(x * self.block_width, y * self.block_height, self.block_width, self.block_height, temp_array[x][y].get_color())
+                pixel = Pixel(x * self.block_width, y * self.block_height, self.block_width, self.block_height, temp_array[x*y].get_color())
                 pixel.set_parent(self)
                 self.add(pixel)
                 self.pixels.append(pixel)

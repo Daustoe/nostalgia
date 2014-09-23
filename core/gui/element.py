@@ -20,7 +20,8 @@ class Element(object):
         self.frame = Rect(x, y, width, height)
         self.surface = Surface(self.size())
         self.color = color
-        self.surface.fill(self.color)
+        if self.color is not None:
+            self.surface.fill(self.color)
         self.parent = None
         self.on_mouse_up = Signal()
         self.on_mouse_down = Signal()
