@@ -71,9 +71,6 @@ class SpriteEditor(Console):
         self.main_loop()
 
     def main_loop(self):
-        #may want to add a list of keys down to track what keyboard keys are currently being held down.
-        #this will let us remove the control variable and just check our list of keys for 'Ctrl' and so on.
-        control = False
         controlled_view = None
         while True:
             for event in pygame.event.get():
@@ -123,7 +120,6 @@ class SpriteEditor(Console):
     def save_sprite(self):
         """Saves the current_sprite as a .spr Sprite file and is used by the Save Button."""
         filename = tkFileDialog.asksaveasfilename(**self.options)
-        #perhaps do something here to prevent key from sticking in gui and reopening
         if not filename == '':
             session = shelve.open(filename)
             session['dimension'] = (self.current_sprite.sprite_width, self.current_sprite.sprite_height)

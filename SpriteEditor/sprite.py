@@ -10,15 +10,15 @@ from pixel import Pixel
 
 #noinspection PyArgumentList
 class Sprite(ImageView):
-    def __init__(self, x, y, width, height, sprite_width=20, sprite_height=20):
+    def __init__(self, x, y, width, height):
         super(Sprite, self).__init__(x, y, width, height, pygame.image.load('checkered.png'))
         self.pixels = []
         #TODO we can calculate pixel w/h using sprite Dim and w/h of sprite surface
         self.pixel_width = 2
         self.pixel_height = 2
         #TODO pixels in sprite should perhaps be the width and height, remove current width and height
-        self.sprite_width = sprite_width
-        self.sprite_height = sprite_height
+        self.sprite_width = 20
+        self.sprite_height = 20
         self.block_width, self.block_height = (self.frame.w / self.sprite_width, self.frame.h / self.sprite_height)
         #TODO self.pixels does not need to be a double array. Pixel objects know their location once set so we only need
         #ToDo a list of them
