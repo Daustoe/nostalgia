@@ -1,7 +1,7 @@
 import pygame
 from pygame.color import Color
 
-from core.gui.view import View
+from core.gui.imageView import ImageView
 from pixel import Pixel
 
 
@@ -9,9 +9,9 @@ from pixel import Pixel
 
 
 #noinspection PyArgumentList
-class Sprite(View):
+class Sprite(ImageView):
     def __init__(self, x, y, width, height, sprite_width=20, sprite_height=20):
-        super(Sprite, self).__init__(x, y, width, height, Color(255, 255, 255))
+        super(Sprite, self).__init__(x, y, width, height, pygame.image.load('checkered.png'))
         self.pixels = []
         #TODO we can calculate pixel w/h using sprite Dim and w/h of sprite surface
         self.pixel_width = 2
