@@ -1,10 +1,9 @@
 """
 Issue List:
 
---May want to think about moving the cursor after the window closes! would get rid
-    of the bug I'm having with the file browser I think.
 --want to display the sprite as it's actual size on the side.
     --can convert current_sprite to an image and display that image on the side
+--scroll wheel activates coloring pixels
 """
 import sys
 import shelve
@@ -17,7 +16,7 @@ from core.gui.button import Button
 from core.gui.console import Console
 from core.gui.view import View
 from core.gui.label import Label
-from colorBox import ColorBox
+from colorPanel import ColorPanel
 
 
 class SpriteEditor(Console):
@@ -57,7 +56,7 @@ class SpriteEditor(Console):
         import_button.on_clicked.connect(self.import_sprite)
         export_button = Button(215, 375, 65, 20, "Export", self.font)
         export_button.on_clicked.connect(self.export_sprite)
-        self.color_box = ColorBox(0, 0, 295, 350)
+        self.color_box = ColorPanel(0, 0, 295, 280)
         self.add(info_panel)
         info_panel.add(save_button)
         info_panel.add(load_button)

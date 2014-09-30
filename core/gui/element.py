@@ -50,13 +50,13 @@ class Element(object):
         """
         The render definition takes a surface as an argument and blits its surface to the one given.
         """
-        window.blit(self.surface, self.position())
+        if not self.hidden:
+            window.blit(self.surface, self.position())
 
     def set_parent(self, parent):
         """
-        Sets the master handler of this object. Master's can be panels or the main
-        console window. This updates this objects position in a way that makes the
-        origin (0, 0) that of its masters (x, y) position. It takes the master
+        Sets the master handler of this object. Master's can be panels or the main console window. This updates this
+        objects position in a way that makes the origin (0, 0) that of its masters (x, y) position. It takes the master
         object as an argument.
         """
         self.parent = parent
@@ -64,8 +64,8 @@ class Element(object):
 
     def update_position(self):
         """
-        The method updatePosition, sets this objects position based upon its masters
-        position. See the setMaster definition for a more thorough explanation.
+        The method updatePosition, sets this objects position based upon its masters position. See the setMaster
+        definition for a more thorough explanation.
         """
         if hasattr(self.parent, 'frame'):
             x = self.frame.x + self.parent.frame.x

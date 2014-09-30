@@ -1,6 +1,4 @@
 import pygame
-from pygame.color import Color
-
 from core.gui.imageView import ImageView
 from pixel import Pixel
 

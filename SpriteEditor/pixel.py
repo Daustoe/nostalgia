@@ -26,6 +26,7 @@ class Pixel(Element):
 
     def mouse_down(self, button, point):
         self.change_color(self.parent.color_box.get_color())
+        self.parent.color_box.add_to_history()
 
     def mouse_drag(self, view, position, event):
         if event.buttons == (1, 0, 0):
