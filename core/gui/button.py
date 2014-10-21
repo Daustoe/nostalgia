@@ -6,7 +6,7 @@ To Do:
 
 from label import Label
 from pygame.color import Color
-from signal import Signal
+from core.gui.signal import Signal
 
 
 class Button(Label):

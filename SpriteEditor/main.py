@@ -16,7 +16,7 @@ from core.gui.button import Button
 from core.gui.console import Console
 from core.gui.view import View
 from core.gui.label import Label
-from colorPanel import ColorPanel
+from colorPalette import ColorPalette
 
 
 class SpriteEditor(Console):
@@ -56,7 +56,7 @@ class SpriteEditor(Console):
         import_button.on_clicked.connect(self.import_sprite)
         export_button = Button(215, 375, 65, 20, "Export", self.font)
         export_button.on_clicked.connect(self.export_sprite)
-        self.color_box = ColorPanel(0, 0, 295, 280)
+        self.color_box = ColorPalette(0, 0, 295, 280, self.font)
         self.add(info_panel)
         info_panel.add(save_button)
         info_panel.add(load_button)
