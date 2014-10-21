@@ -107,11 +107,14 @@ class SpriteEditor(Console):
         """Loads a .spr Sprite file as the current_sprite and is used by the Load Button."""
         filename = tkFileDialog.askopenfilename(**self.options)
         if not filename == '':
+            self.color_box.reset()
             session = shelve.open(filename)
             self.current_sprite.sprite_size = session['dimension']
             self.current_sprite.pixel_size = session['size']
             for index in range(len(self.current_sprite.pixels)):
-                self.current_sprite.pixels[index].change_color(session['%d' % index])
+                color = session['%d' % index]
+                self.current_sprite.pixels[index].change_color(color)
+                self.current_sprite.color_box.add_to_history(color)
             session.close()
             pygame.event.pump()
 

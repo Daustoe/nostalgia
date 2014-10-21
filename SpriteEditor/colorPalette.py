@@ -39,6 +39,12 @@ class ColorPalette(View):
             self.square.surface.fill(self.square.color)
             self.update_sliders()
 
+    def reset(self):
+        self.history = []
+        self.red.set_index(0)
+        self.green.set_index(0)
+        self.blue.set_index(0)
+
     def update_sliders(self):
         self.red.set_index(self.square.color.r / 255.0)
         self.green.set_index(self.square.color.g / 255.0)
@@ -56,13 +62,16 @@ class ColorPalette(View):
         for each in self.history:
             each.render(window)
 
-    def add_to_history(self):
+    def add_to_history(self, color):
         in_history = False
         for each in self.history:
-            if each.color == self.square.color:
+            if each.color == color:
                 in_history = True
-        if not in_history:
-            new_color = ColorButton(5 + 17 * len(self.history), 5, 12, 12, self.font, self.square.color)
+        if not in_history and color is not None:
+            new_color = ColorButton(5 + 17 * len(self.history), 5, 12, 12, self.font, color)
             self.history.append(new_color)
             new_color.on_clicked.connect(self.set_color)
             self.add(new_color)
+
+    def catalog_current(self):
+        self.add_to_history(self.square.color)

@@ -27,7 +27,7 @@ class Pixel(Element):
     def mouse_down(self, button, point):
         if button == 1:
             self.change_color(self.parent.color_box.get_color())
-            self.parent.color_box.add_to_history()
+            self.parent.color_box.catalog_current()
         if button == 3:
             self.parent.color_box.set_color(self.color)
 
