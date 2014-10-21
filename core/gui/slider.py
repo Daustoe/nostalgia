@@ -40,12 +40,12 @@ class Slider(Element):
         super(Slider, self).update_position()
         self.slider_frame = Rect(self.frame.x, self.frame.y, 20, self.frame.h)
 
-    def set_slider(self, index):
+    def set_index(self, index):
         """
-        The setIndex definition is self explanatory. It takes a new index, sets it, and updates this objects value.
+        It takes a new index as a value from 0.0 to 1.0. This would be a percentage from min to max for this slider.
         """
-        self.slider_frame.x = self.frame.x + index
-        self.value = 1.0 * self.slider_frame.x / (self.frame.w - 20)
+        self.slider_frame.x = self.frame.x + index * (self.frame.w - 20)
+        self.value = index
         if self.value > 1.0:
             self.value = 1.0
 

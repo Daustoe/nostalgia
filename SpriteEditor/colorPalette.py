@@ -34,8 +34,15 @@ class ColorPalette(View):
         self.red.on_value_changed.connect(self.update_color)
 
     def set_color(self, new_color):
-        self.square.color = new_color
-        self.square.surface.fill(self.square.color)
+        if new_color is not None:
+            self.square.color = new_color
+            self.square.surface.fill(self.square.color)
+            self.update_sliders()
+
+    def update_sliders(self):
+        self.red.set_index(self.square.color.r / 255.0)
+        self.green.set_index(self.square.color.g / 255.0)
+        self.blue.set_index(self.square.color.b / 255.0)
 
     def get_color(self):
         return self.square.color

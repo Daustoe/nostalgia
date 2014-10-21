@@ -25,8 +25,11 @@ class Pixel(Element):
             super(Pixel, self).render(window)
 
     def mouse_down(self, button, point):
-        self.change_color(self.parent.color_box.get_color())
-        self.parent.color_box.add_to_history()
+        if button == 1:
+            self.change_color(self.parent.color_box.get_color())
+            self.parent.color_box.add_to_history()
+        if button == 3:
+            self.parent.color_box.set_color(self.color)
 
     def mouse_drag(self, view, position, event):
         if event.buttons == (1, 0, 0):
