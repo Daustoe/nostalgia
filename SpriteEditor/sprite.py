@@ -28,17 +28,6 @@ class Sprite(ImageView):
                 self.pixels.append(pixel)
         self.color_box = None
 
-    def generate_surface(self):
-        temp_array = self.pixels
-        self.pixels = []
-        self.surface = pygame.Surface(self.size())
-        for x in range(self.sprite_width):
-            for y in range(self.sprite_height):
-                pixel = Pixel(x * self.block_width, y * self.block_height, self.block_width, self.block_height, temp_array[x*y].get_color())
-                pixel.set_parent(self)
-                self.add(pixel)
-                self.pixels.append(pixel)
-
     @staticmethod
     def cubic_interpolation(row, value):
         """
@@ -101,11 +90,6 @@ class Sprite(ImageView):
             pixel_surface = pixel.surface.subsurface(pygame.Rect(self.position, (self.pixel_width, self.pixel_height)))
             image_surface.blit(pixel_surface, (pixel.x * self.pixel_width, pixel.y * self.pixel_height))
         return image_surface
-
-    def render(self, window):
-        for pixel in self.pixels:
-            pixel.render(self.surface)
-        super(Sprite, self).render(window)
 
     def set_color_box(self, color_box):
         self.color_box = color_box

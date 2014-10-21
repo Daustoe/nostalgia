@@ -113,7 +113,6 @@ class SpriteEditor(Console):
             for index in range(len(self.current_sprite.pixels)):
                 self.current_sprite.pixels[index].change_color(session['%d' % index])
             session.close()
-            self.current_sprite.generate_surface()
             pygame.event.pump()
 
     def save_sprite(self):
