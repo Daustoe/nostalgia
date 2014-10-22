@@ -1,4 +1,4 @@
-from pygame import Color, Surface, Rect
+from pygame import Color, Surface, Rect, SRCALPHA
 from signal import Signal
 
 
@@ -15,10 +15,10 @@ class Element(object):
             kvc.set_value_for_keypath(self, key, val)
         self.layout()
     """
-    def __init__(self, x, y, width, height, color=Color('0x000000')):
+    def __init__(self, x, y, width, height, color=Color(0, 0, 0, 0)):
         super(Element, self).__init__()
         self.frame = Rect(x, y, width, height)
-        self.surface = Surface(self.size())
+        self.surface = Surface(self.size(), SRCALPHA)
         self.color = color
         if self.color is not None:
             self.surface.fill(self.color)

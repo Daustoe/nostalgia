@@ -1,10 +1,3 @@
-"""
-No color wheel yet, may want to use a third party source for this (I believe TKinter has a nice one).
-Modifying this to have a history of selected colors. We want the current selected color below, with a short (last 10)
-history of previously selected colors above. Sliders will remain the same.
-
-Also want to add the rgb label to this color panel as that is directly related to the currently selected color.
-"""
 from core.gui.view import View
 from core.gui.slider import Slider
 from core.gui.element import Element
@@ -14,14 +7,10 @@ from pygame.color import Color
 
 class ColorPalette(View):
     def __init__(self, x, y, width, height, font, color=Color('0x323232')):
-        """
-        Initializes the sliders, and adds them to the ColorPanel object. Default background color is rgb=505050
-        """
         super(ColorPalette, self).__init__(x, y, width, height, color)
         self.square = Element(127, 150, 40, 40)
         self.history = []
         self.font = font
-
         self.red = Slider(10, 200, 275, 15, Color('0xffc8c8'), Color('red'))
         self.green = Slider(10, 220, 275, 15, Color('0xc8ffc8'), Color('green'))
         self.blue = Slider(10, 240, 275, 15, Color('0xc8c8ff'), Color('blue'))

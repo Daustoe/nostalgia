@@ -37,11 +37,9 @@ class Sprite(ImageView):
     def image_to_sprite(self, image):
         pixels = image.getdata()
         for index in range(len(pixels)):
-            r, g, b = pixels[index][:3]
-            alpha = pixels[index][3]
-            alpha = min(alpha, 1) * 255
-            self.pixels[index].change_color(pygame.Color(r, g, b))
-            self.pixels[index].set_alpha(alpha)
+            r, g, b, a = pixels[index]
+            a = min(a, 1) * 255
+            self.pixels[index].change_color(pygame.Color(r, g, b, a))
 
     def make_image(self):
         size = (self.sprite_width * self.pixel_width, self.sprite_height * self.pixel_height)

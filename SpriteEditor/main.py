@@ -11,7 +11,7 @@ Issue List:
 """
 import sys
 import shelve
-import Tkinter
+from Tkinter import Tk
 import tkFileDialog
 import pygame
 from PIL import Image
@@ -19,7 +19,6 @@ from sprite import Sprite
 from core.gui.button import Button
 from core.gui.console import Console
 from core.gui.view import View
-from core.gui.label import Label
 from colorPalette import ColorPalette
 
 
@@ -30,7 +29,7 @@ class SpriteEditor(Console):
         self.font = pygame.font.Font("resources/Munro.ttf", 18)
         self.font.set_bold(True)
         self.set_caption("Sprite Editor")
-        Tkinter.Tk().withdraw()
+        Tk().withdraw()
         self.fps_clock = pygame.time.Clock()
         self.options = {'defaultextension': '.spr',
                         'filetypes': [('sprite files', '.spr'), ('all files', '.*')],
@@ -40,7 +39,7 @@ class SpriteEditor(Console):
 
         self.export_options = {'defaultextension': '.png',
                                'initialdir': 'C:\\',
-                               'initialfile': 'default.jpg',
+                               'initialfile': 'default.png',
                                'filetypes': [('PNG files', '.png'), ('all files', '.*')],
                                'title': 'Export as image'}
 
@@ -51,7 +50,6 @@ class SpriteEditor(Console):
                                'title': 'Import Browser'}
 
         info_panel = View(540, 0, 295, 520, pygame.Color('0xffffff'))
-        color_label = Label(85, 535, 80, 20, self.font, "RGB: ")
         save_button = Button(5, 375, 65, 20, "Save", self.font)
         save_button.on_clicked.connect(self.save_sprite)
         load_button = Button(75, 375, 65, 20, "Load", self.font)
@@ -67,7 +65,6 @@ class SpriteEditor(Console):
         info_panel.add(import_button)
         info_panel.add(export_button)
         info_panel.add(self.color_box)
-        # TODO fix below command, we shouldn't have to pass the current sprite the color box
         self.sprite.set_color_box(self.color_box)
         self.add(self.sprite)
 
@@ -96,12 +93,8 @@ class SpriteEditor(Console):
                         controlled_view.mouse_drag(controlled_view, mouse_pos, event)
                     else:
                         hit_view.mouse_drag(controlled_view, mouse_pos, event)
-            # TODO make GUI Labels out of these three font renders. That way the flip method handles them.
-            self.window.blit(self.font.render("RGB: " + str(self.color_box.get_color()), True, (0, 0, 0)), (625, 355))
-            self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % self.sprite.sprite_size(), True, (0, 0, 0)), (540 + 5, 400))
-            self.window.blit(self.font.render("Pixel Dimension: (%d,%d)" % self.sprite.sprite_size(), True, (0, 0, 0)), (540 + 5, 420))
             self.flip()
-            self.fps_clock.tick(60)
+            self.fps_clock.tick(120)
 
     def load_sprite(self):
         """Loads a .spr Sprite file as the current_sprite and is used by the Load Button."""
