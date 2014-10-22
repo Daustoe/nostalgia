@@ -26,7 +26,7 @@ from colorPalette import ColorPalette
 class SpriteEditor(Console):
     def __init__(self):
         super(SpriteEditor, self).__init__(1080, 720)
-        self.sprite = Sprite(110, 0, 720, 720)
+        self.sprite = Sprite(160, 50, 520, 520)
         self.font = pygame.font.Font("resources/Munro.ttf", 18)
         self.font.set_bold(True)
         self.set_caption("Sprite Editor")
@@ -62,11 +62,13 @@ class SpriteEditor(Console):
         export_button.on_clicked.connect(self.export_sprite)
         """
         self.palette = ColorPalette(0, 0, 110, 720, self.font)
+        self.background = View(0, 0, 1080, 720)
         #self.add(info_panel)
         #info_panel.add(save_button)
         #info_panel.add(load_button)
         #info_panel.add(import_button)
         #info_panel.add(export_button)
+        self.add(self.background)
         self.add(self.palette)
         self.sprite.set_color_box(self.palette)
         self.add(self.sprite)
@@ -95,7 +97,7 @@ class SpriteEditor(Console):
                     hit_view = self.hit(mouse_pos)
                     if controlled_view and controlled_view.draggable:
                         controlled_view.mouse_drag(controlled_view, mouse_pos, event)
-                    else:
+                    elif hit_view is not None:
                         hit_view.mouse_drag(controlled_view, mouse_pos, event)
             self.flip()
             self.fps_clock.tick(120)

@@ -59,7 +59,6 @@ class Console(object):
             hit_view = child.hit(mouse_pos)
             if hit_view is not None:
                 return hit_view
-        return self
 
     def toggle_fullscreen(self):
         """
