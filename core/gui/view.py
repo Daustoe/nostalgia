@@ -35,8 +35,7 @@ class View(Element):
                 element.action_event(mouse_press, mouse_position, mouse_movement)
 
     def hit(self, mouse_pos):
-        # TODO implement hidden and enabled for all objects
-        if self.hidden or not self.enabled:
+        if self.hidden:
             return None
         if not self.frame.collidepoint(mouse_pos):
             return None

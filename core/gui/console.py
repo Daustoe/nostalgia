@@ -38,7 +38,6 @@ class Console(object):
             self.message_box_list.append(element)
         else:
             self.children.append(element)
-        element.set_parent(self)
 
     @staticmethod
     def set_caption(caption):
@@ -60,6 +59,7 @@ class Console(object):
             hit_view = child.hit(mouse_pos)
             if hit_view is not None:
                 return hit_view
+        return self
 
     def toggle_fullscreen(self):
         """

@@ -14,7 +14,7 @@ class Pixel(Element):
 
     def change_color(self, color):
         if color is None:
-            self.color = Color(0, 0, 0, 0)
+            self.color.a = 0
         else:
             self.color = color
             self.surface.fill(self.color)
@@ -22,19 +22,12 @@ class Pixel(Element):
     def get_color(self):
         return self.color
 
-    def get_alpha(self):
-        return self.color.a
-
-    def set_alpha(self, alpha):
-        self.color.a = alpha
-
     def mouse_down(self, button, point):
-        if button == 1:
-            self.change_color(self.parent.color_box.get_color())
-            self.parent.color_box.catalog_current()
-        if button == 3:
-            self.parent.color_box.set_color(self.color)
+        self.change_color(self.parent.color_box.get_color(button))
+        self.parent.color_box.catalog_current()
 
     def mouse_drag(self, view, position, event):
         if event.buttons == (1, 0, 0):
-            self.change_color(self.parent.color_box.get_color())
+            self.change_color(self.parent.color_box.get_color(1))
+        elif event.buttons == (0, 0, 1):
+            self.change_color(self.parent.color_box.get_color(3))

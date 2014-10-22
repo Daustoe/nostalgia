@@ -18,14 +18,15 @@ from PIL import Image
 from sprite import Sprite
 from core.gui.button import Button
 from core.gui.console import Console
+from core.gui.dialog import DialogView
 from core.gui.view import View
 from colorPalette import ColorPalette
 
 
 class SpriteEditor(Console):
     def __init__(self):
-        super(SpriteEditor, self).__init__(835, 520)
-        self.sprite = Sprite(0, 0, 540, 520)
+        super(SpriteEditor, self).__init__(1080, 720)
+        self.sprite = Sprite(110, 0, 720, 720)
         self.font = pygame.font.Font("resources/Munro.ttf", 18)
         self.font.set_bold(True)
         self.set_caption("Sprite Editor")
@@ -49,7 +50,8 @@ class SpriteEditor(Console):
                                'initialfile': 'default.jpg',
                                'title': 'Import Browser'}
 
-        info_panel = View(540, 0, 295, 520, pygame.Color('0xffffff'))
+        #info_panel = View(540, 0, 295, 520, pygame.Color('0xffffff'))
+        """
         save_button = Button(5, 375, 65, 20, "Save", self.font)
         save_button.on_clicked.connect(self.save_sprite)
         load_button = Button(75, 375, 65, 20, "Load", self.font)
@@ -58,14 +60,15 @@ class SpriteEditor(Console):
         import_button.on_clicked.connect(self.import_sprite)
         export_button = Button(215, 375, 65, 20, "Export", self.font)
         export_button.on_clicked.connect(self.export_sprite)
-        self.color_box = ColorPalette(0, 0, 295, 280, self.font)
-        self.add(info_panel)
-        info_panel.add(save_button)
-        info_panel.add(load_button)
-        info_panel.add(import_button)
-        info_panel.add(export_button)
-        info_panel.add(self.color_box)
-        self.sprite.set_color_box(self.color_box)
+        """
+        self.palette = ColorPalette(0, 0, 110, 720, self.font)
+        #self.add(info_panel)
+        #info_panel.add(save_button)
+        #info_panel.add(load_button)
+        #info_panel.add(import_button)
+        #info_panel.add(export_button)
+        self.add(self.palette)
+        self.sprite.set_color_box(self.palette)
         self.add(self.sprite)
 
         self.main_loop()
@@ -84,9 +87,10 @@ class SpriteEditor(Console):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     hit_view = self.hit(mouse_pos)
+                    print hit_view
                     controlled_view = hit_view
                     hit_view.mouse_down(event.button, mouse_pos)
-                elif event.type == pygame.MOUSEMOTION:
+                elif event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed != (0, 0, 0):
                     mouse_pos = pygame.mouse.get_pos()
                     hit_view = self.hit(mouse_pos)
                     if controlled_view and controlled_view.draggable:
@@ -100,14 +104,13 @@ class SpriteEditor(Console):
         """Loads a .spr Sprite file as the current_sprite and is used by the Load Button."""
         filename = tkFileDialog.askopenfilename(**self.options)
         if not filename == '':
-            self.color_box.reset()
+            self.palette.reset()
             session = shelve.open(filename)
-            self.sprite.sprite_size = session['dimension']
-            self.sprite.pixel_size = session['size']
+            self.sprite.sprite_width, self.sprite.sprite_height = session['dimension']
+            self.sprite.pixel_width, self.sprite.pixel_height = session['size']
             for index in range(len(self.sprite.pixels)):
-                color, alpha = session['%d' % index]
+                color = session['%d' % index]
                 self.sprite.pixels[index].change_color(color)
-                self.sprite.pixels[index].set_alpha(alpha)
                 self.sprite.color_box.add_to_history(color)
             session.close()
             pygame.event.pump()
@@ -121,8 +124,7 @@ class SpriteEditor(Console):
             session['size'] = self.sprite.pixel_size()
             for index in range(len(self.sprite.pixels)):
                 color = self.sprite.pixels[index].get_color()
-                alpha = self.sprite.pixels[index].get_alpha()
-                session['%d' % index] = (color, alpha)
+                session['%d' % index] = color
             session.close()
             pygame.event.pump()
 

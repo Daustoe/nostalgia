@@ -23,7 +23,6 @@ class Sprite(ImageView):
         for y in range(self.sprite_width):
             for x in range(self.sprite_height):
                 pixel = Pixel(x * self.block_width, y * self.block_height, self.block_width, self.block_height)
-                pixel.set_parent(self)
                 self.add(pixel)
                 self.pixels.append(pixel)
         self.color_box = None

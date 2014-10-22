@@ -3,12 +3,14 @@ from core.gui.slider import Slider
 from core.gui.element import Element
 from colorButton import ColorButton
 from pygame.color import Color
+from core.gui.button import Button
 
 
 class ColorPalette(View):
     def __init__(self, x, y, width, height, font, color=Color('0x323232')):
         super(ColorPalette, self).__init__(x, y, width, height, color)
-        self.square = Element(127, 150, 40, 40)
+        self.main_color = Button(5, 665, 100, 20, '', font, color=Color(0, 0, 0, 255))
+        self.second_color = Button(5, 690, 100, 20, '', font, color=Color(255, 255, 255, 255))
         self.history = []
         self.font = font
         self.red = Slider(10, 200, 275, 15, Color('0xffc8c8'), Color('red'))
@@ -17,15 +19,16 @@ class ColorPalette(View):
         self.add(self.red)
         self.add(self.green)
         self.add(self.blue)
-        self.add(self.square)
+        self.add(self.main_color)
+        self.add(self.second_color)
         self.blue.on_value_changed.connect(self.update_color)
         self.green.on_value_changed.connect(self.update_color)
         self.red.on_value_changed.connect(self.update_color)
 
     def set_color(self, new_color):
         if new_color is not None:
-            self.square.color = new_color
-            self.square.surface.fill(self.square.color)
+            self.main_color.color = new_color
+            self.main_color.surface.fill(self.main_color.color)
             self.add_to_history(new_color)
             self.update_sliders()
 
@@ -36,16 +39,19 @@ class ColorPalette(View):
         self.blue.set_index(0)
 
     def update_sliders(self):
-        self.red.set_index(self.square.color.r / 255.0)
-        self.green.set_index(self.square.color.g / 255.0)
-        self.blue.set_index(self.square.color.b / 255.0)
+        self.red.set_index(self.main_color.color.r / 255.0)
+        self.green.set_index(self.main_color.color.g / 255.0)
+        self.blue.set_index(self.main_color.color.b / 255.0)
 
-    def get_color(self):
-        return self.square.color
+    def get_color(self, button):
+        if button == 1:
+            return self.main_color.color
+        elif button == 3:
+            return self.second_color.color
 
     def update_color(self):
-        self.square.color = Color(int(self.red.value * 255), int(self.green.value * 255), int(self.blue.value * 255))
-        self.square.surface.fill(self.square.color)
+        self.main_color.color = Color(int(self.red.value * 255), int(self.green.value * 255), int(self.blue.value * 255))
+        self.main_color.surface.fill(self.main_color.color)
 
     def render(self, window):
         super(ColorPalette, self).render(window)
@@ -64,4 +70,4 @@ class ColorPalette(View):
             self.add(new_color)
 
     def catalog_current(self):
-        self.add_to_history(self.square.color)
+        self.add_to_history(self.main_color.color)

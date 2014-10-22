@@ -19,6 +19,8 @@ class Element(object):
         super(Element, self).__init__()
         self.frame = Rect(x, y, width, height)
         self.surface = Surface(self.size(), SRCALPHA)
+        self.x = x
+        self.y = y
         self.color = color
         if self.color is not None:
             self.surface.fill(self.color)
@@ -27,7 +29,6 @@ class Element(object):
         self.on_mouse_down = Signal()
         self.on_mouse_drag = Signal()
         self.draggable = False
-        self.enabled = True
         self.hidden = False
 
     def size(self):
@@ -35,9 +36,9 @@ class Element(object):
         return self.frame.size
 
     def hit(self, mouse_pos):
-        if self.hidden or not self.enabled:
+        if self.hidden:
             return None
-        if not self.frame.collidepoint(mouse_pos):
+        elif not self.frame.collidepoint(mouse_pos):
             return None
         else:
             return self
@@ -68,8 +69,8 @@ class Element(object):
         definition for a more thorough explanation.
         """
         if hasattr(self.parent, 'frame'):
-            x = self.frame.x + self.parent.frame.x
-            y = self.frame.y + self.parent.frame.y
+            x = self.x + self.parent.frame.x
+            y = self.y + self.parent.frame.y
             self.frame.x, self.frame.y = x, y
 
     def mouse_up(self, button, point):
