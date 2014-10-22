@@ -15,7 +15,7 @@ class Console(object):
         self.is_fullscreen = is_fullscreen
         self.active_element = None
         self.position = (0, 0)
-        self.window = pygame.display.set_mode(self.size)
+        self.window = pygame.display.set_mode(self.size, 0, 32)
         self.children = []
         self.message_box_list = []
 

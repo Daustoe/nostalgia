@@ -86,9 +86,13 @@ class Sprite(ImageView):
 
     def make_image(self):
         image_surface = pygame.Surface((self.sprite_width * self.pixel_width, self.sprite_height * self.pixel_height))
-        for pixel in self.pixels:
-            pixel_surface = pixel.surface.subsurface(pygame.Rect(self.position, (self.pixel_width, self.pixel_height)))
-            image_surface.blit(pixel_surface, (pixel.x * self.pixel_width, pixel.y * self.pixel_height))
+        image_surface.set_colorkey((0, 0, 0))
+        for index in range(len(self.pixels)):
+            surface = pygame.transform.scale(self.pixels[index].surface, (self.pixel_width, self.pixel_height))
+            x = index % self.sprite_width
+            y = index / self.sprite_width
+            image_surface.blit(surface, (x * self.pixel_width, y * self.pixel_height))
+
         return image_surface
 
     def set_color_box(self, color_box):

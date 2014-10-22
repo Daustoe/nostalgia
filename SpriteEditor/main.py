@@ -112,8 +112,9 @@ class SpriteEditor(Console):
             self.current_sprite.sprite_size = session['dimension']
             self.current_sprite.pixel_size = session['size']
             for index in range(len(self.current_sprite.pixels)):
-                color = session['%d' % index]
+                color, alpha = session['%d' % index]
                 self.current_sprite.pixels[index].change_color(color)
+                self.current_sprite.pixels[index].set_alpha(alpha)
                 self.current_sprite.color_box.add_to_history(color)
             session.close()
             pygame.event.pump()
@@ -126,7 +127,9 @@ class SpriteEditor(Console):
             session['dimension'] = (self.current_sprite.sprite_width, self.current_sprite.sprite_height)
             session['size'] = (self.current_sprite.pixel_width, self.current_sprite.pixel_height)
             for index in range(len(self.current_sprite.pixels)):
-                session['%d' % index] = self.current_sprite.pixels[index].get_color()
+                color = self.current_sprite.pixels[index].get_color()
+                alpha = self.current_sprite.pixels[index].get_alpha()
+                session['%d' % index] = (color, alpha)
             session.close()
             pygame.event.pump()
 
