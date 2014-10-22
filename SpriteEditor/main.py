@@ -1,9 +1,13 @@
 """
 Issue List:
 
+--need a delete/remove pixel functionality enabled. We were using right click, but may want a toggle button
+  to switch between draw and erase.
 --want to display the sprite as it's actual size on the side.
     --can convert current_sprite to an image and display that image on the side
---scroll wheel activates coloring pixels
+--move color palette to the left, shrink the width.
+    --color picker should be a panel that only shows up when user clicks currently selected color
+      will give the option to pick a new color. User can select colors from palette of colors as well
 """
 import sys
 import shelve
@@ -22,8 +26,8 @@ from colorPalette import ColorPalette
 class SpriteEditor(Console):
     def __init__(self):
         super(SpriteEditor, self).__init__(835, 520)
-        self.current_sprite = Sprite(0, 0, 540, 520)
-        self.font = pygame.font.Font("Munro.ttf", 18)
+        self.sprite = Sprite(0, 0, 540, 520)
+        self.font = pygame.font.Font("resources/Munro.ttf", 18)
         self.font.set_bold(True)
         self.set_caption("Sprite Editor")
         Tkinter.Tk().withdraw()
@@ -34,10 +38,10 @@ class SpriteEditor(Console):
                         'initialfile': 'default.spr',
                         'title': 'File Browser'}
 
-        self.export_options = {'defaultextension': '.jpg',
+        self.export_options = {'defaultextension': '.png',
                                'initialdir': 'C:\\',
                                'initialfile': 'default.jpg',
-                               'filetypes': [('JPEG files', '.jpg'), ('PNG files', '.png'), ('all files', '.*')],
+                               'filetypes': [('PNG files', '.png'), ('all files', '.*')],
                                'title': 'Export as image'}
 
         self.import_options = {'defaultextension': '.jpg',
@@ -64,8 +68,8 @@ class SpriteEditor(Console):
         info_panel.add(export_button)
         info_panel.add(self.color_box)
         # TODO fix below command, we shouldn't have to pass the current sprite the color box
-        self.current_sprite.set_color_box(self.color_box)
-        self.add(self.current_sprite)
+        self.sprite.set_color_box(self.color_box)
+        self.add(self.sprite)
 
         self.main_loop()
 
@@ -94,12 +98,8 @@ class SpriteEditor(Console):
                         hit_view.mouse_drag(controlled_view, mouse_pos, event)
             # TODO make GUI Labels out of these three font renders. That way the flip method handles them.
             self.window.blit(self.font.render("RGB: " + str(self.color_box.get_color()), True, (0, 0, 0)), (625, 355))
-            self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % (self.current_sprite.sprite_width,
-                                                                              self.current_sprite.sprite_height),
-                                              True, (0, 0, 0)), (540 + 5, 400))
-            self.window.blit(self.font.render("Pixel Dimension: (%d,%d)" % (self.current_sprite.pixel_width,
-                                                                            self.current_sprite.pixel_height),
-                                              True, (0, 0, 0)), (540 + 5, 420))
+            self.window.blit(self.font.render("Sprite Dimensions: (%d,%d)" % self.sprite.sprite_size(), True, (0, 0, 0)), (540 + 5, 400))
+            self.window.blit(self.font.render("Pixel Dimension: (%d,%d)" % self.sprite.sprite_size(), True, (0, 0, 0)), (540 + 5, 420))
             self.flip()
             self.fps_clock.tick(60)
 
@@ -109,13 +109,13 @@ class SpriteEditor(Console):
         if not filename == '':
             self.color_box.reset()
             session = shelve.open(filename)
-            self.current_sprite.sprite_size = session['dimension']
-            self.current_sprite.pixel_size = session['size']
-            for index in range(len(self.current_sprite.pixels)):
+            self.sprite.sprite_size = session['dimension']
+            self.sprite.pixel_size = session['size']
+            for index in range(len(self.sprite.pixels)):
                 color, alpha = session['%d' % index]
-                self.current_sprite.pixels[index].change_color(color)
-                self.current_sprite.pixels[index].set_alpha(alpha)
-                self.current_sprite.color_box.add_to_history(color)
+                self.sprite.pixels[index].change_color(color)
+                self.sprite.pixels[index].set_alpha(alpha)
+                self.sprite.color_box.add_to_history(color)
             session.close()
             pygame.event.pump()
 
@@ -124,11 +124,11 @@ class SpriteEditor(Console):
         filename = tkFileDialog.asksaveasfilename(**self.options)
         if not filename == '':
             session = shelve.open(filename)
-            session['dimension'] = (self.current_sprite.sprite_width, self.current_sprite.sprite_height)
-            session['size'] = (self.current_sprite.pixel_width, self.current_sprite.pixel_height)
-            for index in range(len(self.current_sprite.pixels)):
-                color = self.current_sprite.pixels[index].get_color()
-                alpha = self.current_sprite.pixels[index].get_alpha()
+            session['dimension'] = self.sprite.sprite_size()
+            session['size'] = self.sprite.pixel_size()
+            for index in range(len(self.sprite.pixels)):
+                color = self.sprite.pixels[index].get_color()
+                alpha = self.sprite.pixels[index].get_alpha()
                 session['%d' % index] = (color, alpha)
             session.close()
             pygame.event.pump()
@@ -137,15 +137,16 @@ class SpriteEditor(Console):
         """Exports the current_sprite as an image and is used by the Export Button."""
         filename = tkFileDialog.asksaveasfilename(**self.export_options)
         if not filename == '':
-            pygame.image.save(self.current_sprite.make_image(), filename)
+            pygame.image.save(self.sprite.make_image(), filename)
         pygame.event.pump()
 
     def import_sprite(self):
         """Imports an image file to the current_sprite and is used by the Import Button."""
         filename = tkFileDialog.askopenfilename(**self.import_options)
         if not filename == '':
-            self.current_sprite.image_to_sprite(Image.open(filename))
-            self.current_sprite.render(self.window)
+            image = Image.open(filename).resize(self.sprite.sprite_size(), Image.BICUBIC)
+            self.sprite.image_to_sprite(image)
+            self.sprite.render(self.window)
             pygame.event.pump()
 
 

@@ -37,6 +37,7 @@ class ColorPalette(View):
         if new_color is not None:
             self.square.color = new_color
             self.square.surface.fill(self.square.color)
+            self.add_to_history(new_color)
             self.update_sliders()
 
     def reset(self):
