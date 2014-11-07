@@ -50,26 +50,24 @@ class SpriteEditor(Console):
                                'initialfile': 'default.jpg',
                                'title': 'Import Browser'}
 
-        #info_panel = View(540, 0, 295, 520, pygame.Color('0xffffff'))
-        """
-        save_button = Button(5, 375, 65, 20, "Save", self.font)
+        save_button = Button(5, 5, 65, 20, "Save", self.font)
         save_button.on_clicked.connect(self.save_sprite)
-        load_button = Button(75, 375, 65, 20, "Load", self.font)
+        load_button = Button(75, 5, 65, 20, "Load", self.font)
         load_button.on_clicked.connect(self.load_sprite)
-        import_button = Button(145, 375, 65, 20, "Import", self.font)
+        import_button = Button(145, 5, 65, 20, "Import", self.font)
         import_button.on_clicked.connect(self.import_sprite)
-        export_button = Button(215, 375, 65, 20, "Export", self.font)
+        export_button = Button(215, 5, 65, 20, "Export", self.font)
         export_button.on_clicked.connect(self.export_sprite)
-        """
-        self.palette = ColorPalette(0, 0, 110, 720, self.font)
+        self.palette = ColorPalette(0, 30, 110, 690, self.font)
         self.background = View(0, 0, 1080, 720)
-        #self.add(info_panel)
-        #info_panel.add(save_button)
-        #info_panel.add(load_button)
-        #info_panel.add(import_button)
-        #info_panel.add(export_button)
+        self.top_menu = View(0, 0, 1080, 30, pygame.Color('0x101020'))
+        self.top_menu.add(save_button)
+        self.top_menu.add(load_button)
+        self.top_menu.add(import_button)
+        self.top_menu.add(export_button)
         self.add(self.background)
         self.add(self.palette)
+        self.add(self.top_menu)
         self.sprite.set_color_box(self.palette)
         self.add(self.sprite)
 
@@ -89,7 +87,6 @@ class SpriteEditor(Console):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     hit_view = self.hit(mouse_pos)
-                    print hit_view
                     controlled_view = hit_view
                     hit_view.mouse_down(event.button, mouse_pos)
                 elif event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed != (0, 0, 0):
